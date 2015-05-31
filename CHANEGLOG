@@ -758,3 +758,5 @@ wlan: prima: Sync with LA.AF.1.1_rb1.18 - https://github.com/CyanogenMod/android
 selinux: enable genfscon labeling for sysfs and pstore files - https://github.com/CyanogenMod/android_kernel_motorola_msm8960dt-common/commit/96682af834c3ada97360810c23f11156e5089780
 mmc: Allow forward compatibility for eMMC - https://github.com/CyanogenMod/android_kernel_motorola_msm8960dt-common/commit/1821806eb0bfc91f007511b93acb7dc27eb0d19b
 msm: msm_fb: wait for VSYNC instead of DMA_P for LCDC - https://github.com/CyanogenMod/android_kernel_motorola_msm8960dt-common/commit/d428ebd1a890ecd1db825e40f9522283fcc9fd1b
+LZ4 : fix the data abort issue - https://github.com/CyanogenMod/android_kernel_motorola_msm8960dt-common/commit/dabaabe1ad7fa20247733c8b5af13d8b94321d1e
+
