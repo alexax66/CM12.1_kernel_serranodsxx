@@ -755,3 +755,6 @@ CM12.1-ALX-0.0.6
 cfg80211: add space after the b/w in db.txt - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/b9a478bef1beb87c0091c45a2b8fbff9d1cbf17f
 usb: ks_bridge: Ignore completion error in RX path - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/f2004fa90097d7352c967fb2de16345180119403
 wlan: prima: Sync with LA.AF.1.1_rb1.18 - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/0ab890a311f733b4b3373bc4a9302d9821ece4c9
+selinux: enable genfscon labeling for sysfs and pstore files - https://github.com/CyanogenMod/android_kernel_motorola_msm8960dt-common/commit/96682af834c3ada97360810c23f11156e5089780
+mmc: Allow forward compatibility for eMMC - https://github.com/CyanogenMod/android_kernel_motorola_msm8960dt-common/commit/1821806eb0bfc91f007511b93acb7dc27eb0d19b
+msm: msm_fb: wait for VSYNC instead of DMA_P for LCDC - https://github.com/CyanogenMod/android_kernel_motorola_msm8960dt-common/commit/d428ebd1a890ecd1db825e40f9522283fcc9fd1b
