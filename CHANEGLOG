@@ -1,0 +1,757 @@
+CM12-ALX-0.0.1
+wcnss: Fix for Static analysis issues - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/8458b8616007d7214871f3b314560c21873a8cfb
+wcnss: invoke PIL only after completing intialization - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/fed758267bc241880056e7d6503344d31213e283
+qseecom: Sync with LA.AF.1.1_rb1.12 - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/b3e3651a7931226f9865bd6e21859b13ed025364
+wlan: prima: Sync with LA.AF.1.1_rb1.12 - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/70268d91c38c61e8dddc557b62aacdf00a55ac4d
+ksm: anable KSM in defconfig
+ksm: check and skip page, if it is already scanned - https://github.com/anarkia1976/AK-OnePone/commit/c0d2d9bb06017939a46ba078bd54eb6ca1055f68
+Makefile: change crosscompiler to LinaroMod-arm-eabi-4.9 toolchain - https://github.com/hyper-toolchains/LinaroMod-arm-eabi-4.9
+Makefile: add  more options  for compilation optimization 
+
+CM12-ALX-0.0.2
+ntelli_plug: refactor stats calculation code to be less intrusive - https://github.com/TEAM-Gummy/android_kernel_samsung_hlte/commit/7412fe79ea27bf79ac5107c48010c410994ceef2
+Intelli_plug: kernel sched/core: add per cpu nr_running stats - https://github.com/TEAM-Gummy/android_kernel_samsung_hlte/commit/1dc90815c75505b978b02b5690e755a70837d872
+Intelli_plug: cumulative patch to version 3.8 - https://github.com/TEAM-Gummy/android_kernel_samsung_hlte/commit/034fd5110339a8b8ed37a6465a21ac96b7d37f0c
+Add new cpufreq drivers
+
+CM12-ALX-0.0.3
+intelli_thermal -  https://github.com/Pafcholini/m7-Sense-4.4.2/blob/master/drivers/thermal/intelli/msm_thermal.c
+intelli_thermal: compatibility fix up with latest - MSM Thermal drivers https://github.com/yank555-lu/Hammerhead-3.4-kitkat-mr2/commit/8d9a5a2deb87f685b91238f89bbc428b70e23c13
+msm: intelli_plug: merged scheduler patches for intelli plug - https://github.com/YoshiShaPow/green_machine_bacon/commit/44271e5ae2713636269b8b03175b354dc9ac26c0
+Update intelli_thermal  - https://github.com/KAsp3rd/android_kernel_lge_d85x/blob/KK_4.4.2/drivers/thermal/intelli/msm_thermal.c
+
+CM12-ALX-0.0.4
+ARM: Use -mcpu=cortex-a15 when targeting MSM Krait CPUs Added option -mtune=cortex-a15 in  arch/arm/Makefile - https://github.com/YoshiShaPow/green_machine_falcon/commit/de2eff7f79550185af4da148ee7bf03ae8f28e
+fe
+sound control 3.x: Initial GPL release for WCD9320 Audio Codec - https://github.com/KAsp3rd/android_kernel_lge_d85x/commit/871082d2c0d0b756c895fdf79ee5c648cc638e1d
+Sound Control: Misc clean up for newer WCD9xxx SOCs https://github.com/F4k/f4ktion_kernel/commit/1ff006490449c673907a7e54cefc523f8adb4d99
+
+CM12-ALX-0.0.5
+makefile: use CCACHE to build (@DerRomtester) - https://github.com/YoshiShaPow/green_machine_bacon/commit/4b44323ad156770d3962d0537c6647ff41c30be9
+vfp: use hard and neon vfpv4 optimizations - https://github.com/YoshiShaPow/green_machine_bacon/commit/4c987d3e4b57ed0e00806af2a5118545a70a599f
+lib/int_sqrt.c: optimize square root algorithm - https://github.com/YoshiShaPow/green_machine_bacon/commit/186f94ac57f2c97bd059c5f85ce81855306fc609
+lib/string: use glibc version - https://github.com/YoshiShaPow/green_machine_bacon/commit/3d65640e3e1b96df3520fe8be6f6b6f401448782
+lib/memcopy: use glibc version - https://github.com/YoshiShaPow/green_machine_bacon/commit/6b754a09a1f21b35bcc7a7ffd48ee18ffd6d58d7
+arch: arm: lib: optimize memcpy for cortex-A15 - https://github.com/YoshiShaPow/green_machine_bacon/commit/dc4cd50b6580518bf8c0752b394aa998db469cf1
+return address: finishing TODOs (@frap129) - https://github.com/YoshiShaPow/green_machine_bacon/commit/249106c9b2f479a895567d34e6064aca1de6802a
+arm/kernel/irq.c: remove irq affinity warnings - https://github.com/YoshiShaPow/green_machine_bacon/commit/7b0ebe4bf8334269b9fdd0f2fdd27d69a92cf14a
+decompressor: add LZ4 decompressor module - https://github.com/YoshiShaPow/green_machine_bacon/commit/1db64c9becf6226796751110e1259bc966eaa9a1
+lib: add support for LZ4-compressed kernel - https://github.com/YoshiShaPow/green_machine_bacon/commit/e4f0d8d3930b3d14ef0731a1b9a4852bd60341f4
+lib: add lz4 compressor module - ttps://github.com/YoshiShaPow/green_machine_bacon/commit/1e2afd17dd2a2426daab952337f7484f6dad23a9
+lib/lz4: correct the LZ4 license - https://github.com/YoshiShaPow/green_machine_bacon/commit/ccea4c4a213bbf0cb2a7ee2eb820def4eafae3e7
+lz4: fix compression/decompression signedness mismatch - https://github.com/YoshiShaPow/green_machine_bacon/commit/dfa3e4ec23d54fa2448e999c990be8b7dd7454b1
+lz4: ensure length does not wrap - https://github.com/YoshiShaPow/green_machine_bacon/commit/54d7961864431df594b30bcf8ce0e14935c3e7b8
+lz4: fix another possible overrun - https://github.com/YoshiShaPow/green_machine_bacon/commit/ca5a9a5b8455dd994a8d9240f53e4bf7d19b7bdc
+lz4: add overrun checks to lz4_uncompress_unknownoutputsize() - https://github.com/YoshiShaPow/green_machine_bacon/commit/f1974fa44e7e421899c8f5bb06aafde83665d896
+LZ4: compression/decompression signedness mismatch (v2) - https://github.com/YoshiShaPow/green_machine_bacon/commit/1db64c9becf6226796751110e1259bc966eaa9a1
+Zram: Update zram and zsmalloc up-to 3.17 kernel changes - https://github.com/YoshiShaPow/green_machine_bacon/commit/3d82bc9198e3e6b8fccd01c36fa7c8b077dff8e5#diff-f2aba1232392a5746ef165035b7ac41bR13
+ARM: Added optimized ARM RWSEM algorithm. - https://github.com/YoshiShaPow/green_machine_bacon/commit/287a4f0109f5e278a957599101f18987abcfa3aa
+ARM: be strict about FP exceptions in kernel mode - https://github.com/YoshiShaPow/green_machine_bacon/commit/0d189fe6751af1765437762e728412c90ee7640b#diff-7094796fc680526e31dc6b73fcb066deR655
+[don`t work - desable in config. !!!] powersuspend: new PM kernel driver for Android w/o early_suspend - https://github.com/YoshiShaPow/green_machine_bacon/commit/d156ebf6966b1b769a146e4a81b947325b8b3ebb#diff-9839e512d1aed24efa4fe0e423db605fR25 
+mmc: Disable crc check - https://github.com/YoshiShaPow/green_machine_bacon/commit/155851e591881a66a4ab31b897d09f6de6b52c60
+timekeeping: fix timeout calculations into ktime_get routine - https://github.com/YoshiShaPow/green_machine_bacon/commit/f65f5898862a4bb7321871fcd05172d39e14a2da
+msm: intelli_plug: merged with latest Shamu kernel - v3.9 - https://github.com/YoshiShaPow/green_machine_bacon/commit/e4c4cfc8a70c7e9460edcec4d871b5e14519ada0
+net: rps: fix cpu unplug - https://github.com/YoshiShaPow/green_machine_bacon/commit/8ccfb3450907f5658c30241079f0721ff27990d4
+
+CM12-ALX-0.0.6
+cpufreq: cpu-boost: Fix cores getting stuck. Finally. - https://github.com/YoshiShaPow/green_machine_bacon/commit/66eea65d52aa4c3f1ce66d43eaae77719e185284
+bcmdhd: reduce wakelocks - https://github.com/YoshiShaPow/green_machine_bacon/commit/fecac2996b68363b7ccb69d701454acf98dd4ed7
+bcmdhd: Decrease to 250 ms - https://github.com/YoshiShaPow/green_machine_bacon/commit/d1023ff55e3ab4ea45403b793f7538f2548cf5c9
+makefile: use CCACHE to build (@DerRomtester) - https://github.com/YoshiShaPow/green_machine_bacon/commit/4b44323ad156770d3962d0537c6647ff41c30be9
+[don`t work !!!] lib: remove memory alloc because it isn't there - https://github.com/YoshiShaPow/green_machine_bacon/commit/32e4e37da2bd4b4579fa477f7f06bf99c9415cf2
+netfilter: disallow unsafe ffast math optimizations - https://github.com/YoshiShaPow/green_machine_bacon/commit/5716a0e0798efffc9646b2721130ea19edb5f826
+mpdecision: don't compile it for now - https://github.com/YoshiShaPow/green_machine_bacon/commit/bcfb3536dec0cc9600cf905880303d0c912ebea1
+[revert: it work!!! Add cpu_boost.c in /arch/arm/msm-mach!!!]cpu-boost: don't compile it for now either - https://github.com/YoshiShaPow/green_machine_bacon/commit/7bf0e6cf1690dffbbe78485242ca77078ddb1404
+[don`t work - desable in config. !!!] msm: bricked_hotplug: added bricked mpd hotplug - https://github.com/YoshiShaPow/green_machine_bacon/commit/83d8c4e2b9fc988d676481fe6910ccf915c59f5e
+[don`t work - desable in config. !!!] msm: bricked_hotplug: clean get_rate and switch to msm_cpufreq_get_freq - https://github.com/YoshiShaPow/green_machine_bacon/commit/ed56a57c893f1941237bd0eea7d727bc7f1bb506
+[don`t work - desable in config. !!!] msm: bricked_hotplug: convert suspend/resume from lcd notifier to powersuspend - https://github.com/YoshiShaPow/green_machine_bacon/commit/cea4a6a40b02557656e24a20e041df6e4ade91dd
+power: quickwakeup: initial driver - https://github.com/YoshiShaPow/green_machine_bacon/commit/138d4148337ac832ae4472f15b94c955b35fcb72
+Add /dev/frandom support - https://github.com/YoshiShaPow/green_machine_bacon/commit/92daa621bdbd85bcedee4884b5515ef9e8a3a57b
+msm: bricked_hotplug: make it bricked hotplug - https://github.com/YoshiShaPow/green_machine_bacon/commit/0101a7866700803e353b064184167529a952b37b
+The Ultra Kernel Samepage Merging v0.1.2.3 - https://github.com/AOSPA-legacy/android_kernel_oneplus_msm8974/commit/fd2ebd73750376caa9de631616eea6a25b37a509
+Tune UKSM to work with Android Devices - https://github.com/AOSPA-legacy/android_kernel_oneplus_msm8974/commit/68a473fb32e829a170d491fcc6aed3a87dea964e
+Revert "CK3 tweaks (Credits to Con Kolivas)" - https://github.com/Trinityhaxxor/Xperia_S_T-Core_Kernel/commit/8d3939728be5ba929fcb01186e011c948a1b1d5c
+Use power efficient workqueues - https://github.com/schqiushui/kernel_kk443_sense_mec/commit/943cd7eb18757eea3478976f0020f76a6e88a3c9
+[don`t work !!!]workqueue: fix permission for power_efficient [neobuddy89] - https://github.com/schqiushui/kernel_kk443_sense_mec/commit/4a0399bb2f8d9270325f2e1bd51aed7aec432f56
+net/neighbour: queue work on power efficient wq - https://github.com/schqiushui/kernel_kk443_sense_mec/commit/6d6e7798befd43f4c00f01c67d2b7215802dd075
+msm: bam_dmux: Use power efficient workqueues for delayed timeouts - https://github.com/schqiushui/kernel_kk443_sense_mec/commit/f0846a92c80b04f8f25a01dbbe53cdef25d1082b
+msm: bam_dmux: another fixup - https://github.com/schqiushui/kernel_kk443_sense_mec/commit/9a0e56361555783a648cf6c6883e3f8d5ce28a60
+msm: bam_dmux: Reduce debug logs to avoid watchdog bite - https://github.com/AOSPA-legacy/android_kernel_oneplus_msm8974/commit/ccafb45c9a03e6c1a03d6d4140d517a4fc7b27c3
+(CR) msm_fb: display: reduce turn-on display time. - https://github.com/schqiushui/kernel_kk443_sense_mec/commit/9a8bb46163a31be1b923244f4891b176940b74d3
+net: bcmdhd: reduce wlan_rx wakelock period - https://github.com/YoshiShaPow/green_machine_bacon/commit/e9b41059eab5c3f8c0a657a3788755749f51a5bb
+Makefile: Add missing-syscalls wrapper: - https://github.com/YoshiShaPow/green_machine_bacon/commit/0339f00de9034b03993f343a63281cb7d481a1de
+random: prevent add_input from doing anything - https://github.com/YoshiShaPow/green_machine_bacon/commit/0af1921c2f6b04a3cc09289a6e2a7ab36f337560
+random: entropy tweaks are all the rage nowadays - https://github.com/YoshiShaPow/green_machine_bacon/commit/4f81994ac99f3ee844c51bb94b10f8c4c031691e
+andom: increase read and write entropy levels  - https://github.com/YoshiShaPow/green_machine_bacon/commit/98705adf1d85b6d2ba69fb0f7b2647ab5cb6c145
+af_unix: speedup /proc/net/unix - https://github.com/YoshiShaPow/green_machine_bacon/commit/6aa354c5ee36783163ac301b35f1b9b70ca4af94
+msm: intelli_plug: we only have 2 cores. - https://github.com/F4k/f4ktion_kernel/commit/5e504e6dc3c649bb1bbce98b8ed5154ba5ce54f2
+sched: cpu_power: enable ARCH_POWER - https://github.com/F4k/f4ktion_kernel/commit/be1dced4cfd3e3e7043073cf1b614902238daca5
+xz: Optimize Sfck Compression - https://github.com/YoshiShaPow/green_machine_bacon/commit/218cd1584bf229ee3fbe57c97a1670e73f824ea1
+net: rps: fix cpu unpluget: - https://github.com/YoshiShaPow/green_machine_bacon/commit/8ccfb3450907f5658c30241079f0721ff27990d4
+intellidemand: cumulative updateis to version 5.5 - https://github.com/F4k/f4ktion_kernel/commit/5ffe2e5993533f786ee0d76743fec60fd14b8042
+msm: update msm_rq_stats for msm_hotplug. - https://github.com/F4k/f4ktion_kernel/commit/d10e4f007d1f685983ff113ba77e105bbb7a3709
+msm: slimbus: initial overclocking of slimbus - https://github.com/F4k/f4ktion_kernel/commit/d3694c5eb34a4104fc9eb4df0aa0f6f9cbd06eee
+Enable pipe flag. - https://github.com/F4k/f4ktion_kernel/commit/638510e5fdabd61f8b87cb957482afd4a209986f
+block: row: add magic values. - https://github.com/F4k/f4ktion_kernel/commit/326c0f7c05ffe65098fc842f1b25651cb13c2590
+Asynchronous Fsync: initial extraction of Async Fsync from HTC - https://github.com/F4k/f4ktion_kernel/commit/63c0afa732b95f7ce9da9e58ca6e808813630906
+mm: Dynamic management of dirty page writebacks - https://github.com/F4k/f4ktion_kernel/commit/0130feaf63a81840f42bcbe236850d016fd06029
+
+CM12-ALX-0.0.7
+Update i2c to save battery - https://github.com/yank555-lu/Hammerhead-3.4-kitkat-mr2/commit/9d50b32b6b34abfcf17bf44647275ced42ed469a
+battery optimization - https://github.com/schqiushui/kernel_kk443_sense_mec/commit/1c515190fe9092e1d60f0fe697973c5541096c78
+irq: Set CPU affinity right on thread creation - https://github.com/schqiushui/kernel_kk443_sense_mec/commit/8870d46ffdc8eb86ac17422e375a1e8a8a5aef94
+[work unstable - remove!!!] earlysuspend: speedup late resume (faster wakeup of the device) - https://github.com/F4k/f4ktion_kernel/commit/31c62233b14df28fb3d002e3aa911326870feb49
+
+CM12-ALX-0.0.8
+clockevents: Add module refcount - https://github.com/YoshiShaPow/green_machine_falcon/commit/3cacbb50deb70ad74f606cf187981e89020fea3b
+sync: don't block the flusher thread waiting on IO - https://github.com/TEAM-Gummy/android_kernel_samsung_hlte/commit/41b2e9407b16bc9762c202055e3fc77f6cbf91ee
+writeback: fix occasional slow sync(1) - https://github.com/TEAM-Gummy/android_kernel_samsung_hlte/commit/ed8012cdd47bfef372257e9496e911ed48ee7bbe
+Optimize slub by not using fair sleepers - https://github.com/YoshiShaPow/green_machine_falcon/commit/bdf360f1537654d8018a8a6ec2d806df92aec97e
+char: hw_random: Remove .owner field for driver - http://www.spinics.net/lists/arm-kernel/msg364909.html
+binfmt_elf.c: use get_random_int() to fix entropy depleting - http://www.gossamer-threads.com/lists/linux/kernel/1812233?do=post_view_threaded
+random: prevent add_input from doing anything - https://github.com/TEAM-Gummy/android_kernel_samsung_hlte/commit/6c1cd3a95d48e962271f20ef5a4619c50c76b43b
+random: entropy tweaks are all the rage nowadays - https://github.com/TEAM-Gummy/android_kernel_samsung_hlte/commit/8770011937d9d45b31da0a6df322e0af27b77932
+LMK: Import RB Tree optimization from Motorola - https://github.com/faux123/mako/commit/ff5702af25cd09cc1765d9399f382cf5a2d02589
+mm: Increase number of GFP masks - https://github.com/faux123/mako/commit/60eefcd09b42bec540a6af1c4900f957e4e23eb1
+nl80211: Fix backport of struct wiphy_vendor_command - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/cf63806e7151964439fa5f563de1e2a95a6f27ff
+msm8930: storage: Enable write packing capability - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/f598e1bd5fb90bd22789f9e0bab274b0b9d1c87b
+
+CM12-ALX-0.0.8_test1
+sync: Fix a race condition between release_obj and print_obj - https://github.com/faux123/mako/commit/971184160ff672520a30ca2f4dc2ef42cd733c38#diff-c4a8b4fafce279dcbc623ac48a780a2dR78
+f_qdss: Delete a few unused functions. - https://github.com/faux123/mako/commit/ee37b65ff04672a985ffbfe334dfaade1753dedd
+cpufreq: Persist cpufreq time in state data across hotplug - https://github.com/faux123/mako/commit/aeb11b41b9c8a5b37a3de92426167a063abac5ab
+sched: Fix migration thread runtime bogosity - https://github.com/faux123/mako/commit/5eb0604059034d98738c9e3143732e8ff39bb276
+tcp: resets are misrouted - https://github.com/faux123/mako/commit/343535d9fd5dc167d55474c014081276731945ee
+SELinux: Reduce overhead of mls_level_isvalid() function call [Waiman Long] - https://github.com/VanirAOSP/kernel_htc_msm8974/commit/06b0ee3b02d46e1aca692eb70d77f0c5060a0945
+SELinux: Bye NSA! Nobody invited you here, so go back into reclusion and be permissive - https://github.com/VanirAOSP/kernel_htc_msm8974/commit/b29aa97cb2ac37915f77c26ab2768f65c2d9ecfb
+msm: intelli_plug: merged with latest @neobuddy89 kernel - v5.0 - https://github.com/anarkia1976/AK-OnePone/commit/8a8beb91f1cee2eab006792b4e76a9d7a876c85b
+msm: add msm_hotplug by myfluxi and anarkia1976. - https://github.com/F4k/f4ktion_kernel/commit/92f1094a5d5b5027ab391d1d6cb3382e6b6d5919
+msm: msm_hotplug disabled by default. - https://github.com/F4k/f4ktion_kernel/commit/171a18e1a1225b1611472fb4201ec43a5a254765
+
+CM12-ALX-0.0.8_test2
+[revert] msm: intelli_plug: merged with latest @neobuddy89 kernel - v5.0 - https://github.com/anarkia1976/AK-OnePone/commit/8a8beb91f1cee2eab006792b4e76a9d7a876c85b
+[desable in .config] msm: add msm_hotplug by myfluxi and anarkia1976. - https://github.com/F4k/f4ktion_kernel/commit/92f1094a5d5b5027ab391d1d6cb3382e6b6d5919
+cpufreq: Make sure target freq is within limits - https://github.com/ion-storm/Unleashed-N5/commit/b6b05cd85b67ad96c2aa198d092cc609bc77dfb3
+cpufreq: Improve debug prints - https://github.com/ion-storm/Unleashed-N5/commit/4df5b5c0273b4fa61896a86e3fce1833d0535651
+cpufreq: Break out early when frequency equals target_freq - https://github.com/ion-storm/Unleashed-N5/commit/eb65e6017822597f27e4ab006f6fa9a0bda74e7b
+cpufreq: cpu-boost: Always honor max freq - https://github.com/ion-storm/Unleashed-N5/commit/dd232c3cb3a7e402aa1651751e246b24e0f93b40
+cpufreq: cpu-boost: Tune min interval for input boost - https://github.com/ion-storm/Unleashed-N5/commit/bf7e899e6f6921e3644521ed71f6b74aaf426d79
+fuse: fix stat call on 32 bit platforms - https://github.com/ion-storm/Unleashed-N5/commit/71083ffbba2ec41b9124006a223c22750a8f2fcc
+fuse: verify all ioctl retry iov elements - https://github.com/ion-storm/Unleashed-N5/commit/e1c6b1a50ecc582ff0278c078a657a75cd6e3b3d
+fuse: fix retrieve length - https://github.com/ion-storm/Unleashed-N5/commit/92a445c90830fdf14c4ffce84355c99b612f8129
+fuse: postpone end_page_writeback() in fuse_writepage_locked() - https://github.com/ion-storm/Unleashed-N5/commit/5be35642601bfe6ed0cf382f092cdbdec4d95478
+fuse: invalidate inode attributes on xattr modification - https://github.com/ion-storm/Unleashed-N5/commit/d698fa1457d98cac5d693cdefce10defe5427760
+fuse: readdir: check for slash in names - https://github.com/ion-storm/Unleashed-N5/commit/d420ff5c3baf67c3608ab00857658ac25ba7997d
+fuse: hotfix truncate_pagecache() issue - https://github.com/ion-storm/Unleashed-N5/commit/5e0019367b1b960c6de1aa0ae8cfde5d81cc47a0
+
+CM12-ALX-0.0.9
+[revert] tcp: resets are misrouted - https://github.com/faux123/mako/commit/343535d9fd5dc167d55474c014081276731945ee
+sched: Implement smarter wake-affine logic [Michael Wang] - https://github.com/VanirAOSP/kernel_htc_msm8974/commit/c442bd614a351477a1aa911935a43fd28e5ecfad
+sched: Force sleep on consecutive sched_yields - https://github.com/VanirAOSP/kernel_htc_msm8974/commit/8ed5653ecb99cbdba317127fcdbbf52dfb9eea75
+ARM: 7680/1: Detect support for SDIV/UDIV from ISAR0 register - https://github.com/VanirAOSP/kernel_htc_msm8974/commit/c147fb4c4e6ef3ab46b71d94f8175004c8f15ed4
+i2c-qup: don't ignore the last byte of a message - https://github.com/anarkia1976/AK-OnePone/commit/0418babb7e2520f00dd266a5c6204e97f85652e9
+
+CM12-ALX-0.0.9_test2
+more rbj stuff 1 - https://github.com/VanirAOSP/kernel_htc_msm8974/commit/73c8cf7f3b0f827ece7015fb2272ca2c19d0bbf2
+more adj stuff 2 - https://github.com/VanirAOSP/kernel_htc_msm8974/commit/62f9046d9f2269fb328d940212c1b0949e53083b
+
+CM12-ALX-0.0.9_test3
+lmk: Sync with LA.AF - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/c7c0a303fecb97154a67ac6b7e1af9776d4df1f0
+fs/proc/task_mmu.c: add user-space support for resetting mm->hiwater_rss (peak RSS) - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/a2687d0f1ac1205c36ec1e67fe9bd53b608385c8
+Set the iif for IPv6 packets as well. - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/910f27726a8a8e82c8db1502e6df781c9b409149
+net: ipv6: make "ip -6 route get mark xyz" work. - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/443f4c0cf9eb8197da7f45a29d3fdab59e7ba9ed
+wlan: prima: Sync with LA.AF.1.1_rb1.13 - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/2423558a6797ba4a55ac132ef2842cfe401ac557
+msm:pproc:freed pointer in error case - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/51d23e5fc08de0ec82f89f25e957fda5c2d1c839
+msm:pproc:Freed the vpe prameters to avoid memleak - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/12a2a1e3222d532bcdc5cf90faf0d0580d3c9be6
+diag: Make fixes to diag_switch_logging - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/92aec5086caf6684f9b47ac6e71278f33c20fd73
+mutex: Queue mutex spinners with MCS lock to reduce cacheline contention - https://github.com/YoshiShaPow/green_machine_bacon/commit/3548a65bdc73fe26b973e9e24e61512b17c17318
+sched: reduce calculation effort in fix_small_imbalance - https://github.com/YoshiShaPow/green_machine_bacon/commit/cb6bbcae234c8e669cb61331f261bb38d45cfee7
+sched: scale the busy and this queue's per-task load before compare - https://github.com/YoshiShaPow/green_machine_bacon/commit/65a04a759ceba4a3591f686e12360a620c0e067b
+timer: optimize apply_slack() - https://github.com/YoshiShaPow/green_machine_bacon/commit/2d3376279a7be38d8153249f1ae73c21b6c968c9
+
+CM12-ALX-0.1.2
+rbtree: empty nodes have no color - https://github.com/ion-storm/Unleashed-N5/commit/5532033598b90a5dc7f1b84b5926d0b2aedef1b8
+rbtree: move some implementation details from rbtree.h to rbtree.c - https://github.com/ion-storm/Unleashed-N5/commit/04a2d00b329559038432e96c2e9d312cdd1c0017
+
+CM12-ALX-0.1.2_test1
+rbtree: move augmented rbtree functionality to rbtree_augmented.h - https://github.com/ion-storm/Unleashed-N5/commit/30a51e243818863f765aad22ae819b789e8dcb12
+lib/rbtree.c: avoid the use of non-static __always_inline - https://github.com/ion-storm/Unleashed-N5/commit/463d9e956372f551a9102fabdccbc6c313420e29
+rbtree: fix incorrect rbtree node insertion in fs/proc/proc_sysctl.c - https://github.com/ion-storm/Unleashed-N5/commit/2562f995f24a6b7ec144f6f479638d16e32b27ec
+rbtree: include linux/compiler.h for definition of __always_inline - https://github.com/ion-storm/Unleashed-N5/commit/8c1eb92a5a4a753d72d8ce70d78ec9e29ded3938
+rbtree: add postorder iteration functions - https://github.com/ion-storm/Unleashed-N5/commit/f1c8895d29dd08ea911e27af11dd0f84bd8f985d
+rbtree: add rbtree_postorder_for_each_entry_safe() helper - https://github.com/ion-storm/Unleashed-N5/commit/9151db7a77d4d7ef22c02d32f6c8be7c513fe593
+trace/trace_stat: use rbtree postorder iteration helper instead of opencoding - https://github.com/ion-storm/Unleashed-N5/commit/7ea3bd411720d2b9ca5537d0ea32b2d748a39799
+rbtree: fix rbtree_postorder_for_each_entry_safe() iterator - https://github.com/ion-storm/Unleashed-N5/commit/04ffa07bb476a5cdceb4b8cd1a5c4e56bab14749
+lib/rbtree.c: fix typo in comment of __rb_insert() - https://github.com/ion-storm/Unleashed-N5/commit/0fd76425b475730963b0f20b9d0229eb84edb1fc
+regmap: rbtree: Don't bother checking for noop updates - https://github.com/ion-storm/Unleashed-N5/commit/898386bb619cbce5f52c301456ecd4b6b7e92aa0
+rbtree: add comment to rb_insert_augmented() - https://github.com/ion-storm/Unleashed-N5/commit/474f76a9dfc4cb4b15d5efa462c6651500d711e2
+kernel: Get rid of power efficiency patches - https://github.com/ion-storm/Unleashed-N5/commit/1fb9f7f06f38372d5bb5b53f6f3baf37167e8494
+sysctl: add cold_boot sysctl entry - https://github.com/ion-storm/Unleashed-N5/commit/2506f238e7d024eae4a87d4191ff7648b0af5ec2#diff-e219cfc64f2520e649eee23d2cfe13d6R1044
+soc: qcom: bam_dmux: Reset SSR flags in bam_init - https://github.com/ion-storm/Unleashed-N5/commit/f76b32f1abfcf1ff5ff9c358e69f8ce14ede244a
+mm: prevent MIGRATE_ISOLATE pages entering other free lists - https://github.com/ion-storm/Unleashed-N5/commit/427fd13bf209ce6236f197da87de020c642a28fc
+debug-pagealloc: Panic on pagealloc corruption - https://github.com/ion-storm/Unleashed-N5/commit/61893891c91683379bd1c035c316fff2fea8b612
+uksm: Disable by default - https://github.com/ion-storm/Unleashed-N5/commit/a6f883341761af7c2b2c3b35b69afb8c06fa3573
+net: wireless: bcmdhd: Disable FW roaming during suspend - https://github.com/ion-storm/Unleashed-N5/commit/b3929373d0ad63edb866836fe27728603346d584
+sched: Disable More stuff - https://github.com/ion-storm/Unleashed-N5/commit/67a66e266f914841d60a12460176df445f1f57e5
+sched: Introduce preempt_count accessor functions - https://github.com/ion-storm/Unleashed-N5/commit/5327dcce300879e6d180de81dbfaea87935aeaae
+
+CM12-ALX-0.1.2_test3
+[add only comment] workqueues: Introduce new flag WQ_POWER_EFFICIENT for power oriented workqueues - https://github.com/YoshiShaPow/green_machine_bacon/commit/9cb02a16d36c79ccdc018fe8a50534ee5b0c892d
+[add only comment] workqueue: Add system wide power_efficient workqueues - https://github.com/YoshiShaPow/green_machine_bacon/commit/214a471d9cd924a438b3dc248444664ac571df1e
+rtc: alarm: have dummy set_power_on_alarm function - https://github.com/ion-storm/Unleashed-N5/commit/12532586864863d649c3f5f3aa7ea292ce6d549c
+rtc: alarm: init power_on_alarm_lock mutex in alarmtimer_rtc_timer_init - https://github.com/ion-storm/Unleashed-N5/commit/5d43654028bfe73c132cab0a78518ea58fd6ebd8
+rcu: Add a module parameter to force use of expedited RCU primitives - https://github.com/ion-storm/Unleashed-N5/commit/485869a230e5c5168e069589b2488750be9b2866
+rcu: Add RCU_FAST_NO_HZ tracing for idle exit - https://github.com/ion-storm/Unleashed-N5/commit/dad543d1b6b8b3e7fee021db113cffc941674da8
+rcu: Make RCU_FAST_NO_HZ use timer rather than hrtimer - https://github.com/ion-storm/Unleashed-N5/commit/17c2de686c23abaa875924ed966ce6fd56b2b6af
+rcu: Make RCU_FAST_NO_HZ account for pauses out of idle - https://github.com/ion-storm/Unleashed-N5/commit/64650597d5a6697fd7b102fed1cd1e3bb305c660
+rcu: Add warning for RCU_FAST_NO_HZ timer firing - https://github.com/ion-storm/Unleashed-N5/commit/4e88ebc266136df83dd9c3b425705430656cd01b
+rcu: Ensure that RCU_FAST_NO_HZ timers expire on correct CPU - https://github.com/ion-storm/Unleashed-N5/commit/50666cd4985c5daa846ec7918dc0fbd2ff8fd9b7
+rcu: Make exit_rcu() more precise and consolidate - https://github.com/ion-storm/Unleashed-N5/commit/45f67e25279f8f1e97b265ba0a4eafa09d93262f
+rcu: Make RCU_FAST_NO_HZ handle timer migration - https://github.com/ion-storm/Unleashed-N5/commit/878d44fa48cfe09eeb4d97dab5f4b0c783747bb4
+rcu: Explicitly initialize RCU_FAST_NO_HZ per-CPU variables - https://github.com/ion-storm/Unleashed-N5/commit/9ac63a8e11e7bf0d94a66b6e71db3d347544840d
+rcu: Make rcu_barrier() less disruptive - https://github.com/ion-storm/Unleashed-N5/commit/88a224e9fc4ef9d867e586f6df007da992b5a022
+timer: Fix mod_timer_pinned() header comment - https://github.com/ion-storm/Unleashed-N5/commit/36553a122d6d58670ee249db1186f4aa3e546b38
+rcu: Update RCU_FAST_NO_HZ tracing for lazy callbacks - https://github.com/ion-storm/Unleashed-N5/commit/c49895c77c974eccff353e55f4c1b1b094d05b22
+rcu: Move RCU_FAST_NO_HZ per-CPU variables to rcu_dynticks structure - https://github.com/ion-storm/Unleashed-N5/commit/8afd2bc62dceaf36d7f5af8c34dea08861ad8985
+rcu: Precompute RCU_FAST_NO_HZ timer offsets - https://github.com/ion-storm/Unleashed-N5/commit/88347e2da068708569fb479774052a3cc72dcbaf#diff-bb6ea9a0051c11f3e2275a763755d9b0R295
+rcu: Stop rcu_do_batch() from multiplexing the "count" variable - https://github.com/ion-storm/Unleashed-N5/commit/fe8227d860e8533a09b5b6455da75040509de9c0
+
+CM12-ALX-0.1.2_test4
+Add PR_{GET,SET}_NO_NEW_PRIVS to prevent execve from granting privs - https://github.com/faux123/mako/commit/5e5533c5e2c4282b8dff17320c2429af5e0cb427
+Fix execve behavior apparmor for PR_{GET,SET}_NO_NEW_PRIVS - https://github.com/faux123/mako/commit/00b6f0372b595d7028e2049e3e57e61141edbe8b
+sk_run_filter: add BPF_S_ANC_SECCOMP_LD_W - https://github.com/faux123/mako/commit/dc8d89fa30b128899d4391f829977d19a7604e69
+net/compat.c,linux/filter.h: share compat_sock_fprog - https://github.com/faux123/mako/commit/88f7340fc26c3a6a451d23b77efbf81edfa95a98
+seccomp: kill the seccomp_t typedef - https://github.com/faux123/mako/commit/098f51b1ce50360da0b3bd929dad43efd8cbff5d
+asm/syscall.h: add syscall_get_arch - https://github.com/faux123/mako/commit/eeefe674e7ee95a6f9678d40cf78b1841caf7915
+arch/x86: add syscall_get_arch to syscall.h - https://github.com/faux123/mako/commit/1c7d84a414c6f68b2bbfa7ce7f7850c117e89c38
+seccomp: add system call filtering using BPF - https://github.com/faux123/mako/commit/6395bbf23613da84d676f51810ce8fd5b4510be0
+seccomp: remove duplicated failure logging - https://github.com/faux123/mako/commit/3ff2addee365fc22e5abb29cfc5ce2caf855c569
+seccomp: add SECCOMP_RET_ERRNO - https://github.com/faux123/mako/commit/7eb54fe546faa30d4389eaf8bfa87cf0731bdbe2
+signal, x86: add SIGSYS info and make it synchronous. - https://github.com/faux123/mako/commit/c52bf918a4e867ecb4ac154d7a4f54b1475f5bfe
+seccomp: Add SECCOMP_RET_TRAP - https://github.com/faux123/mako/commit/0b6e1e10861b8840ce6bb4172264bb8d65c33826
+ptrace,seccomp: Add PTRACE_SECCOMP support - https://github.com/faux123/mako/commit/2472c78e2e94cfcf2d5b5d6f9f1fede5d933b68b
+Change-Id: I7c9d49079d4e18390c2d520513a4afd55e6eaa3e - https://github.com/faux123/mako/commit/35f479c1951502908bc2f0c5c373eecc55b4040a
+Documentation: prctl/seccomp_filter - https://github.com/faux123/mako/commit/5a5f498ea6bf67919b61e49dd8d89e5ec890b5d3
+seccomp: use a static inline for a function stub - https://github.com/faux123/mako/commit/8df5a31fc3c4d61369e926c56a9ce875f49fd2eb
+seccomp: ignore secure_computing return values - https://github.com/faux123/mako/commit/44985e9126f44cf9c601d2912c23b4f537a6f3ad
+seccomp: fix build warnings when there is no CONFIG_SECCOMP_FILTER - https://github.com/faux123/mako/commit/2dc488f06151495b5b47641cee87ef3b00fa425a
+samples/seccomp: fix dependencies on arch macros - https://github.com/faux123/mako/commit/e3b008ffe980833a167222e3db306a1806a131b2
+CHROMIUM: arch/arm: add asm/syscall.h - https://github.com/faux123/mako/commit/049dc0405858e8005729dfe516ba0ea89a0d1ab6
+CHROMIUM: arch/arm: move secure_computing into trace; respect return code - https://github.com/faux123/mako/commit/da8048e1ad58607e58755b9ff2782d37a60d1c9d
+CHROMIUM: arch/arm: select HAVE_ARCH_SECCOMP_FILTER - https://github.com/faux123/mako/commit/082b16d47b53aa7acbd0777d1857a15e1d4991ea
+CHROMIUM: ARM: arch/arm: allow a scno of -1 to not cause a SIGILL - https://github.com/faux123/mako/commit/f6aaeea08dce063a6dfacf42cc380cbce42fd051
+CHROMIUM: seccomp: set -ENOSYS if there is no tracer - https://github.com/faux123/mako/commit/31443857204cfec393820bf10a60b360b7562d20
+CHROMIUM: ARM: r1->r0 for get/set arguments - https://github.com/faux123/mako/commit/089177c06440c12d38b16f1fa96ac73b7e4359c2
+MAINTAINERS: create seccomp entry - https://github.com/faux123/mako/commit/084cb8c5c35ad27992a14a67de56312e6f8bcd12
+[?] seccomp: create internal mode-setting function - https://github.com/faux123/mako/commit/86ef8d6cb1b1ab889d21ccef16f7b01c6118f2fb#diff-db2d88a0b405c92bed174995c8a2302aR505
+[?] seccomp: extract check/assign mode helpers - https://github.com/faux123/mako/commit/a62edcad77ca59c6e797c48c38492e820667284a#diff-db2d88a0b405c92bed174995c8a2302aR216
+[?] seccomp: split mode setting routines - https://github.com/faux123/mako/commit/30132330f717ac89f25330becc584d97ea3c3add
+seccomp: add "seccomp" syscall - https://github.com/faux123/mako/commit/8c2b65347bb2a4e1b3d795b3c7d69a6091932d9d
+ARM: add seccomp syscall - https://github.com/faux123/mako/commit/fbbe97f079d3da4ac40ed702368219373927d2b9
+sched: move no_new_privs into new atomic flags - https://github.com/faux123/mako/commit/ae7343af9c65a326775232846f104c012754c552#diff-9d19e691da00729bdc0f9926ad1b293fR1882
+seccomp: split filter prep from check and apply - https://github.com/faux123/mako/commit/cc4b168ae9c9cf3be00671ab5830f95c3367e9b9
+seccomp: introduce writer locking - https://github.com/faux123/mako/commit/b8d2bfcd59a854bd5eb659a596e90ff2b448d266
+seccomp: allow mode setting across threads - https://github.com/faux123/mako/commit/bf11b3a2186a07c408cad651f7213762e4d821ed
+seccomp: implement SECCOMP_FILTER_FLAG_TSYNC - https://github.com/faux123/mako/commit/d92abeb0bf0be9b9bbba1d967a887f8d5a36327c
+introduce for_each_thread() to replace the buggy while_each_thread() - https://github.com/faux123/mako/commit/035ec42f8f57e6a5c1228c9b6313127da943a138
+
+CM12-ALX-0.1.3
+seq_file: always update file->f_pos in seq_lseek() - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/13da517b31a8fe8943597fc561dd5d081d753a5b
+cgroup: remove synchronize_rcu() from cgroup_attach_{task|proc}() - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/cd0ddec855f8b8b74ad0c4cca9553f67df2b88ae
+vfs: check if f_count is 0 or negative - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/ee4adac622799c3a863a103d0f2c2b3897b0a0ef
+
+CM12-ALX-0.1.3_test1
+[not work - disable in .config] drivers: staging: Upstream zsmalloc and zram to 3.9 - https://github.com/Leoyzen/Charm-Kiss-Primou/commit/d2922cee7837f49d43882463e404153ca2bc25ba
+seccomp: disable in .config - my commit
+
+CM12-ALX-0.1.3_test2
+sched: LOAD_FREQ (4*HZ+61) avoids loadavg Moire - https://github.com/CyanogenMod/android_kernel_sony_msm8974/commit/6d2039e12c9afa9612fc4418f1f7b628b3587b37
+Add Graphite Optimization - https://github.com/ion-storm/Unleashed-N5/commit/923d40a71355fc7107a2a15bd607a705b88eb4b2#diff-b67911656ef5d18c4ae36cb6741b7965R648
+use linaro 4.9.3 instead, seems to perform better in my tests with slightly better idle drain - https://github.com/ion-storm/Unleashed-N5/commit/923d40a71355fc7107a2a15bd607a705b88eb4b2#diff-b67911656ef5d18c4ae36cb6741b7965R648
+
+CM12-ALX-0.1.3_test3
+cgroups: introduce timer slack subsystem - https://github.com/Leoyzen/Charm-Kiss-Primou/commit/2118eb1fb77aa7d7351b7e1d8c820cd6dddbc410
+Add Timer Slack Missing file - https://github.com/Leoyzen/Charm-Kiss-Primou/commit/8594599c24256bded034194b6e92e95d2715db2d
+Update Timer Slack to Linux 3.4 version and Add Dynamic management of timer slack - https://github.com/Leoyzen/Charm-Kiss-Primou/commit/db97b42c432dd49b4dc951444da1679f0cb4450c
+
+CM12-ALX-0.1.3_test4
+hrtimer: Introduce effective timer slack - https://github.com/Christopher83/samsung-kernel-msm7x30/commit/3cd64ba4f6c8bf564b96a1e034d11a96f2fadd2b
+hrtimer: Implement PR_GET_EFFECTIVE_TIMERSLACK - https://github.com/Christopher83/samsung-kernel-msm7x30/commit/aa24e98a59b14184f71dccfa71b4e4cc40c6d409
+[change only /include/linux/scheld.h] groups: Introduce timer slack controller - https://github.com/Christopher83/samsung-kernel-msm7x30/commit/91c1efa18f05f29d1dde61c6d421e4dd1ebb0b84
+sched: Disabled Gentle Fair Sleepers for better UI performance - https://github.com/Christopher83/samsung-kernel-msm7x30/commit/f7f969d3f8e16b9c0b915173639517788a35b834
+[allredy added!!]rwsem: Optimized ARM RWSEM algorithm - https://github.com/Christopher83/samsung-kernel-msm7x30/commit/3806c185469f1a25998d23cfb7fc40a922ae5e2e
+rwsem-spinlock: Implement writer lock-stealing for better scalability - https://github.com/Christopher83/samsung-kernel-msm7x30/commit/c35420c65c2b7cf6234e27a8a4accdd647bdbf4b
+rwsem: Implement writer lock-stealing for better scalability - https://github.com/Christopher83/samsung-kernel-msm7x30/commit/6aa9b85b7772f47d8a15e9b158517a0ac063f1bb
+rwsem: make the waiter type an enumeration rather than a bitmask - https://github.com/Christopher83/samsung-kernel-msm7x30/commit/c8c4d49b1295409e96b38c9fd4527e1cc82ce214
+rwsem: shorter spinlocked section in rwsem_down_failed_common() - https://github.com/Christopher83/samsung-kernel-msm7x30/commit/da8021fe9b4382a2744ba83ffe7d87a1d4e33cc1
+rwsem: move rwsem_down_failed_common code into rwsem_down_{read,write}_failed - https://github.com/Christopher83/samsung-kernel-msm7x30/commit/866dc5c5b113d8456b1261eb6ec570cc271332da
+rwsem: simplify rwsem_down_read_failed - https://github.com/Christopher83/samsung-kernel-msm7x30/commit/3293e8fbe5b014a71928309e26684ca40fdc4494
+rwsem: simplify rwsem_down_write_failed - https://github.com/Christopher83/samsung-kernel-msm7x30/commit/d6134970c981594a6b7469e52a169f556c8edf80
+rwsem: more agressive lock stealing in rwsem_down_write_failed - https://github.com/Christopher83/samsung-kernel-msm7x30/commit/87964d327619b9051be24340aa448144537c45b5
+rwsem: use cmpxchg for trying to steal write lock - https://github.com/Christopher83/samsung-kernel-msm7x30/commit/cd8a3a34f34b8f035a0bf66653654cea176064cf
+rwsem: avoid taking wait_lock in rwsem_down_write_failed - https://github.com/Christopher83/samsung-kernel-msm7x30/commit/78944cfae19e459dc9131d7bc107cace00c326b2
+rwsem: skip initial trylock in rwsem_down_write_failed - https://github.com/Christopher83/samsung-kernel-msm7x30/commit/fe142a4c729a4ce37ac0bbb1d78e37e1a9b39205
+rwsem: simplify __rwsem_do_wake - https://github.com/Christopher83/samsung-kernel-msm7x30/commit/dc11f96597106ff9a942018dc26a105b48c3a084
+rwsem: implement support for write lock stealing on the fastpath - https://github.com/Christopher83/samsung-kernel-msm7x30/commit/4bf51aa4beb3ca430224086571fca036d563974e
+rwsem: do not block readers at head of queue if other readers are active - https://github.com/Christopher83/samsung-kernel-msm7x30/commit/639fb809e7e20f523cac0cdd6f7968cb1e58c1d1
+rwsem: no need for explicit signed longs - https://github.com/Christopher83/samsung-kernel-msm7x30/commit/2bb0cdaab317112b31fe13b6f2c0b548050d45ef
+rwsem: check counter to avoid cmpxchg calls - https://github.com/Christopher83/samsung-kernel-msm7x30/commit/91cb925e3cd60f5c0cd89d09912519ca6ebcf4b2
+
+CM12-ALX-0.1.3_test5
+mm/rmap: Convert the struct anon_vma::mutex to an rwsem - http://kernel.opensuse.org/cgit/kernel/commit/?id=5a505085f043
+
+CM12-ALX-0.1.3_test6
+rwsem: add define down_write_nest_lock(sem, nest_lock)	down_write(sem) - http://marc.info/?l=linux-kernel&m=135827717015316&w=1
+rwsem: Commit 572043c90db65b45a4efd959db7458edcf6411ad - http://git.ti.com/lcpd-agross/omapdrm/commit/572043c90db65b45a4efd959db7458edcf6411ad
+[revert] sched: Disabled Gentle Fair Sleepers for better UI performance - https://github.com/Christopher83/samsung-kernel-msm7x30/commit/f7f969d3f8e16b9c0b915173639517788a35b834
+[revert] staging/zcache: always enable when selected - https://github.com/faux123/samsung_GS2/commit/b41b0a1a744309d28e07e3eb68f010805e899936
+[revert] staging: fix zcache building - https://github.com/faux123/samsung_GS2/commit/1ddb612254ea9fbe6e5521f4343bb60590922c94
+mm: fix sleeping function warning from __put_anon_vma - http://bk-commits-head.vger.kernel.narkive.com/Fj3TGbQn/mm-fix-sleeping-function-warning-from-put-anon-vma
+
+CM12-ALX-0.1.4
+usb: android: Fix error in commit 10848b5 - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/9c3b152f2ad0a1a50583c16faef441e0285ed775
+ASoC: wcd9306: Run dos2unix on sources to avoid merge conflicts - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/22fb616bc65086c8712621749e1d95731deec5de
+ASoC: msm: fix RX3 MIX1 INP3 path setting - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/5a698e87f82871d8f16028f563990a5f06e95545
+ASoC: wcd: Update of IIR Gain value - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/450d24854eef9574cfe7a8404b19bcacb20b965f
+ASoC: wcd9306: fix the NULL pointer dereference in the tapan codec - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/74dfa5bd63f2d0c0688e7c7395f67e4bfdfa7c2b
+ASoC: msm: set IIR1 gain after IIR clock is enable - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/dd25135d9482be58cb9ab1e304540e4871d8f622
+ASoC: wcd9306: add support for digital mute ops - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/eb18edea016141074a167ff2c70ecc695155ff15
+ASoC: wcd9306: add mixer control to update loopback mode - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/5285b6c551e1e9287afb3dd80f7ab28d099881ca
+ASoC: wcd9306: Wait for enough time for Line PAs to get settled - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/b767791c1a16ada9b46af1fbdd1503235928ed3c
+
+CM12-ALX-0.1.4_test1
+cpufreq: added Impulse CPU governor, @neobuddy89 - https://github.com/F4k/f4ktion_kernel/commit/c60e6927094da1e57978345d26a38c1cb085aab3
+cpufreq: Introduce new relation for freq selection - https://github.com/F4k/f4ktion_kernel/commit/0c19fc0c9862d517e5915eac54a479cbcebb26bc
+cpufreq: Move get_cpu_idle_time() to cpufreq.c - https://github.com/F4k/f4ktion_kernel/commit/e55c2b810706c2390c4c0729c258693fc05593f6
+
+CM12-ALX-0.1.4_test2
+driver: soc: bam_dmux: Fix spinlock lock-up - https://github.com/neobuddy89/hammerhead/commit/b675a68f05d6ba064af67812910e884390625277
+[only for intelli_hotplug.c_5.0+ and msm_hotplug.c] msm: Prevent requeuing if already suspended - https://github.com/neobuddy89/hammerhead/commit/8e70167563f7f0eedc8fb34b9ee7e1c855e73b50
+[only for msm8230.c] SoC: Change to correctly set the BTSCO Sample Rate - https://github.com/neobuddy89/hammerhead/commit/02f6faf8d10b9f06c712ce04fb0f3197e4f8685a
+ASoC: msm: qdsp6v2: Handles additional flac metadata - https://github.com/neobuddy89/hammerhead/commit/d5f64241c995c6b7da06b27e3dfbe1f80a5c589a
+mm: compaction: make __compact_pgdat() and compact_pgdat() return void - https://github.com/neobuddy89/hammerhead/commit/4e94be58fce0347637cd32effb8e23194fc7462f
+kgsl: do not vmap/memset to zero-out pages - https://github.com/neobuddy89/hammerhead/commit/f43c1851843c7ef073d88cdb0be021756df0f9ff
+msm: kgsl: Modify which MMU clocks are enabled/disabled - https://github.com/neobuddy89/hammerhead/commit/c4b1c9bdfed29f2ae182901f679aa2f2146daa6d
+kgsl: allocate shared memory one page at a time - https://github.com/neobuddy89/hammerhead/commit/9363dc9bf379e1f76d3751cb68c0c3fa79903089
+kgsl: allocate from lowmem - https://github.com/neobuddy89/hammerhead/commit/493f2ebad29f0958b344ac0bf2a5c4bb53115883
+kgsl: switch back to allocating from highmem - https://github.com/neobuddy89/hammerhead/commit/8c3bb88d5517f93b0c78a0498c12b7c20b99f394
+mm: Fix NULL pointer dereference in madvise(MADV_WILLNEED) support - https://github.com/neobuddy89/hammerhead/commit/bf374211efc5881696ec174051218fa73f70d918
+vfs: read file_handle only once in handle_to_path - https://github.com/neobuddy89/hammerhead/commit/5490c77c31ae31a35f1dd1062286e306b56bf806
+msm: rpc: Fix uninitialized union in rpc router close function - https://github.com/neobuddy89/hammerhead/commit/eae51d3e42e83028c5dce6eeb71bb8cb62e69e59
+msm: rpc: Fix uninitialized union in rpc router code - https://github.com/neobuddy89/hammerhead/commit/fd2e83bd0a60149db33cd2177fb82ba12335a440
+
+CM12-ALX-0.1.4_test3
+msm: acpuclock-8930: Use level values for the max vdd of vdd_dig regulator - https://github.com/neobuddy89/hammerhead/commit/882fa644b2ce1294148b2d225270f7877b13c568
+[revert] msm: acpuclock-krait: Support alternate PVS and speed bin format - https://github.com/neobuddy89/hammerhead/commit/028788879975022a749c65997d07bd79f30fe3d3
+msm: acpuclock-krait: Update 'unknown rate' debug prints to warnings - https://github.com/neobuddy89/hammerhead/commit/aaa362e3121b698e20c0872283bdbff71f8e1b32
+msm: acpuclock-krait: Add support for HFPLL lock detect bit polling - https://github.com/neobuddy89/hammerhead/commit/94927116ef7b9d8030bb137fbc5af4da189c01f6
+msm: cpufreq: Move cpu_frequency_* trace points from acpuclock to cpufreq - https://github.com/neobuddy89/hammerhead/commit/02038ebe3fb11d929e96088c6db9335cf817a6d0
+msm: clock: Fix list rate to handle rate > LONG_MAX - https://github.com/neobuddy89/hammerhead/commit/20166cfc1d36d151b77f6a373b42bc3fb4784147
+
+CM12-ALX-0.1.4_test4
+msm: pm: idle-v7 clean up - https://github.com/neobuddy89/hammerhead/commit/1d6ad0bbf43df0c975f99d7eacaf50131015b68b
+msm: use dma_alloc_coherent for L1/L2 cache dump buffers - https://github.com/neobuddy89/hammerhead/commit/11a8e690b4a16606853324be3498c3a003726e1b
+msm: tracing: disable tracing for the RTB log functions - https://github.com/neobuddy89/hammerhead/commit/fc7bb4a9a29d7ad5d3067968e6dea04f7c9e71b2
+sched: Remove get_online_cpus() usage - https://github.com/ion-storm/Unleashed-N4/commit/754a774a2b33ba874312bed2aa49a5b8c17cc494
+cpufreq: intelliminmax: Tune it further - https://github.com/ion-storm/Unleashed-N4/commit/03f01eac2cc8ceab0058f3d2e2935ab0330ec0ae
+intellimm: fully sync w/dorimanx - https://github.com/ion-storm/Unleashed-N4/commit/cc779ecb777e0dfab939b5aff62c612ff8e59bc9
+
+CM12-ALX-0.1.5
+msm8930: Change KEY_HOMEPAGE to KEY_HOME - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/deab1abe0475abfac0fbe6d21232e2a8ab98d361
+
+CM12-ALX-0.1.6
+block_dev: implement readpages() to optimize sequential read - https://github.com/HtcLegacy/android_kernel_htc_pico/commit/60f4f80869405e55216895db570dac5e83ff7370
+Add backlight notification support for Pico - https://github.com/HtcLegacy/android_kernel_htc_pico/commit/949a8b4f6e9bc4d19bb6651c761935791280d1cd
+BLN: add a simple "count" function - https://github.com/HtcLegacy/android_kernel_htc_pico/commit/73f26f7645fd8bf9227d9331898f3ebb42f315e0
+
+CM12-ALX-0.1.6_test1
+cpufreq: impulse: Fix typo - https://github.com/RenderBroken/msm8974_G2_render_kernel/commit/2868d66ca9bcafff05fc037807c85fa03ea2bad2
+mnt: Only change user settable mount flags in remount - https://github.com/RenderBroken/msm8974_G2_render_kernel/commit/36cf03b6ea5f30320a0059b1294be0f2b51637b9
+mnt: Prevent pivot_root from creating a loop in the mount tree - https://github.com/RenderBroken/msm8974_G2_render_kernel/commit/da1bfc54b0e7fd5828265bb9837eff1f0ef186cf
+msm: bam_dmux: Tune values and remove panic - https://github.com/RenderBroken/msm8974_G2_render_kernel/commit/ce94b7b33b98506500c709fddb7a0b494d5d5d17
+
+CM12-ALX-0.1.6_test3
+build: Fix some warnings with GCC 4.9 - https://github.com/RenderBroken/msm8974_G2_render_kernel/commit/dc40d35ba529aba610597773c66e71efa9cf3015
+ACPI idle, CPU hotplug: Fix NULL pointer dereference during hotplug - https://github.com/RenderBroken/msm8974_G2_render_kernel/commit/4b5c66459d2fa84b14204269f50c668374a7e768
+cpuidle: rename function name "__cpuidle_register_driver", v2 - https://github.com/RenderBroken/msm8974_G2_render_kernel/commit/54a38b9b0e1ba3e3f4f4f7adba5c51e33a50c8af
+writeback: fix writeback cache thrashing - https://github.com/RenderBroken/msm8974_G2_render_kernel/commit/b40217b938948192face11c5e75300c8bcb2089b
+writeback: increase bdi_min_ratio to 5 in light of the latest writeback commit - https://github.com/RenderBroken/msm8974_G2_render_kernel/commit/cdc5e14cb94ca1146b30ff332a77e4d32524b0ed
+writeback: fix race that cause writeback hung - https://github.com/RenderBroken/msm8974_G2_render_kernel/commit/75d63f48ab70a6997fabcee5420e4771442ef7e3
+[new memutils] msm: memutils: memcpy, memmove, copy_page optimization - https://github.com/RenderBroken/msm8974_G2_render_kernel/commit/4f98df376f1c0bb331290432da648a962276dd2f
+msm: memutils: 8974: memcpy, memmove optimization - https://github.com/RenderBroken/msm8974_G2_render_kernel/commit/34ce1829c06d267d9c4e81327c46274e1646ee3c
+msm: memutils: optimize memcpy for cortex-A15 - https://github.com/RenderBroken/msm8974_G2_render_kernel/commit/b291fb4da81030f8e015610a5d7cfe66868e5c1b
+CPUFREQ: Intellimm CPU GOV. cleanup and fix table store. - https://github.com/RenderBroken/msm8974_G2_render_kernel/commit/cd2e37f12f6d0d5b229e464c78e11c206393620d
+
+ARM: smp: Wait just 1 second for other CPU to halt - https://github.com/RenderBroken/msm8974_G2_render_kernel/commit/8b277cea25cbb8e85d4ee065bab79456bf73c2ed
+soc: qcom: rq_stats: Pass correct cpu id to update_average_load function - https://github.com/RenderBroken/msm8974_G2_render_kernel/commit/4fcc3694643b0641bb17937f763e4255c906acbc
+slimbus: Optimized overclocking of master component - https://github.com/RenderBroken/msm8974_G2_render_kernel/commit/aeb38fca9af6fcf1146c3c86462a11c30a9c4527
+sched: Fix inaccurate accounting for real-time task - https://github.com/RenderBroken/msm8974_G2_render_kernel/commit/24516150d03715d3bbd02ea563813d0db7fe7990
+ARM acpuclk: Inline heavy used functions to reduce overhead. by duki994@xda - https://github.com/RenderBroken/msm8974_G2_render_kernel/commit/b4e3c320e5dcc663a7fcb4d18978ad4addcf0ace
+cpufreq / core: Fix printing of governor and driver name - https://github.com/RenderBroken/msm8974_G2_render_kernel/commit/4792e8c77a8472e5f92c1f384ff1e3015ddda4c2
+
+CM12-ALX-0.1.7
+irq: Enable all irqs unconditionally in irq_resume - https://github.com/RenderBroken/msm8974_OPO_render_kernel/commit/a99e32eb030492467fc228c09f7e9bf258dee243
+[revert compile error !!!] fs: Improve filesystem freezing handling - https://github.com/RenderBroken/msm8974_G2_render_kernel/commit/58911c692b5c7502690f9a32290587117d327d5b
+mmc: decrease wakelock timeout - https://github.com/RenderBroken/msm8974_G2_render_kernel/commit/2fe68d21acd591d520fc87d5f3fecc62b6462749
+[revert compile error !!!] smp: enhance power efficiency - https://github.com/RenderBroken/msm8974_G2_render_kernel/commit/a58d8c4cf6505d8e67b01c171e11a050af68528a
+[revert compile error !!!] sched: Trying to reduce power usage - https://github.com/RenderBroken/msm8974_G2_render_kernel/commit/d1adf0040ceeeafe895002d50e7df86c04e6753f
+
+CM12.1-ALX-0.0.1
+Revert "lmk: Sync with LA.AF" - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/89ba3e60cffce9176dbf1d32f6d7a0a52ae006e8
+nick kvfree() from apparmor - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/504f9ae571df757a72ea245eaf27de7c10de724b
+mm, oom: make dump_tasks public - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/eebdd88b9a40e8bac1605fa27c806b8b75811d33
+lmk: Sync with hammerhead - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/65d998eefa82da0d1d7fe2cd3602995ef4e8a630
+seq_file: Remove Samsung changes - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/f084564e8227bce3845e8499980213687cf7dc0f
+Revert "seq_file: Allocate memory using vmalloc when kmalloc failed" - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/481cf9c5412cef4166d684ff7adb88040de53895
+seq_file: always clear m->count when we free m->buf - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/d8cf113e02ec9278db9a965c6ed7f01a78e62622
+fs/seq_file: fallback to vmalloc allocation - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/f1af4de54d691d1e6c97e8b8ff75b0438b8bed26
+fs/seq_file: Use vmalloc by default for allocations > PAGE_SIZE - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/2a2528d23358c9fa46e380fbfd5757020e0c2752
+Revert "Grants system server access to /proc/<pid>/oom_adj for Androi… - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/ba899bbc1b8315d4ed54f44694c43a0265b63d1f
+proc: make oom adjustment files user read-only - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/783442ae2dcf571c00de97858422e75e2cdb0a8e
+kbuild: make it possible to specify the module output dir - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/10b2eb729e75634296e89c06c3aaedd9960f23ee
+[my commit] remove from .config CPU governers ondemand, ondemandnplus, intellidemand because  reboot system
+[revert - bad commit] AIO: Don't plug the I/O queue in do_io_submit() Asynchronous I/O latency - https://github.com/YoshiShaPow/green_machine_l90/commit/70451091affcb8869f3ae0a870fc771c6ded3a45
+
+CM12.1-ALX-0.0.1_test1
+workqueue: change BUG_ON() to WARN_ON() - https://github.com/YoshiShaPow/green_machine_l90/commit/eaaffc0925e70130e844c9690fe0b3a673ef195f
+mach-msm: disable kernel-side mpdecision - https://github.com/YoshiShaPow/green_machine_l90/commit/4a7515fb8aa71fce7ba8391e050390a178ea094e
+posix_types.h: Cleanup stale __NFDBITS and related definitions - https://github.com/CyanogenMod/android_kernel_lge_v4xx/commit/d9e234fc1f3c6aea33276d713aff70d5f97cd3f3
+selinux: fix sel_netnode_insert() suspicious rcu dereference - https://github.com/CyanogenMod/android_kernel_lge_v4xx/commit/4704a59b8dfb4d1f55ce2da714aeb81ccde1c2a4
+SELinux: if sel_make_bools errors don't leave inconsistent state - https://github.com/CyanogenMod/android_kernel_lge_v4xx/commit/61cbd8bed7190e7ff1fc3fc2ab228d74eca721c7
+selinux: use GFP_ATOMIC under spin_lock - https://github.com/CyanogenMod/android_kernel_lge_v4xx/commit/43928aee0936d12c7593a2356ac0c6791a3e312a
+selinux: correct locking in selinux_netlbl_socket_connect) - https://github.com/CyanogenMod/android_kernel_lge_v4xx/commit/5b69b17821b3e2edb66fa0fb8f85413e6a50dba2
+selinux: handle TCP SYN-ACK packets correctly in selinux_ip_output() - https://github.com/CyanogenMod/android_kernel_lge_v4xx/commit/b4a51f93df394f096f83f258d5fcc1aa86c64454
+selinux: handle TCP SYN-ACK packets correctly in selinux_ip_postroute() - https://github.com/CyanogenMod/android_kernel_lge_v4xx/commit/863a23253aa180c161e284e987fbe43bbf4c6453
+selinux: fix broken peer recv check - https://github.com/CyanogenMod/android_kernel_lge_v4xx/commit/9f833c8b61f350c50412e4dafc28cbb07cbe9cc2
+selinux: selinux_setprocattr()->ptrace_parent() needs rcu_read_lock() - https://github.com/CyanogenMod/android_kernel_lge_v4xx/commit/669ba2fcc87e0a4873fca3682f643c9b165bd7fd
+selinux: look for IPsec labels on both inbound and outbound packets - https://github.com/CyanogenMod/android_kernel_lge_v4xx/commit/db7aa7491b0637a26ca2e36b114ad5a2cedc68c3
+selinux: process labeled IPsec TCP SYN-ACK packets properly in selinux_ip_postroute() - https://github.com/CyanogenMod/android_kernel_lge_v4xx/commit/1b11c02e5ea132804bdd5dd4065336f324a70666
+selinux: correctly label /proc inodes in use before the policy is loaded - https://github.com/CyanogenMod/android_kernel_lge_v4xx/commit/467c0616b9a7e22d08fd0a5e20c5aa139de76c43
+netfilter: conntrack: disable generic tracking for known protocols - https://github.com/CyanogenMod/android_kernel_lge_v4xx/commit/ae07d7587445815aed10bc4f5f5b287f61e939e6
+netfilter: nf_conntrack_dccp: fix skb_header_pointer API usages - https://github.com/CyanogenMod/android_kernel_lge_v4xx/commit/f98878cf83b0bac98394db9685c3b6c5f64ab4a3
+eCryptfs: Remove buggy and unnecessary write in file name decode routine - https://github.com/CyanogenMod/android_kernel_lge_v4xx/commit/61fbe1f9898eee5a351d88df3a0f67019958da72
+
+CM12.1-ALX-0.0.1_test2
+msm_fb: display: validate input args of mdp4_argc_process_write_req - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/5e9c633c32c53b52224e66ce0781e86f7439deca
+slub: Fix calculation of cpu slabs - https://github.com/aatjitra/cm12/commit/c3329d44fa555c263bf2e73b8da47200bbbfcb4d
+timekeeping: fix 32-bit overflow in get_monotonic_boottime - https://github.com/CyanogenMod/android_kernel_lge_v4xx/commit/fbfec632ff440aa1171cd4322b1f631439ac0f8d
+ARM: 8036/1: Enable IRQs before attempting to read user space in __und_usr - https://github.com/CyanogenMod/android_kernel_lge_v4xx/commit/d9585581c31196e9b17ce7a71b0ee7d7f35ce347
+ALSA: Avoid endless sleep after disconnect - https://github.com/CyanogenMod/android_kernel_lge_v4xx/commit/719e91e72ddf05e614ee569c43f2b22898f7d2bc
+mmc: core: Fix unclocked access in get_xfer_remain/stop_request - https://github.com/CyanogenMod/android_kernel_lge_v4xx/commit/bd363955aba7c59653b92e3bd1a1d4850d70dfdf
+msm: smd_pkt: Remove hexdump of userspace read/write buffers - https://github.com/CyanogenMod/android_kernel_lge_v4xx/commit/bdf35c0570f345995d6b4dd13d1c40bc0be7022c
+msm: msm_bus: Suspected fix for deadlock - https://github.com/CyanogenMod/android_kernel_lge_v4xx/commit/8ab5edb57ff773cbccfb53a6a2450498fd83e361
+ARM: proc: Add Krait proc info - https://github.com/binkybear/Unleashed-Kernel-Series/commit/8a2920812c1bb1c3748ee036dc647ca2d90940e4
+ARM: dma-mapping: add support for DMA_ATTR_SKIP_CPU_SYNC attribute - https://www.ivancso.net/gitblit/commit/;jsessionid=3lu7k026c4uhut3qjvstrylz?r=github-ivan/net-next.git&h=97ef952a20853fad72087a53fa556fbec45edd8f
+arm: Add option to skip buffer zeroing - https://github.com/major91/Zeta-Chromium-N5/commit/61f50a5f452d3f495fb034632cf965210e1472c3
+arm: Skip DMA zeroing completely only if specified - https://github.com/CyanogenMod/android_kernel_lge_v4xx/commit/54dd070764060ef34fc031a4bce985c25bf36e1b
+f2fs: support norecovery mount option - https://lkml.org/lkml/2015/1/29/800
+f2fs: should fail mount when trying to recover data on read-only dev - https://lkml.org/lkml/2015/1/29/501
+f2fs: introduce a batched trim - https://lkml.org/lkml/2015/1/29/519
+[revert - do not mount f2fs partitions !!!] f2fs: fix not to drop mount options when retrying fill_super - https://lkml.org/lkml/2015/1/29/790
+[revert, because use this commit - f2fs: introduce a batched trim ]fstab: remove discard - https://github.com/CyanogenMod/android_device_samsung_jf-common/commit/0a64155934a58d6bf067134e4cc3a92b34eefef9
+
+CM12.1-ALX-0.0.1_test3
+sched: fix rq->lock recursion - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/8fa97ac2124a28c93ad33b053127138b9847c533
+sched: Fix SCHED_HRTICK bug leading to late preemption of tasks - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/f45dfd9db5aed40b538f07d21f7bacc501133726
+sched: Mark schedule_io_timeout() with EXPORT_SYMBOL - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/ae238664a51e530ee567aa001f953a031191df59
+sched: fix reference to wrong cfs_rq - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/39267ab0969d68cadf9885b8f45309c1e00e431a
+tracing/sched: Track per-cpu rt and non-rt cpu_load. - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/b0ace1a87c2e2f095089066b5ce747a07fc6fe90
+tracing/sched: Add trace events to track cpu hotplug. - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/50578c7beca975428c2039ea4aa496611aaa0a98
+tracing/sched: add load balancer tracepoint - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/52ef7770a7a2e34d7d12199903042baed8275b2a#diff-1c5364196d98130348bddabaad0a701fL4428
+sched: Fix clear NOHZ_BALANCE_KICK - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/2a9b067929669bbb9497532ad9e91ec9333f05fe
+sched/debug: Make sysrq prints of sched debug data optional - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/6ae59fa8bc1ea00e884d3ae2efa0e26ce37e0890
+sched: convert WARN_ON() to printk_sched() in try_to_wake_up_local() - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/c16066971cb352fdb251c907e6c4d98388f537ef
+sched/rt: Use root_domain of rt_rq not current processor - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/1c488edf29362487869e920e6ff2ffd56dccf723
+sched: Remove redundant update_runtime notifier - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/52c1ab6c4d6184b28a82e9d3bc2038c87646b499
+sched: Fix hotplug vs. set_cpus_allowed_ptr() - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/ab3fcffb1c5ad455ed166ca93d36c7e44c20db13
+sched: fix race between try_to_wake_up() and move_task() - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/24094386771ee92e92b8a18409caccabea545894
+sched: Fix reference to stale task_struct in try_to_wake_up() - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/3440c5d030a19d45c828313c6a43d32bfbb896d7
+Revert "cgroup: Take css_set_lock from cgroup_css_sets_empty()" - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/fb750e2bae48cc6a19fb179d091cd26c4a50f197
+kernel: cgroup: protecting css_set object - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/24b1950831a997cb67d4dc46dfb6ad1ee42bf17f
+kernel: cgroup: push rcu read locking from css_is_ancestor() to callsite - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/caa41a5c6237bb127662494d152d898537894a89
+workqueue: don't use WQ_HIGHPRI for unbound workqueues - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/17f1a2ed99a44977a86cd22422683d3346011e35
+workqueue: factor out worker_pool from global_cwq - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/b0f282c711e040052f6ddeef9446e00c3d7e7dc3
+workqueue: use @pool instead of @gcwq or @cpu where applicable - workqueue: use @pool instead of @gcwq or @cpu where applicable
+workqueue: separate out worker_pool flags - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/68c9c33ec88c731f3351cb0ae94fddd28eb2cf6c
+workqueue: introduce NR_WORKER_POOLS and for_each_worker_pool() - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/9bf5bf29aaa7cc30a341052fa6f94415fed2cd8c
+workqueue: reimplement WQ_HIGHPRI using a separate worker_pool - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/d3c30c83c0cdd4f55e2b4bc065d5895493fc6c1e
+ARM: 7449/1: use generic strnlen_user and strncpy_from_user functions - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/dd77ee9860c3415a65b69072f97a44df544bd65f
+arm: lib: Fix makefile bug - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/1888b55263b38de2041eed3defcc10ffb839662c
+ARM: 7430/1: sizes.h: move from asm-generic to <linux/sizes.h> - https://github.com/CyanogenMod/android_kernel_lge_v4xx/commit/bde2405ba156cd3b13c7ac85e6f79163e5d4d762
+ARM: 8160/1: drop warning about return_address not using unwind tables - https://github.com/CyanogenMod/android_kernel_lge_v4xx/commit/0fc393896840cfcb1406838f0d3283693db3aed3
+fs: introduce a generic shutdown ioctl - https://github.com/CyanogenMod/android_kernel_lge_v4xx/commit/3237b2ac1e4bb3d5c32050fe20fa51d1b0004174
+f2fs: sync with https://git.kernel.org/cgit/linux/kernel/git/jaegeuk/f2fs.git/log/?h=linux-3.4 - https://github.com/CyanogenMod/android_kernel_lge_v4xx/commit/267f31351c98e71c549248781192388165887a11
+[revert - do not mount f2fs partitions !!!] f2fs: fix not to drop mount options when retrying fill_super - https://lkml.org/lkml/2015/1/29/790
+
+CM12.1-ALX-0.0.2
+ARM: 7660/1: tlb: add branch predictor maintenance operations - https://github.com/YoshiShaPow/green_machine_l90/commit/3293cb2597c046b912d77c30ebc340a5740078dd
+ARM: 7691/1: mm: kill unused TLB_CAN_READ_FROM_L1_CACHE and use ALT_SMP instead - https://github.com/YoshiShaPow/green_machine_l90/commit/fd84026e376df51252c5684c2a49191b7d51f680
+ARM: 7784/1: mm: ensure SMP alternates assemble to exactly 4 bytes with Thumb-2 - https://github.com/YoshiShaPow/green_machine_l90/commit/199a1cc1c69c90c68c494b8d2e0a75cf45c8827a
+ARM: gic: use a private mapping for CPU target interfaces - https://github.com/YoshiShaPow/green_machine_l90/commit/50b13b99516464a7f714d751872423a07106e9e2
+ARM: 7569/1: mm: uninitialized warning corrections - https://github.com/YoshiShaPow/green_machine_l90/commit/148f7cb6484142b934061168e8fa02ec902c7157
+lib: lz4: Set ARM_EFFICIENT_UNALIGNED_ACCESS - https://github.com/CyanogenMod/android_kernel_motorola_msm8960dt-common/commit/5bfe8d2f1405c5597f4b39d9c7be4e5047b37dae
+
+CM12.1-ALX-0.0.2-test1
+frontswap: support exclusive gets if tmem backend is capable - https://github.com/CyanogenMod/android_kernel_motorola_msm8960dt-common/commit/56b24cfa01c51056d367b57b2c5cb2daf9025d75
+mm: frontswap: lazy initialization to allow tmem backends to build/run as modules - https://github.com/CyanogenMod/android_kernel_motorola_msm8960dt-common/commit/a65bdd98e9ffceaa4114cdbe6669ac2a23d3eafa
+frontswap: make frontswap_init use a pointer for the ops - https://github.com/CyanogenMod/android_kernel_motorola_msm8960dt-common/commit/4e17fb3c5d75dcb05f413de51efe21c6fd7b7889#diff-7c8237215f9beeda0dc1ed933b7ba3bdR135
+mm: frontswap: cleanup code - https://github.com/CyanogenMod/android_kernel_motorola_msm8960dt-common/commit/ec984249c81bd77e9fb1101d41988100dadb52f0
+frontswap: fix incorrect zeroing and allocation size for frontswap_map - https://github.com/CyanogenMod/android_kernel_motorola_msm8960dt-common/commit/20017c4ba037aa17f9a35f4c8075037c5992bff1
+mm: frontswap: invalidate expired data on a dup-store failure - https://github.com/CyanogenMod/android_kernel_motorola_msm8960dt-common/commit/823b076523b2644fe5c5672c5d4e5bd179cf10b8
+zsmalloc: move it under mm - https://github.com/CyanogenMod/android_kernel_motorola_msm8960dt-common/commit/adfe2aaae4fab0f0883defb1252805e335805921
+AIO: Don't plug the I/O queue in do_io_submit() Asynchronous I/O latency - https://github.com/YoshiShaPow/green_machine_l90/commit/70451091affcb8869f3ae0a870fc771c6ded3a45
+[revert - don`t boot!!!] msm: Remove QCACHE - https://github.com/CyanogenMod/android_kernel_motorola_msm8960dt-common/commit/4e492ce71dedd153bd1a70d9f78619211b0caa13
+zsmalloc-main: Linux 3.0 compatibility fixup - https://github.com/faux123/SGH-Krait/commit/ecfedf3a7d50943129bdb47e788fe012350bf236
+msm8960_mmi_defconfig: Enable page table mapping for zsmalloc - https://github.com/CyanogenMod/android_kernel_motorola_msm8960dt-common/commit/33303e27f3212cf2d7a10473c044c2df33223075
+msm: display: Add data stuctures for MSM8974 target support - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/c7857d21fe524ea81b2c1b8b199173460f470c7d
+video: mdp4: Color temperature interface using PCC - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/ecbd401e28b9b7ecdbbbeae24e4e2b28dd9d1cdc
+ARM: 7953/1: mm: ensure TLB invalidation is complete before enabling MMU - https://github.com/ion-storm/Unleashed-N4/commit/ac08622b464cf796bbe40404ae46c8ff29c5ac68
+ARM: 7953/1: mm: ensure TLB invalidation is complete before enabling MMU * - https://github.com/ion-storm/Unleashed-N4/commit/55148f89c430dc978e1f464887b1f5126bf420cd
+Revert "ARM: 7953/1: mm: ensure TLB invalidation is complete before enabling MMU *" - https://github.com/ion-storm/Unleashed-N4/commit/36d1d7a67f863b56f2407af37cdb57b89e571961
+
+
+CM12.1-ALX-0.0.2-test4
+[add, but used qcache] defconfig: enable lz4 for zcache - https://github.com/F4k/f4ktion_kernel/commit/d993421ceec340baa52ff78065fb441497a1b608
+[add, but used qcache] zcache: Remove pool name - https://github.com/CyanogenMod/android_kernel_motorola_msm8960dt-common/commit/019366b2bc1d6ec78a802b0bb2696df8322783ec
+crypto: add lz4 Cryptographic API - https://github.com/CyanogenMod/android_kernel_motorola_msm8960dt-common/commit/1e89ccdf20613e7f26e9f19b0918d9b3697d1a59
+[add, but used qcache] crypto: lz4,lz4hc - fix decompression - https://github.com/CyanogenMod/android_kernel_motorola_msm8960dt-common/commit/c421c226c57896086dc3ad52c835bd86f0e86d6c
+zcache: Use zs_get_total_size_pages - https://github.com/CyanogenMod/android_kernel_motorola_msm8960dt-common/commit/f094c2ac88559c01c8e88f5a8a59b05de02eadd7
+zsmalloc: move pages_allocated to zs_pool - https://github.com/CyanogenMod/android_kernel_motorola_msm8960dt-common/commit/690e815cb7dec789ed578bf8d41f2ee083ec82ab
+zsmalloc: change return value unit of zs_get_total_size_bytes - https://github.com/CyanogenMod/android_kernel_motorola_msm8960dt-common/commit/44f2e86d36485be1a01c6c28a706e74c79e3c3fb
+zsmalloc: comments - https://github.com/CyanogenMod/android_kernel_motorola_msm8960dt-common/commit/d47f7e16c95a09dc04648294280957ee3ef14691
+zsmalloc: simplify init_zspage free obj linking - https://github.com/CyanogenMod/android_kernel_motorola_msm8960dt-common/commit/4112bb2a20829b47687c22c211984978539bd713
+zsmalloc: merge size_class to reduce fragmentation - https://github.com/CyanogenMod/android_kernel_motorola_msm8960dt-common/commit/24496cf9a506d610aeebd54d6fb7b49496d0ff88
+zsmalloc: correct fragile [kmap|kunmap]_atomic use - https://github.com/CyanogenMod/android_kernel_motorola_msm8960dt-common/commit/838dd4410be57bd24722c74ec8bc729acf17a2fa
+mm/zsmalloc: allocate exactly size of struct zs_pool - https://github.com/CyanogenMod/android_kernel_motorola_msm8960dt-common/commit/f541c14f9ddbf1858f8629ba3ee58318e7d06eda
+
+CM12.1-ALX-0.0.2-test5
+cpufreq: cpu-boost: Dont boost if interrupted by signal - https://github.com/CyanogenMod/android_kernel_motorola_msm8960dt-common/commit/aa75d405c74db5a17415d7bdf768749346ad2df5
+cpufreq: cpu-boost: config cpu_boost separately - https://github.com/CyanogenMod/android_kernel_motorola_msm8960dt-common/commit/7ff5adbf6a923ae864ed352cb0af982b68cdf7bd
+
+CM12.1-ALX-0.0.3
+wlan: In HDD don't free PNO request parameters on timeout - http://review.cyanogenmod.org/#/c/94768/3/drivers/staging/prima/CORE/HDD/inc/wlan_hdd_main.h
+Optimize ARM memset and memzero functions - https://github.com/VanirAOSP/kernel_htc_msm8974/commit/f8584e1df94f27c56752980c75571443fd39225a
+ARM: lib: Shuffle branch targets in memzero/memset for better performance - https://github.com/VanirAOSP/kernel_htc_msm8974/commit/186eed3fbb47bb6d8887f26455ca3a5dfc63c6e4
+Rename ARM assembler push/pull macros - https://github.com/VanirAOSP/kernel_htc_msm8974/commit/d5c51c57ef431beef01e621848bb16aebb872ccf
+memutils: apply Rename ARM assembler push/pull macros commit - https://github.com/VanirAOSP/kernel_htc_msm8974/commit/17f08ead352ea4ed126c86f376ad8fd2f5396e4d
+scheduler: Autogroup patch group by current user android UID instead of task ID - https://github.com/VanirAOSP/kernel_htc_msm8974/commit/b21ccc4e8003ec927c1c14b37b18e9a18f663702
+mm: vmscan: lock page on swap error in pageout  - https://github.com/VanirAOSP/kernel_htc_msm8974/commit/07e0587a12bba8f025d30c3d882b4495a44cd0ed
+ipv6: Don't reduce hop limit for an interface - https://github.com/CyanogenMod/android_kernel_samsung_exynos5420/commit/0708c1786d946e60b2240d7efe41778919d12aa9
+
+CM12.1-ALX-0.0.3_test1
+VFS: Make more complete truncate operation available to CacheFiles - https://github.com/CyanogenMod/android_kernel_google_msm/commit/66cf540fb8427f73db4f06c6562d5ac58913fe2b
+msm8974: fs: Transparent compression support  - https://github.com/CyanogenMod/android_kernel_oneplus_msm8974/commit/7a35a1f843ee31fc77aa77fac082515c5723eddc
+Effectively revert "gpu: ion: replace __GFP_ZERO with manual zero'ing" - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/ba1bf3ddaee649c5bea4fd5cc7f386de5c968c18
+usb: dwc3: gadget: Protect against ep disabling during completion - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/f0920c02044d310555661e40753f9f0a761c4293
+scripts/dtc/libfdt: add integer overflow checks - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/f596cd514ff8c8a55ffbe1162f4b3ffe7b8ee624
+msm: smd_pkt: Avoid prematurely stashing driver info - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/eb70aa4df45c1005c136db249e4805f6ecbeb53c
+[my commit] .config: tern off CPU-BOOST becaue it work unstable!!!
+qseecom: avoid buffer over-write when copying app_name - https://github.com/CyanogenMod/android_kernel_oneplus_msm8974/commit/3de626ab1573ab13db30cfbbbe04c0c87c20239d
+qcedev: msm: Remove gating of zero length packets for authentication - https://github.com/CyanogenMod/android_kernel_oneplus_msm8974/commit/2b9f5f7e1218caf99cd2b7edeb3c340c4327c91f
+
+CM12.1-ALX-0.0.3_test2
+int mmc_stop_request(struct mmc_host *host) - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/357f9309f21119bf7ae0310e61c559b9c2904313
+mmc: core: Fix null pointer dereference due to race conditions - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/d9bd775aba5cc4b0e1b872e1f3dc7ae0e2f4ecfc
+mmc: core: Avoid infinite retries of failed mmc command - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/2dbc186da205d306ad623cd543147783ec52ae35
+mmc: core: Fix unclocked access in get_xfer_remain/stop_request - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/03d0f621fc9b9640ac0b008e3c1587d3eca0e513
+PM: Allow runtime suspend again if prepare is failed - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/ca4b7e6c5ae27634cf276b564708521f8af469ce
+rtc: Remove Samsung changes - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/07751586bbd83c3330aa71978cd20af6908003d2
+rtc: pm8xxx: Sync up to upstream version - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/ff56b8b16c043c37ebce244aad96bd45aa3f4417
+msm: thermal: Update to speed up bootup time - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/544460a94b7acfafbca5502b75f59ea622a19713
+kernel: Restrict permissions of /proc/iomem. - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/80bf84316ddf5da782fce84dbde7422314b0ddf9
+subsystem: CPU FREQUENCY DRIVERS- Set cpu_load calculation on current frequency - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/25b4eae3e9e1d20369f2b6b7a4f2af33ad683cfc
+qseecom: Sync with LA.AF.1.1_rb1.17 - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/478d672745a8d9a41aab6e80abe9b420811c200d
+wlan: prima: Sync with LA.AF.1.1_rb1.17 - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/71172024b310741bc9551238764dcae77359349f
+crypto: add crypto_[un]register_shashes for [un]registering multiple shash entries at once - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/f5f247c164a2348ee8962dad0b54f9a32cb56991
+crypto: sha256 - Expose SHA256 generic routine to be callable externally. - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/ae9a729d75efd7c3ecb3498e150f73d69d6196b5
+crypto: sha512 - Expose generic sha512 routine to be callable from other modules - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/d2e97ac741fa87e004f49086c80438353a71697a
+arm: crypto: Add optimized SHA-256/224 - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/7c97fc234f418e176caaea4e11e399a0f3369e40
+arm: crypto: Fix compile errors for 3.4 kernel - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/8c6388f1b4fc1170cd7a76d8ec93c81784578219
+defconfig: Enable optimized SHA256 and SHA512 - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/e7a70c9a8b5b0e5e8b7dc2b4a14855e84aa0e0aa
+
+CM12.1-ALX-0.0.3_test3
+msm8930: Add msm-pcm-loopback device - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/5bdade027202272bf202cc091ed794d4d735186d
+tracing/syscalls: Fix perf syscall tracing when syscall_nr == -1 - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/684a2fde3b4b86086488258892c650b5c87fc432
+tracing/syscalls: Ignore numbers outside NR_syscalls' range - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/28db57dfc620f7076586278b36e424b666a130cc
+netfilter: nf_conntrack: reserve two bytes for nf_ct_ext->len - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/6565967aafec5d5a7e4592caa80dc0ca77b1f151
+net: llc: use correct size for sysctl timeout entries - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/54f8831ad9a434a5cdb887ddc849c110ad8c5ab4
+cpufreq: cpu-boost: Resolve deadlock when waking up sync thread - https://github.com/CyanogenMod/android_kernel_motorola_msm8974/commit/dd120bb3bd8ea30f44a370977a240320cba1a091
+[revert - wrong compilation] mmc: core: Fix mmc clk scale down during writes. - https://github.com/CyanogenMod/android_kernel_motorola_msm8974/commit/bdd12e81a92fa78987e7465e2bf52a9f32923fc3
+
+CM12.1-ALX-0.0.3_test4
+staging: prima: Allow prima_wlan to be built inside kernel - https://github.com/CyanogenMod/android_kernel_htc_msm8960/commit/62023c9a57cd36a008036015ba5be020f2ac6bfb
+ARM: 8158/1: LLVMLinux: use static inline in ARM ftrace.h - https://github.com/LegacyXperia/android_kernel_semc_msm7x30/commit/19457b3e03e686894376c1bd3969dddd95062828
+ARM: 7953/1: mm: ensure TLB invalidation is complete before enabling MMU - https://github.com/ion-storm/Unleashed-N4/commit/ac08622b464cf796bbe40404ae46c8ff29c5ac68
+ARM: 7953/1: mm: ensure TLB invalidation is complete before enabling MMU * - https://github.com/ion-storm/Unleashed-N4/commit/55148f89c430dc978e1f464887b1f5126bf420
+[my coomit] use memmove_8974.S
+
+CM12.1-ALX-0.0.3_test5
+cpufreq: Always allow update of user policy - https://github.com/CyanogenMod/android_kernel_motorola_msm8960dt-common/commit/547145bc2ebff6c60d6bf35967a9fb674b5ea802
+mmc: core: Disable HPI for certain Hynix eMMC cards - https://gitlab.com/k2wl/g2_kernel/commit/84af3731019921a28d595dbf6cbf00539706a42c
+mmc: core: https://gitlab.com/k2wl/g2_kernel/commit/c68b41beda98339f1442c8fe6b2de84d32450524.diff
+mmc: don't blindly retry on timed-out flushes - https://gitlab.com/k2wl/g2_kernel/commit/052a0cd0a11a24d45989fb5f971bbec0902ca764.patch
+mmc: host: add SDHCI platform driver for msm chipsets - https://github.com/CyanogenMod/android_kernel_oneplus_msm8974/commit/33a4ff582df7cb059705b49699c348b8e49539f3
+mmc: sdhci-msm: Add Samsung 64G search after tune quirk - https://github.com/CyanogenMod/android_kernel_oneplus_msm8974/commit/95104cbcfc2a76b20cbcf7c63ec91ba6b1bd611d
+ARM: 8129/1: errata: work around Cortex-A15 erratum 830321 using dummy strex - https://github.com/AOKP/kernel_samsung_jf/commit/2f3e285da53ae6002cabb028438a65b9f9cee534
+ARM: 8128/1: abort: don't clear the exclusive monitors - https://github.com/AOKP/kernel_samsung_jf/commit/5624bb35686b13e17438aaf211586556bcba58da
+subsystem: CPU FREQUENCY DRIVERS- Set cpu_load calculation on current  frequency - https://github.com/F4k/f4ktion_kernel/commit/9f8982df2211197e001f15517f6f227a08bedb2e
+
+CM12.1-ALX-0.0.4
+mmc: core: With great features come great spam - https://github.com/AK-Kernel/AK-Mako/commit/c0aa3acb891944a0262d09e2009950ef6b8b0edc
+msm: kgsl: Merge with android-msm-flo-3.4-lollipop-mr1 - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/c6971ebfd9f88e7720aeefabaf6df2ff68d2b732
+msm: kgsl: Use ANY_ID for A305 chips - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/3d922742c52d9b7ac22ce897721e9ce2a8870e77
+msm: kgsl: Remove nap_allowed variable and functionality - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/c35a516bad1400fe6e7bcd63b26d27c681374d15
+msm: kgsl: Add separate GPU shader memory mapping - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/71c43b61c94893b3559c78fb8563111df00c8ebd
+iommu/core: pass a user-provided token to fault handlers - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/a35cc9f8d991390d1a3f8b7508cc10acafc4de2c
+msm: camera: Fix compile error in msm_vfe32.c after previous commit - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/a2af930624d0251869b4f3af1b19cf6c74c89df5
+ARM: Add support for 64 bit register reads/writes - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/59dd3d77be8588c018fb0468d2d21656fccc9717
+msm: scm: Add scm_call_atomic3 - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/4c1f2d5f1f5d087f23a6f55a82c53d975c603448
+msm: Fix mem leak when using per-process pages - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/0f9513eec18b4edad91f5aadc5d53d223602359d
+kgsl: allocate shared memory one page at a time - https://github.com/neobuddy89/hammerhead/commit/9363dc9bf379e1f76d3751cb68c0c3fa79903089
+[revert, not booting] kgsl: allocate from lowmem - https://github.com/neobuddy89/hammerhead/commit/493f2ebad29f0958b344ac0bf2a5c4bb53115883
+iommu/msm: check range before mapping. - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/90bebe5c15779f4645cfbca619f8a16a3841095b
+iommu: Make termination of stalled transaction optional - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/0d533dd324610d8548603c96b6ec186005f2e3c7
+msm: kgsl: implement server-side waits - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/ff0f4c7f7313ad57f54ae297ba6865bfb9475239
+Revert "msm: iommu_domains: replace vmalloc with kmalloc" - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/361a730945d9ec93b84ca551e69fb523840ec687
+
+CM12.1-ALX-0.0.4_test1
+google_msm: F2FS Upstream Update - 23.04.2015 - https://github.com/AICP/kernel_google_msm/commit/789da8edddf279c2b6fdbfb5393f796268704487
+[revert - do not mount f2fs partitions !!!] f2fs: fix not to drop mount options when retrying fill_super - https://lkml.org/lkml/2015/1/29/790
+soc: qcom: bam_dmux: Sync SSR with disconnect/reconnect - https://github.com/Split-Screen/android_kernel_oneplus_msm8974/commit/ed8865e26771ed4ffbb8ebd592077cd4c07589e7
+[revert - wrong compilation] soc: qcom: bam_dmux: Reset SSR flags in bam_init - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/4b62daa0b6951c475b6c36d5a828ba273ea2e21d
+ARM: 7676/1: fix a wrong value returned from CALLER_ADDRn - https://github.com/LegacyXperia/android_kernel_semc_msm7x30/commit/607988daec3e1ac2946aae1ed3b67ebbfde9fac4
+msm: kgsl: Clean-up gpuaddr allocated from kgsl gen_pool - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/f5db38a08ef2d8604a0b2102706db391ef71eac3
+msm: kgsl up idle timer - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/9949fa20c9ed3090fb8c4eefff294807991d44e3
+CHROMIUM: cpufreq: interactive: validate above_hispeed_delay - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/f3a4b8c3bacfdfceac0808da0b7b38c761f8aa95
+cpufreq: ondemand: Resolve deadlock when waking up dbs sync thread - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/a926d0cf4b744de4dc33f2eabe49be0affc3060a
+Revert "msm: kgsl: Clean-up gpuaddr allocated from kgsl gen_pool" - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/ec8b99e73c8fe2af5a30508b1c59eebe5e31d46d
+msm: rpm: Initialize the uninitialized variables - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/8e8d27ee74171efca613f7394a87a006bd9186af
+
+CM12.1-ALX-0.0.4_test2
+selinux/nlmsg: add XFRM_MSG_NEWSPDINFO - https://github.com/CyanogenMod/android_kernel_motorola_msm8960dt-common/commit/f384f9c3f10c3f1803dd8a04a1c8ed07e16ae86f
+selinux/nlmsg: add XFRM_MSG_GETSPDINFO - https://github.com/CyanogenMod/android_kernel_motorola_msm8960dt-common/commit/3486e94a294462b3b74f1f75fafbcfc761dcd380
+selinux/nlmsg: add XFRM_MSG_[NEW|GET]SADINFO - https://github.com/CyanogenMod/android_kernel_motorola_msm8960dt-common/commit/5b467138f21e8a415eb81b0ea392e481efbb0ed4
+selinux/nlmsg: add XFRM_MSG_REPORT - https://github.com/CyanogenMod/android_kernel_motorola_msm8960dt-common/commit/b9a45dc36395ce167a28d6264322713d4b10d4b1
+selinux/nlmsg: add XFRM_MSG_MIGRATE - https://github.com/CyanogenMod/android_kernel_motorola_msm8960dt-common/commit/765614496a0fa5ec1e4a2f29fd718433af506c7a
+selinux/nlmsg: add XFRM_MSG_MAPPING - https://github.com/CyanogenMod/android_kernel_motorola_msm8960dt-common/commit/95f55aa964a9f04a452b54ec43d28b1a5ba78b97
+selinux: add SOCK_DIAG_BY_FAMILY to the list of netlink message types - https://github.com/CyanogenMod/android_kernel_motorola_msm8960dt-common/commit/3841455c4cb5b8f9a638d25892a9cb0f91e3e047
+SELinux: allow default source/target selectors for user/role/range - https://github.com/CyanogenMod/android_kernel_motorola_msm8960dt-common/commit/a1407a9d2fe92d319dec66a61ff34ca64a9f27ae
+SELinux: add default_type statements - https://github.com/CyanogenMod/android_kernel_motorola_msm8960dt-common/commit/22fee0c1318c7f0f9213062f3776ac6cdb1ac1e6
+SELinux: Update policy version to support constraints info - https://github.com/CyanogenMod/android_kernel_motorola_msm8960dt-common/commit/d4023cc2306d75271ab7236ca03a258c79186f3c
+SELinux: per-command whitelisting of ioctls - https://github.com/CyanogenMod/android_kernel_motorola_msm8960dt-common/commit/cffbf62bbbc5a5dd5902fa1df9957b0b5abcf5ed
+SELinux: use deletion-safe iterator to free list - https://github.com/CyanogenMod/android_kernel_motorola_msm8960dt-common/commit/e30f2cbb1ac271a663261e91bb4bb99d802380cd
+[add some commits] Squashed update of kernel from 3.4.106 to 3.4.107 - https://github.com/Christopher83/samsung-kernel-msm7x30/commit/f5cadddb93fe1dd8f9fdf39a1601fb216daa3436
+ASoC: msm: Validate pcm buffer size - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/70525bc27ad8e3275fba9cc5793292a50fdda239
+msm_fb: display: fix pipe solid fill initialization issue - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/9dd68233fad8e2f53db81be67e2155d76f86aa2a
+msm: mdp: fix pack pattern order for RGB565 and BGR565 - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/dca6809fde5628f893734147b391e7f345bb9e28
+ipv4: Missing sk_nulls_node_init() in ping_unhash(). - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/54855aab9a8b2d7ec270d025b7c193f77ad7a827
+
+CM12.1-ALX-0.0.4_test3
+KGSL: Add a simple GPU governor for Adreno xxx GPU series - https://github.com/F4k/f4ktion_kernel/commit/e6e15ab6316579ae990a2ea90cec6449d64fdc8f
+KGSL: make simple govenor a selectable option, co-exist with ondemand - https://github.com/F4k/f4ktion_kernel/commit/4614e830cad777a6595b0ffd7a64221191e541c7
+KGSL: simple governor: expose tunables to sysfs interface via module_param - https://github.com/F4k/f4ktion_kernel/commit/230916fa6e1087cea2ee32e6fb35ad253926e32b
+KGSL: Simple Governor: fix minor logic issue - https://github.com/F4k/f4ktion_kernel/commit/b7c9081baacf49fc14ddc517d9c25028307e6381
+defconfig: enable kgsl simple governor - https://github.com/F4k/f4ktion_kernel/commit/63bca4529e020811d196b6e822c9bf99f708e2bf
+msm: mpdecision: update dcvs algo params at initialization - https://github.com/CyanogenMod/android_kernel_google_msm/commit/ffe0b29e5d64c5ae451fb8ff1a63d1fbe1ecdd17
+Fix gcc-4.9.0 miscompilation of load_balance() in scheduler - https://github.com/CyanogenMod/android_kernel_google_msm/commit/019770e3b1b9f2424c9f0efb45fb2dcf5e6a858c
+PM / Hibernate: Hibernate/thaw fixes/improvements - https://github.com/CyanogenMod/android_kernel_google_msm/commit/4e1eece82537a42f4d15be115824c1bc0261e32a
+mmc: core: update host->card after getting RCA for SD card - https://github.com/CyanogenMod/android_kernel_motorola_msm8974/commit/f7874b8a60e5498a525fdda3f32075e59b962b2c
+
+CM12.1-ALX-0.0.4_test4
+nf: IDLETIMER: Adds the uid field in the msg - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/be5c109ca28fab510c082f39fdfdbe4252b6514a
+seccomp: Replace BUG(!spin_is_locked()) with assert_spin_lock - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/446638547aacb9cdc8e80dc3958e178eae3a8467
+soc: qcom: rq_stats: Always show idle time left - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/7e758858b056e0e6a86a94b54240994361ebe1d9
+CHROMIUM: cpufreq: interactive: free above_hispeed_delay on exit - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/03bb269482dca558606dc441b65045ee08d3adc1
+Revert "msm: mdp: fix pack pattern order for RGB565 and BGR565" - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/22dc3955224bcbb1dc052d3e6595f39dd290d8bb
+Kbuild: export msm_rmnet.h header to userspace - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/0278bb9092e3b4331d45223c9f48f588c79af003
+rmnet_bam: Free netdevice resources if init fails - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/31f70615742b74364dfdb69e936d4ac98300fb65
+msm: rmnet: Add support for tethered USB channel - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/b6bc6e9b0551d2df78dfb3af770f61cfc3b6fc6c
+msm: rmnet: Add platform device validation - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/c2b1aba487b1199fd56a0e1c396fb5ba41a47b4b
+msm: rmnet: fix open failure due to duplicate platform driver open - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/dd7070df7df91646782aacbfaa42dde0bdf88737
+msm_bam_rmnet: Check for sufficient headroom - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/bb4f2ac1609a76d6dc44d0b5576ae51c57eeced6
+msm_bam_rmnet: Fix packet corruption due to QoS - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/034104f2f54d853acf843c8ea0fdb70d8f984b2a
+Optimize copy_page for modern ARM platforms - https://github.com/poondog/kangaroo-m7-mkv/commit/f53cd1f1498f9cdbde7a25f51e9ef5e6f6816aee
+i2c-qup: improve the bus recovery procedure in qup i2c driver - https://github.com/flar2/shamu/commit/0f4496b2244c3acf1fc2742dea4858f9925e63e7
+
+CM12.1-ALX-0.0.4_test5
+PRESERVATIVE: initial import of Preservative governor - https://github.com/poondog/kangaroo-m7-mkv/commit/cee2ac60ca5137a9dcc97bb9f33a15898f3970df
+PRESERVATIVE: squash latest version - https://github.com/poondog/kangaroo-m7-mkv/commit/f6a8fc8054e6ce01fee908878129d9cdf6957fbc
+PRESERVATIVE: remove mako touchboost interface hooks we still use mpdec to boost :) - https://github.com/poondog/kangaroo-m7-mkv/commit/9d098a42888e23ed621e47592704b56e65240f80
+PRESERVATIVE: remove mako GPU boost hooks - https://github.com/poondog/kangaroo-m7-mkv/commit/c5918155ebdbe61e4e7053a36fdd90b220cd69e5
+PRESERVATIVE: update all entries for m7 with our freq table - https://github.com/poondog/kangaroo-m7-mkv/commit/1b9d349fcad6126215d8856f0e1633ac0921fc88
+PRESERVATIVE: since we have mpdec, we do not need this either - https://github.com/poondog/kangaroo-m7-mkv/commit/69632a0408a8f4ef6b4321bc037cdc2fa2ff1709
+[my commit] anable ondemand ondemandplus governors in .config
+initrd: fix lz4 decompress with initrd - https://github.com/Split-Screen/android_kernel_oneplus_msm8974/commit/2e56fa93dc815cc779ac42a633b0966c0f3bc1d4
+arm: Add support for LZ4-compressed kernel - https://groups.google.com/forum/#!topic/linux.kernel/E9hHx2lkSAI
+
+CM12.1-ALX-0.0.4_test6
+ARM: 7461/1: topology: Add arch_scale_freq_power function - https://github.com/holyangel/M8-GPE_L/commit/e95c03ed8ebaf77607cbb498ed52d0bad48e5bed
+ARM: 7462/1: topology: factorize the update of sibling masks - https://github.com/holyangel/M8-GPE_L/commit/3a9aaaf81dfbe2fb0b88bf37df97659a86488209
+ARM: 7463/1: topology: Update cpu_power according to DT information - https://github.com/holyangel/M8-GPE_L/commit/caef5842c9bb281c356392bbf0290ad684c13d87
+ARM: 7482/1: topology: fix section mismatch warning for init_cpu_topology - https://github.com/holyangel/M8-GPE_L/commit/19ba5b2cf073a4ab7fe32d513ee6d87ac2388623
+ARM: kernel: enhance MPIDR macro definitions - https://github.com/holyangel/M8-GPE_L/commit/f5c0f702f180d20db4871fc94aa9c1683137efa4
+arm: remove cast for kzalloc return value - https://github.com/holyangel/M8-GPE_L/commit/1ee2c1b934d54340c2474b96ccdc3fd1933911bb
+ARM: 7742/1: topology: export cpu_topology - https://github.com/holyangel/M8-GPE_L/commit/3cea2646b79cf6789a96b354fd5000b842ef1f54
+ARM: topology: Suppress clock-frequency error - https://github.com/holyangel/M8-GPE_L/commit/9f67dcfb12a72e33fa4985bd85a75ecbf9605630
+ARM: kernel: update topology to use new MPIDR macros - https://github.com/holyangel/M8-GPE_L/commit/58d3ce96afe6acc0445cae221a718dc819d88fad
+Arm/Kconfig: Enable cpu topology by default - https://github.com/holyangel/M8-GPE_L/commit/a0007f250e734386ff850abdf001c91bdf2a7d40
+battery opti - https://github.com/holyangel/M8-GPE_L/commit/456a763e515c2c2dedb106f53be0ac5a43909679
+ARM: kernel: update __cpu_disable to use cache LoUIS maintenance API - https://github.com/holyangel/M8-GPE_L/commit/99d5f869dc1b3daa19d14ea01a018ee185a4403d
+Revert "ARM: kernel: update __cpu_disable to use cache LoUIS maintenance API" - https://github.com/holyangel/M8-GPE_L/commit/e25ca730be360d8b4f4d5fb25db6bdb953a2ce5a
+PM: enable all sleep states. - https://github.com/holyangel/M8-GPE_L/commit/ac466e169f727517fa168c099ad366f56b701acf
+block: scheduler: tuning SIO based on Cylon 801 - https://github.com/holyangel/M8-GPE_L/commit/67d5febbb1114b56d4d4c4e89671df2551ca8ff6
+smp: don't use 16-bit words for atomic accesses - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/83db0660be68d9e5950b0caffba401324ebcc7e4
+ARM: bitops: prefetch the destination word for write prior to strex - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/ced5bcc0532f1dab67f8f3e1aa37dccd913e081d
+cpuidle: Quickly notice prediction failure for repeat mode - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/104f63263c5a5d9cde1ce665572e16ffae4a5875
+msm_fb: display: reference count base pipe free in dsi and lcdc - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/5d3ee4608d3d04ae1c678a522b57390a20225d83
+
+CM12.1-ALX-0.0.4_test7
+smd_pkt: Add sanity check to avoid unregistering the driver twice - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/d103d840f08ac9af190fef56bab2f2fd9770a1e8
+msm: smd_pkt: Do not print warning message for closed case - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/1d91b05f99068b7f1c48b66364191bdf46bc7f52
+arm: arch_timer: add arch_counter_set_user_access - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/de4d07dad2175a7138bfe2212d66b34655251dda
+arm: arch_timer: provide user space access to virtual counter - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/a99cd18c9de1742f8291ba0ac6db9087e89e23f2
+ARM/ARM64: arch_timer: add macros for bits in control register - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/f3469639550d28fe1719d56adbcb7a7c7d5c6b09
+ARM: arch_timer: add support to configure and enable event stream - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/35696394281a487ddd340617a45e7d5994d966ec
+cpufreq: interactive: Align timer windows for all CPUs - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/12e0e29a3bfed39072342a65737800cb8ea0d1a0
+cpufreq: interactive: Reset last evaluated jiffy in idle callback - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/8373d21bf5af209e0f0629b62dbf88480168fd66
+cpufreq: interactive: Round up timer_rate to match jiffy - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/0b51d6ff4ba12ddc729bda24e767f1d43bf3179d
+cpufreq: interactive: Use del_timer/add_timer_on to rearm timers - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/e36d09c4d808e9aade4541b14eb09c7d5375a7ab
+[my commit] cpufreq: intelliactive: Align timer windows for all CPUs - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/12e0e29a3bfed39072342a65737800cb8ea0d1a0
+[my commit] cpufreq: intelliactive:: Reset last evaluated jiffy in idle callback - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/8373d21bf5af209e0f0629b62dbf88480168fd66
+[my commit] cpufreq: intelliactive:: Round up timer_rate to match jiffy - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/0b51d6ff4ba12ddc729bda24e767f1d43bf3179d
+[my commit] cpufreq: intelliactive:: Use del_timer/add_timer_on to rearm timers - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/e36d09c4d808e9aade4541b14eb09c7d5375a7ab
+
+CM12.1-ALX-0.0.5
+net: wireless: bcmdhd: Increase allowed DTIM in power-save mode - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/6b9ccb355084a4a3b91d8e8cc52db9cd4b2412bf
+net: wireless: bcmdhd: Disable mDNS filter by default - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/981cb054b4f1f6436f1d891a37f482397f2c181f
+usb: gadget: Do not disconnect unregistered dev - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/8f7d9949436320afc15a0bdd3c8f3d13d74dc969
+
+CM12.1-ALX-0.0.5_test1
+msm: sps: Squashed commit of upstream changes - https://github.com/CyanogenMod/android_kernel_oneplus_msm8974/commit/1aabcc4cda51c665533a0e0649056929816d3cca
+
+CM12.1-ALX-0.0.5_test2
+msm: acpuclock-krait: Remove inapplicable 8064 errata workaround - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/2b19a053dbe9607aa197e9816271b5235ce6b660
+msm: perf: set filter bits for cycle counter on krait - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/c1ec294af31afdc218c075545172755dc26a0e64  +  https://github.com/TEAM-Gummy/android_kernel_xiaomi_aries/commit/b6b95845d1c8343039fc2f6bbf361bbcc3946d3c
+lib: spinlock_debug: increase spin dump timeout - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/3fca5ed2d29cacb96f954cf6406e78e890f13f36
+suspend: Return error when pending wakeup source is found  - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/69a1e235b9329588da8a1f8453daba8ffdc6ccf6
+selinux: enable per-file labeling for debugfs files. - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/5c622da3e297523e8fe6261a4ccca00d93f069cf
+lowmemorykiller: Don't count swap cache pages twice - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/0d84f2cb6b748be87f425d63eceac2dea7c81345
+PM: Move disabling/enabling runtime PM to late suspend/early resume - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/1aa543875960ad9b68f0fd415a37c016cca79ad0
+drivercore: Avoid adding devices without pm_ops to dpm list - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/340cf108147c32e45e8833dff86c79dc678a16d0
+PM: Fix a bug in dpm_suspend_late() - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/48110b55118f905b00893c4219f8f492ac5e3df6
+irqchip: gic: Mask PPIs during disable_percpu_irq() - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/7e25c4fc2b4944b5b495d672493c3f8be9f84963
+ARM: 8036/1: Enable IRQs before attempting to read user space in __und_usr - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/4b6bb2ce565a90f33f09517fb1d8bf441b80f714
+block: Reserve only one queue tag for sync IO if only 3 tags are available - https://github.com/bonuzzz/kernel_g850/commit/2a63840867c122efa4dfed4b13a864cf6f463960
+cifs: enable mounting cifs drives visible to all apps [tomkasick] - https://github.com/bonuzzz/kernel_g850/commit/7f9aba98d9d1b7db8ccb0f415e2f5ab6ede8e156
+
+CM12.1-ALX-0.0.5_test3
+touchscreen: add sweep2sleep - https://github.com/bonuzzz/kernel_g850/commit/5ab498e7516f6210db5552a05e283e08e2121fea
+[my commit] sweep2sleep: fix limits suggest screen resolution, setup sweep2sleep default in on
+mmc: block: Fix an invalid use of req->cmd_flag in DISCARD operation - https://github.com/Split-Screen/android_kernel_oneplus_msm8974/commit/a9af6e5cdc56de2d874d3418f9c8adf244fe4ebd
+[my commit] config: desable Transparent compression for fs
+jf: f2fs: bring up to date with Jaegeuk's branch - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/076c18fa6b26053b9ef9b74df5b1cd203e6b531f
+
+CM12.1-ALX-0.0.6
+cfg80211: add space after the b/w in db.txt - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/b9a478bef1beb87c0091c45a2b8fbff9d1cbf17f
+usb: ks_bridge: Ignore completion error in RX path - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/f2004fa90097d7352c967fb2de16345180119403
+wlan: prima: Sync with LA.AF.1.1_rb1.18 - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/0ab890a311f733b4b3373bc4a9302d9821ece4c9
