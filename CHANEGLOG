@@ -262,7 +262,7 @@ vfs: check if f_count is 0 or negative - https://github.com/CyanogenMod/android_
 
 CM12-ALX-0.1.3_test1
 [not work - disable in .config] drivers: staging: Upstream zsmalloc and zram to 3.9 - https://github.com/Leoyzen/Charm-Kiss-Primou/commit/d2922cee7837f49d43882463e404153ca2bc25ba
-seccomp: disable in .config - my commit
+[my commit] seccomp: disable in .config
 
 CM12-ALX-0.1.3_test2
 sched: LOAD_FREQ (4*HZ+61) avoids loadavg Moire - https://github.com/CyanogenMod/android_kernel_sony_msm8974/commit/6d2039e12c9afa9612fc4418f1f7b628b3587b37
