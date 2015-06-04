@@ -761,3 +761,4 @@ msm: msm_fb: wait for VSYNC instead of DMA_P for LCDC - https://github.com/Cyano
 LZ4 : fix the data abort issue - https://github.com/CyanogenMod/android_kernel_motorola_msm8960dt-common/commit/dabaabe1ad7fa20247733c8b5af13d8b94321d1e
 Perf: bring CPU online if needed when disabling irq - https://github.com/RonGokhale/codeaurora_kernel/commit/01c20261cbd8490b09a8ea3d1d9a037876c934e9
 Perf: Support sw events across hotplug - https://github.com/RonGokhale/codeaurora_kernel/commit/0e8acbe7f08fda14a6fae8d0e2692d9679e015f4
+exFAT: Don't lookup dos name entries for exfat - https://github.com/dorimanx/exfat-nofuse/commit/c114c63fdae8ccb079e8a7a0db6fc57936b1bc4b
