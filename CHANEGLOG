@@ -762,3 +762,4 @@ LZ4 : fix the data abort issue - https://github.com/CyanogenMod/android_kernel_m
 Perf: bring CPU online if needed when disabling irq - https://github.com/RonGokhale/codeaurora_kernel/commit/01c20261cbd8490b09a8ea3d1d9a037876c934e9
 Perf: Support sw events across hotplug - https://github.com/RonGokhale/codeaurora_kernel/commit/0e8acbe7f08fda14a6fae8d0e2692d9679e015f4
 exFAT: Don't lookup dos name entries for exfat - https://github.com/dorimanx/exfat-nofuse/commit/c114c63fdae8ccb079e8a7a0db6fc57936b1bc4b
+exFAT: fix exfat_super.c - https://github.com/dorimanx/exfat-nofuse/commit/4dbbb389711fd966dda7cc8b9a14ac4b76976d6d
