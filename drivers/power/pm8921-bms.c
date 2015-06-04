@@ -1201,7 +1201,7 @@ static int calculate_fcc_uah(struct pm8921_bms_chip *chip, int batt_temp,
 				chargecycles);
 
 		/* Multiply the initial FCC value by the scale factor. */
-		result = (initfcc * scalefactor * 1000) / 100;
+		result = (initfcc * scalefactor * 2263) / 100;
 		pr_debug("fcc = %d uAh\n", result);
 		return result;
 	} else {
