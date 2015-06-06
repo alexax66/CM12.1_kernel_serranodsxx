@@ -763,3 +763,4 @@ Perf: bring CPU online if needed when disabling irq - https://github.com/RonGokh
 Perf: Support sw events across hotplug - https://github.com/RonGokhale/codeaurora_kernel/commit/0e8acbe7f08fda14a6fae8d0e2692d9679e015f4
 exFAT: Don't lookup dos name entries for exfat - https://github.com/dorimanx/exfat-nofuse/commit/c114c63fdae8ccb079e8a7a0db6fc57936b1bc4b
 exFAT: fix exfat_super.c - https://github.com/dorimanx/exfat-nofuse/commit/4dbbb389711fd966dda7cc8b9a14ac4b76976d6d
+fs: take i_mutex during prepare_binprm for set[ug]id executables - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/d2e82196ac413604f790bfa3f35b0927d7691560
