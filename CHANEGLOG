@@ -764,3 +764,4 @@ Perf: Support sw events across hotplug - https://github.com/RonGokhale/codeauror
 exFAT: Don't lookup dos name entries for exfat - https://github.com/dorimanx/exfat-nofuse/commit/c114c63fdae8ccb079e8a7a0db6fc57936b1bc4b
 exFAT: fix exfat_super.c - https://github.com/dorimanx/exfat-nofuse/commit/4dbbb389711fd966dda7cc8b9a14ac4b76976d6d
 fs: take i_mutex during prepare_binprm for set[ug]id executables - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/d2e82196ac413604f790bfa3f35b0927d7691560
+SELinux: use ARRAY_SIZE - https://github.com/YoshiShaPow/green_machine_falcon/commit/8672fc9845fc8353b10d98b1bbdb1b35a1a4e236
