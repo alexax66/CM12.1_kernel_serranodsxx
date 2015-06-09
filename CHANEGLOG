@@ -765,3 +765,5 @@ exFAT: Don't lookup dos name entries for exfat - https://github.com/dorimanx/exf
 exFAT: fix exfat_super.c - https://github.com/dorimanx/exfat-nofuse/commit/4dbbb389711fd966dda7cc8b9a14ac4b76976d6d
 fs: take i_mutex during prepare_binprm for set[ug]id executables - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/d2e82196ac413604f790bfa3f35b0927d7691560
 SELinux: use ARRAY_SIZE - https://github.com/YoshiShaPow/green_machine_falcon/commit/8672fc9845fc8353b10d98b1bbdb1b35a1a4e236
+Revert "f2fs: enhance multi-threads performance" - https://github.com/CyanogenMod/android_kernel_motorola_msm8960dt-common/commit/030746c47d66e33fe8d2f7c7cffbe595a52e6f36
+f2fs: fix wrong error hanlder in f2fs_follow_link - https://github.com/CyanogenMod/android_kernel_motorola_msm8960dt-common/commit/ddd220f62eff7b5704b415c50f67ed4a194b4e0f
