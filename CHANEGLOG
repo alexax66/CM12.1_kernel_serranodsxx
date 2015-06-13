@@ -767,3 +767,5 @@ fs: take i_mutex during prepare_binprm for set[ug]id executables - https://githu
 SELinux: use ARRAY_SIZE - https://github.com/YoshiShaPow/green_machine_falcon/commit/8672fc9845fc8353b10d98b1bbdb1b35a1a4e236
 Revert "f2fs: enhance multi-threads performance" - https://github.com/CyanogenMod/android_kernel_motorola_msm8960dt-common/commit/030746c47d66e33fe8d2f7c7cffbe595a52e6f36
 f2fs: fix wrong error hanlder in f2fs_follow_link - https://github.com/CyanogenMod/android_kernel_motorola_msm8960dt-common/commit/ddd220f62eff7b5704b415c50f67ed4a194b4e0f
+media: radio: Fix building and loading the IRIS transport - https://github.com/YoshiShaPow/green_machine_falcon/commit/2b1384c34c86c067c45605c547ca588b40d240df
+config: IRIS: Disable module support - https://github.com/YoshiShaPow/green_machine_falcon/commit/faa9160a64b27afdfd33790db53b767f432e8884
