@@ -12,12 +12,12 @@
 #include <linux/f2fs_fs.h>
 #include <linux/buffer_head.h>
 #include <linux/mpage.h>
+#include <linux/aio.h>
 #include <linux/writeback.h>
 #include <linux/backing-dev.h>
 #include <linux/blkdev.h>
 #include <linux/bio.h>
 #include <linux/prefetch.h>
-#include <linux/uio.h>
 
 #include "f2fs.h"
 #include "node.h"
@@ -1513,7 +1513,6 @@ static int f2fs_write_data_pages(struct address_space *mapping,
 {
 	struct inode *inode = mapping->host;
 	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
-	bool locked = false;
 	int ret;
 	long diff;
 
@@ -1534,13 +1533,7 @@ static int f2fs_write_data_pages(struct address_space *mapping,
 
 	diff = nr_pages_to_write(sbi, DATA, wbc);
 
-	if (!S_ISDIR(inode->i_mode)) {
-		mutex_lock(&sbi->writepages);
-		locked = true;
-	}
 	ret = write_cache_pages(mapping, wbc, __f2fs_writepage, mapping);
-	if (locked)
-		mutex_unlock(&sbi->writepages);
 
 	f2fs_submit_merged_bio(sbi, DATA, WRITE);
 
