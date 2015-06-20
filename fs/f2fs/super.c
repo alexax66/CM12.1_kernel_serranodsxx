@@ -57,8 +57,6 @@ enum {
 	Opt_flush_merge,
 	Opt_nobarrier,
 	Opt_fastboot,
-	Opt_extent_cache,
-	Opt_noinline_data,
 	Opt_err,
 };
 
@@ -80,8 +78,6 @@ static match_table_t f2fs_tokens = {
 	{Opt_flush_merge, "flush_merge"},
 	{Opt_nobarrier, "nobarrier"},
 	{Opt_fastboot, "fastboot"},
-	{Opt_extent_cache, "extent_cache"},
-	{Opt_noinline_data, "noinline_data"},
 	{Opt_err, NULL},
 };
 
@@ -371,12 +367,6 @@ static int parse_options(struct super_block *sb, char *options)
 		case Opt_fastboot:
 			set_opt(sbi, FASTBOOT);
 			break;
-		case Opt_extent_cache:
-			set_opt(sbi, EXTENT_CACHE);
-			break;
-		case Opt_noinline_data:
-			clear_opt(sbi, INLINE_DATA);
-			break;
 		default:
 			f2fs_msg(sb, KERN_ERR,
 				"Unrecognized mount option \"%s\" or missing value",
@@ -402,7 +392,7 @@ static struct inode *f2fs_alloc_inode(struct super_block *sb)
 	atomic_set(&fi->dirty_pages, 0);
 	fi->i_current_depth = 1;
 	fi->i_advise = 0;
-	rwlock_init(&fi->ext_lock);
+	rwlock_init(&fi->ext.ext_lock);
 	init_rwsem(&fi->i_sem);
 	INIT_RADIX_TREE(&fi->inmem_root, GFP_NOFS);
 	INIT_LIST_HEAD(&fi->inmem_pages);
@@ -601,8 +591,6 @@ static int f2fs_show_options(struct seq_file *seq, struct dentry *root)
 		seq_puts(seq, ",disable_ext_identify");
 	if (test_opt(sbi, INLINE_DATA))
 		seq_puts(seq, ",inline_data");
-	else
-		seq_puts(seq, ",noinline_data");
 	if (test_opt(sbi, INLINE_DENTRY))
 		seq_puts(seq, ",inline_dentry");
 	if (!f2fs_readonly(sbi->sb) && test_opt(sbi, FLUSH_MERGE))
@@ -611,8 +599,6 @@ static int f2fs_show_options(struct seq_file *seq, struct dentry *root)
 		seq_puts(seq, ",nobarrier");
 	if (test_opt(sbi, FASTBOOT))
 		seq_puts(seq, ",fastboot");
-	if (test_opt(sbi, EXTENT_CACHE))
-		seq_puts(seq, ",extent_cache");
 	seq_printf(seq, ",active_logs=%u", sbi->active_logs);
 
 	return 0;
@@ -973,8 +959,7 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
 	struct buffer_head *raw_super_buf;
 	struct inode *root;
 	long err = -EINVAL;
-	bool retry = true, need_fsck = false;
-	char *options = NULL;
+	bool retry = true;
 	int i;
 
 try_onemore:
@@ -998,7 +983,6 @@ try_onemore:
 	sbi->active_logs = NR_CURSEG_TYPE;
 
 	set_opt(sbi, BG_GC);
-	set_opt(sbi, INLINE_DATA);
 
 #ifdef CONFIG_F2FS_FS_XATTR
 	set_opt(sbi, XATTR_USER);
@@ -1007,15 +991,9 @@ try_onemore:
 	set_opt(sbi, POSIX_ACL);
 #endif
 	/* parse mount options */
-	options = kstrdup((const char *)data, GFP_KERNEL);
-	if (data && !options) {
-		err = -ENOMEM;
-		goto free_sb_buf;
-	}
-
-	err = parse_options(sb, options);
+	err = parse_options(sb, (char *)data);
 	if (err)
-		goto free_options;
+		goto free_sb_buf;
 
 	sb->s_maxbytes = max_file_size(le32_to_cpu(raw_super->log_blocksize));
 	sb->s_max_links = F2FS_LINK_MAX;
@@ -1035,6 +1013,7 @@ try_onemore:
 	sbi->raw_super = raw_super;
 	sbi->raw_super_buf = raw_super_buf;
 	mutex_init(&sbi->gc_mutex);
+	mutex_init(&sbi->writepages);
 	mutex_init(&sbi->cp_mutex);
 	init_rwsem(&sbi->node_write);
 	clear_sbi_flag(sbi, SBI_POR_DOING);
@@ -1058,7 +1037,7 @@ try_onemore:
 	if (IS_ERR(sbi->meta_inode)) {
 		f2fs_msg(sb, KERN_ERR, "Failed to read F2FS meta data inode");
 		err = PTR_ERR(sbi->meta_inode);
-		goto free_options;
+		goto free_sb_buf;
 	}
 
 	err = get_valid_checkpoint(sbi);
@@ -1085,8 +1064,6 @@ try_onemore:
 	sbi->alloc_valid_block_count = 0;
 	INIT_LIST_HEAD(&sbi->dir_inode_list);
 	spin_lock_init(&sbi->dir_inode_lock);
-
-	init_extent_cache_info(sbi);
 
 	init_ino_entry_info(sbi);
 
@@ -1162,6 +1139,9 @@ try_onemore:
 	if (err)
 		goto free_proc;
 
+	if (!retry)
+		set_sbi_flag(sbi, SBI_NEED_FSCK);
+
 	/* recover fsynced data */
 	if (!test_opt(sbi, DISABLE_ROLL_FORWARD)) {
 		/*
@@ -1173,13 +1153,8 @@ try_onemore:
 			err = -EROFS;
 			goto free_kobj;
 		}
-
-		if (need_fsck)
-			set_sbi_flag(sbi, SBI_NEED_FSCK);
-
 		err = recover_fsync_data(sbi);
 		if (err) {
-			need_fsck = true;
 			f2fs_msg(sb, KERN_ERR,
 				"Cannot recover all fsync data errno=%ld", err);
 			goto free_kobj;
@@ -1196,7 +1171,6 @@ try_onemore:
 		if (err)
 			goto free_kobj;
 	}
-	kfree(options);
 	return 0;
 
 free_kobj:
@@ -1221,8 +1195,6 @@ free_cp:
 free_meta_inode:
 	make_bad_inode(sbi->meta_inode);
 	iput(sbi->meta_inode);
-free_options:
-	kfree(options);
 free_sb_buf:
 	brelse(raw_super_buf);
 free_sbi:
@@ -1230,7 +1202,7 @@ free_sbi:
 
 	/* give only one another chance */
 	if (retry) {
-		retry = false;
+		retry = 0;
 		shrink_dcache_sb(sb);
 		goto try_onemore;
 	}
@@ -1295,13 +1267,10 @@ static int __init init_f2fs_fs(void)
 	err = create_checkpoint_caches();
 	if (err)
 		goto free_segment_manager_caches;
-	err = create_extent_cache();
-	if (err)
-		goto free_checkpoint_caches;
 	f2fs_kset = kset_create_and_add("f2fs", NULL, fs_kobj);
 	if (!f2fs_kset) {
 		err = -ENOMEM;
-		goto free_extent_cache;
+		goto free_checkpoint_caches;
 	}
 	err = register_filesystem(&f2fs_fs_type);
 	if (err)
@@ -1312,8 +1281,6 @@ static int __init init_f2fs_fs(void)
 
 free_kset:
 	kset_unregister(f2fs_kset);
-free_extent_cache:
-	destroy_extent_cache();
 free_checkpoint_caches:
 	destroy_checkpoint_caches();
 free_segment_manager_caches:
@@ -1331,7 +1298,6 @@ static void __exit exit_f2fs_fs(void)
 	remove_proc_entry("fs/f2fs", NULL);
 	f2fs_destroy_root_stats();
 	unregister_filesystem(&f2fs_fs_type);
-	destroy_extent_cache();
 	destroy_checkpoint_caches();
 	destroy_segment_manager_caches();
 	destroy_node_manager_caches();
