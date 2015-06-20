@@ -772,3 +772,7 @@ config: IRIS: Disable module support - https://github.com/YoshiShaPow/green_mach
 spi_qsd: Fix SPI L2 Crash - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/6c505f2314bd3a0ca14720e48d0137c8f649dd0d
 google_msm: F2FS Upstream Update - 23.04.2015 - https://github.com/AICP/kernel_google_msm/commit/789da8edddf279c2b6fdbfb5393f796268704487
 f2fs: fix wrong error hanlder in f2fs_follow_link - https://github.com/CyanogenMod/android_kernel_motorola_msm8960dt-common/commit/ddd220f62eff7b5704b415c50f67ed4a194b4e0f
+
+CM12.1-ALX-0.0.7
+msm: vidc: Sync with LA.AF - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/87b38f192b4044f3f4a51e2a6ec9c4e6b26c63e3
+msm8930: Increase MSM_ION_MM_SIZE to 88MB - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/0ff23f851a65a791a4558f9c98d2244b9498ef51
