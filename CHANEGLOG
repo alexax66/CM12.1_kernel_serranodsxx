@@ -776,3 +776,10 @@ f2fs: fix wrong error hanlder in f2fs_follow_link - https://github.com/CyanogenM
 CM12.1-ALX-0.0.7
 msm: vidc: Sync with LA.AF - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/87b38f192b4044f3f4a51e2a6ec9c4e6b26c63e3
 msm8930: Increase MSM_ION_MM_SIZE to 88MB - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/0ff23f851a65a791a4558f9c98d2244b9498ef51
+[my commit] Scripts:  Add some things for output directory - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/97b38cb70881ff7b357032ad85e56bf565757940
+[my commit] Make possible to copy modules into output/modules/ dir - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/d355df69d6fced0ec7f22e8cbe819f8046f64f0b
+[my commit] msm8930: Add serrano_eur_lte variant - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/79f3051daee48da2f928cdcfce765ca2de120169
+block: disable entropy contributions for nonrot devices - https://github.com/CyanogenMod/android_kernel_samsung_jf/commit/725895e98ac9dae5d89e99a08374452a735c7c70
+workqueue: make all workqueues non-reentrant - https://github.com/CyanogenMod/android_kernel_htc_msm8974/commit/1354c06abc72af987a981531113f3fde9e022c2d
+fs: Remove sdcardfs - https://github.com/dianlujitao/android_kernel_huawei_msm8916/commit/677f6ecb168bc9a9decfcfc0f92c06b3497e3849
+
