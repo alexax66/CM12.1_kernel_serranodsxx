@@ -782,4 +782,10 @@ msm8930: Increase MSM_ION_MM_SIZE to 88MB - https://github.com/CyanogenMod/andro
 block: disable entropy contributions for nonrot devices - https://github.com/CyanogenMod/android_kernel_samsung_jf/commit/725895e98ac9dae5d89e99a08374452a735c7c70
 workqueue: make all workqueues non-reentrant - https://github.com/CyanogenMod/android_kernel_htc_msm8974/commit/1354c06abc72af987a981531113f3fde9e022c2d
 fs: Remove sdcardfs - https://github.com/dianlujitao/android_kernel_huawei_msm8916/commit/677f6ecb168bc9a9decfcfc0f92c06b3497e3849
+exit: Add PANIC_ON_RECURSIVE_FAULT Kconfig option - https://github.com/CyanogenMod/android_kernel_cyanogen_msm8916/commit/d9e3eea65e5d5ea03b6f3c7f451e5dfb7c09d9be
+random.h: declare erandom function - https://github.com/kashifmin/KKernel_yu_msm8916/commit/67daa25459f942ebe2b04b3dc6b680691469df80
+[my commit] random32: use e/frandom for reseeding, and a merge fixup - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/c62db9d97f4d0ee779c89eebe42fdb549b191723
+[my commit] fs: use e/frandom, do not deplete entropy - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/300c2e46e65f95e7017e942fab4f597011d188f3
+[my commit] fs: ext4: fix super.c after last commit - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/d244a8025f0f1c889efc755bafd610006ff21549
+
 
