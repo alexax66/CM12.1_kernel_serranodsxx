@@ -997,7 +997,7 @@ try_onemore:
 
 	sb->s_maxbytes = max_file_size(le32_to_cpu(raw_super->log_blocksize));
 	sb->s_max_links = F2FS_LINK_MAX;
-	get_random_bytes(&sbi->s_next_generation, sizeof(u32));
+	erandom_get_random_bytes((char *)&sbi->s_next_generation, sizeof(u32));
 
 	sb->s_op = &f2fs_sops;
 	sb->s_xattr = f2fs_xattr_handlers;
