@@ -82,7 +82,7 @@ net: bcmdhd: reduce wlan_rx wakelock period - https://github.com/YoshiShaPow/gre
 Makefile: Add missing-syscalls wrapper: - https://github.com/YoshiShaPow/green_machine_bacon/commit/0339f00de9034b03993f343a63281cb7d481a1de
 random: prevent add_input from doing anything - https://github.com/YoshiShaPow/green_machine_bacon/commit/0af1921c2f6b04a3cc09289a6e2a7ab36f337560
 random: entropy tweaks are all the rage nowadays - https://github.com/YoshiShaPow/green_machine_bacon/commit/4f81994ac99f3ee844c51bb94b10f8c4c031691e
-andom: increase read and write entropy levels  - https://github.com/YoshiShaPow/green_machine_bacon/commit/98705adf1d85b6d2ba69fb0f7b2647ab5cb6c145
+random: increase read and write entropy levels  - https://github.com/YoshiShaPow/green_machine_bacon/commit/98705adf1d85b6d2ba69fb0f7b2647ab5cb6c145
 af_unix: speedup /proc/net/unix - https://github.com/YoshiShaPow/green_machine_bacon/commit/6aa354c5ee36783163ac301b35f1b9b70ca4af94
 msm: intelli_plug: we only have 2 cores. - https://github.com/F4k/f4ktion_kernel/commit/5e504e6dc3c649bb1bbce98b8ed5154ba5ce54f2
 sched: cpu_power: enable ARCH_POWER - https://github.com/F4k/f4ktion_kernel/commit/be1dced4cfd3e3e7043073cf1b614902238daca5
