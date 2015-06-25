@@ -638,7 +638,7 @@ static void add_timer_randomness(struct timer_rand_state *state, unsigned num)
 
 	/* Use arch random value, fall back to cycles */
 	if (!arch_get_random_int(&sample.cycles))
-		sample.cycles = get_cycles();
+		sample.cycles = random_get_entropy();
 
 	sample.num = num;
 	mix_pool_bytes(&input_pool, &sample, sizeof(sample));
@@ -1293,7 +1293,7 @@ unsigned int get_random_int(void)
 
 	hash = get_cpu_var(get_random_int_hash);
 
-	hash[0] += current->pid + jiffies + get_cycles();
+	hash[0] += current->pid + jiffies + random_get_entropy();
 	md5_transform(hash, random_int_secret);
 	ret = hash[0];
 	put_cpu_var(get_random_int_hash);
