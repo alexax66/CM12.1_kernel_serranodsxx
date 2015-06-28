@@ -791,3 +791,4 @@ staging: prima: Allow prima_wlan to be built inside kernel - https://github.com/
 
 CM12.1-ALX-0.0.8
 sound: Some experimental changes - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/66b03848afefd9d4bb373b91e02c01ad72daba00
+No more dirty - https://github.com/Pafcholini/Nadia-kernel-KK-N910F-EUR-KK-OpenSource/commit/0f18363df80fd2b6fdf678260935c476740e0c61
