@@ -958,7 +958,7 @@ static int mdp_bl_scale_config(struct msm_fb_data_type *mfd,
 
 	/* update current backlight to use new scaling*/
 	if (!mdp_fb_is_power_off(mfd) && bl_updated) // my be not needed
-	msm_fb_set_backlight(mfd, curr_bl);
+		msm_fb_set_backlight(mfd, curr_bl);
 	up(&mfd->sem);
 
 	return ret;
