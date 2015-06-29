@@ -792,3 +792,7 @@ staging: prima: Allow prima_wlan to be built inside kernel - https://github.com/
 CM12.1-ALX-0.0.8
 sound: Some experimental changes - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/66b03848afefd9d4bb373b91e02c01ad72daba00
 No more dirty - https://github.com/Pafcholini/Nadia-kernel-KK-N910F-EUR-KK-OpenSource/commit/0f18363df80fd2b6fdf678260935c476740e0c61
+
+CM12.1-ALX-0.0.9
+msm: mdp: Add support for display always on mode - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/caa4b991ace72480ad37f547b36f23e70b5329ec
+alarm: init power_on_alarm in alarm_dev_init - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/109b431999dc496ff9963a4ecaafb4f1fdfc0d95
