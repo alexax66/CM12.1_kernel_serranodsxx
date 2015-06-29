@@ -201,6 +201,7 @@ struct msm_fb_panel_data {
 	void (*set_vsync_notifier) (msm_fb_vsync_handler_type, void *arg);
 	void (*set_backlight) (struct msm_fb_data_type *);
 	int (*get_backlight_on_status) (void);
+	int (*low_power_config) (struct platform_device *pdev, int enable);
 
 	/* function entry chain */
 	int (*on) (struct platform_device *pdev);
@@ -219,6 +220,7 @@ struct platform_device *msm_fb_device_alloc(struct msm_fb_panel_data *pdata,
 int panel_next_on(struct platform_device *pdev);
 int panel_next_init(struct platform_device *pdev);
 int panel_next_off(struct platform_device *pdev);
+int panel_next_low_power_config(struct platform_device *pdev, int enable);
 int panel_next_late_init(struct platform_device *pdev);
 
 int lcdc_device_register(struct msm_panel_info *pinfo);
