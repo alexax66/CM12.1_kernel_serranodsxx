@@ -796,3 +796,5 @@ No more dirty - https://github.com/Pafcholini/Nadia-kernel-KK-N910F-EUR-KK-OpenS
 CM12.1-ALX-0.0.9
 msm: mdp: Add support for display always on mode - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/caa4b991ace72480ad37f547b36f23e70b5329ec
 alarm: init power_on_alarm in alarm_dev_init - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/109b431999dc496ff9963a4ecaafb4f1fdfc0d95
+Revert "media: radio: Fix building and loading the IRIS transport"
+Revert "config: IRIS: Disable module support"
