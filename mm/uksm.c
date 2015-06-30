@@ -1353,6 +1353,10 @@ static inline u32 page_hash(struct page *page, unsigned long hash_strength,
 	return val;
 }
 
+#ifdef CONFIG_KSM_MEMCMP
+extern int memcmp_ksm(const void *,const void *,__kernel_size_t);
+#endif
+
 static int memcmp_pages(struct page *page1, struct page *page2,
 			int cost_accounting)
 {
@@ -1361,7 +1365,11 @@ static int memcmp_pages(struct page *page1, struct page *page2,
 
 	addr1 = kmap_atomic(page1);
 	addr2 = kmap_atomic(page2);
+#ifdef CONFIG_KSM_MEMCMP
+	ret = memcmp_ksm(addr1, addr2, PAGE_SIZE);
+#else
 	ret = memcmp(addr1, addr2, PAGE_SIZE);
+#endif
 	kunmap_atomic(addr2);
 	kunmap_atomic(addr1);
 
