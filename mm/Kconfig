@@ -283,13 +283,6 @@ config KSM_CHECK_PAGE
 	  This is useful in situation where you have parent and
 	  child process marking same area for KSM scanning.
 
-config KSM_MEMCMP
-	bool "memcmp for KSM"
-	depends on KSM || UKSM
-	default n
-	help
-	  Using memcmp function that is only for KSM
-
 config DEFAULT_MMAP_MIN_ADDR
         int "Low address space to protect from user allocation"
 	depends on MMU
