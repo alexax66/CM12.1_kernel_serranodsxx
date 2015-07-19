@@ -26,7 +26,7 @@
 #include <linux/wakelock.h>
 #endif
 
-static bool bln_enabled = true;
+static bool bln_enabled = false;
 static bool bln_ongoing = false; /* ongoing LED Notification */
 static int bln_blink_state = 0;
 static int bln_blink_mode = 1; /* blink by default */
