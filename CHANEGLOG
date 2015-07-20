@@ -799,3 +799,20 @@ alarm: init power_on_alarm in alarm_dev_init - https://github.com/CyanogenMod/an
 Revert "media: radio: Fix building and loading the IRIS transport" - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/0620c6345e917e14f925311955212fede73e20c1
 Revert "config: IRIS: Disable module support" - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/ece9350117860cd169c83129d3cb94df7a68a7d0
 cpufreq: interactive: Squashed cleanup patches and apply new code - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/41de387411c9d830cec2220ecaff73351b9b8a5e
+
+CM12.1-ALX-0.1.0
+IRIS: Disable module support in serranolte defcondig - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/3e35f5c3d23dc82d7ce87a7c0dc79e434d3c91b4
+udp: fix behavior of wrong checksums - https://github.com/CyanogenMod/android_kernel_oneplus_msm8974/commit/fd812ba4f4a53a52b4ce38c27aea0d6a5812c34e
+arm: memutils: revert from MSM8974 optimazed - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/d64cb988c9f3e987055b138dcd4003e191056876
+[WIP] PCC: Use PCC to provide low-level brightness values - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/ef0f49e3fecc15bd17217f115f2e73fb8631f6e1
+mdp4: pcc: fix PCC disablement - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/e6b80a63638a4593942d280fc3aecbed1957f13e
+Cosmetic commit - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/04dbb67a0e58f9ecae5146f28376f32626fbe37c
+
+CM12.1-ALX-0.1.1
+input: sweep2sleep: turn off as default - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/efe7f523791bea4b55600f7dac244788e0576d58
+android: drivers: workaround debugfs race in binder - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/a9e528c1d98ddada4e73a733a4d19323393f4669
+Revert "android: drivers: workaround debugfs race in binder" - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/9f1698ccf7963db46074403935b7928e94241a3a
+block: fiops ioscheduler core - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/b44442dc51fab1cbdf562b3b8a675c1e27b2980f
+defconfig: Enable FIOPS - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/396b0749679db5cd422f6c87f48b32a408deec93
+Fix after last commit - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/791d525c094d8bedc96fcab71be1cf5fcd9db8f2
+kernel: fix stuck CPU frequencies - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/c5d6d5337ad4544a26e6f389d5f8c78941193be4
