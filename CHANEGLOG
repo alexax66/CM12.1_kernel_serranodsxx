@@ -816,3 +816,7 @@ block: fiops ioscheduler core - https://github.com/CyanogenMod/android_kernel_sa
 defconfig: Enable FIOPS - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/396b0749679db5cd422f6c87f48b32a408deec93
 Fix after last commit - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/791d525c094d8bedc96fcab71be1cf5fcd9db8f2
 kernel: fix stuck CPU frequencies - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/c5d6d5337ad4544a26e6f389d5f8c78941193be4
+
+CM12.1-ALX-0.1.2
+Revert "kernel: fix stuck CPU frequencies" - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/c419d604c08cf93c405addd3618abbecbaebe5ab
+
