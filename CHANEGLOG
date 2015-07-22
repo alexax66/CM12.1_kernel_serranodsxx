@@ -787,6 +787,7 @@ random.h: declare erandom function - https://github.com/kashifmin/KKernel_yu_msm
 [my commit] random32: use e/frandom for reseeding, and a merge fixup - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/c62db9d97f4d0ee779c89eebe42fdb549b191723
 [my commit] fs: use e/frandom, do not deplete entropy - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/300c2e46e65f95e7017e942fab4f597011d188f3
 [my commit] fs: ext4: fix super.c after last commit - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/d244a8025f0f1c889efc755bafd610006ff21549
+random32: upgrade taus88 generator to taus113 from errata paper - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/ccaf4c3afc136a6aad5764928e784e09b0285d97
 staging: prima: Allow prima_wlan to be built inside kernel - https://github.com/CyanogenMod/android_kernel_htc_msm8960/commit/62023c9a57cd36a008036015ba5be020f2ac6bfb
 
 CM12.1-ALX-0.0.8
