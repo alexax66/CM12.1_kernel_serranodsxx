@@ -819,4 +819,5 @@ kernel: fix stuck CPU frequencies - https://github.com/alexax66/CM12.1_kernel_se
 
 CM12.1-ALX-0.1.2
 Revert "kernel: fix stuck CPU frequencies" - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/c419d604c08cf93c405addd3618abbecbaebe5ab
+Merge with I9195XXUCOE4 - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/67a1812be602d999db800cb4ce3560daba714a26
 
