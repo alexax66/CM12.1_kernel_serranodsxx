@@ -202,8 +202,9 @@ SUBARCH		?= arm
 #CROSS_COMPILE	?=/opt/toolchains/AK-sm-arm-eabi-4.9-ak-4.9/bin/arm-eabi-
 #CROSS_COMPILE	?=/opt/toolchains/arm-cortex_a15-linux-gnueabihf-linaro_4.9.3-2015.01/bin/arm-eabi-
 #CROSS_COMPILE	?=/opt/toolchains/AK-uber-sabermod-ak-master/bin/arm-eabi-
-CROSS_COMPILE	?=/opt/toolchains/LinaroMod-arm-eabi-4.9-master/bin/arm-eabi-
+#CROSS_COMPILE	?=/opt/toolchains/LinaroMod-arm-eabi-4.9-master/bin/arm-eabi-
 #CROSS_COMPILE	?=/opt/toolchains/arm-cortex_a15-linux-gnueabihf-linaro_4.9.3-2015.03/bin/arm-eabi-
+CROSS_COMPILE	?=/opt/toolchains/arm-cortex_a15-linux-gnueabihf-linaro_4.9.4-2015.06/bin/arm-eabi-
 
 # Architecture as present in compile.h
 UTS_MACHINE 	:= $(ARCH)
