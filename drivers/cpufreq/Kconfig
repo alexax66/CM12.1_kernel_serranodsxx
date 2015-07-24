@@ -118,7 +118,6 @@ config CPU_FREQ_DEFAULT_GOV_LIONHEART
 	help
 	  Use the CPUFreq governor 'Lionheart' as default.
 
-
 config CPU_FREQ_DEFAULT_GOV_SMARTASSH3
 	bool "smartassH3"
 	select CPU_FREQ_GOV_SMARTASSH3
@@ -363,7 +362,6 @@ config CPU_FREQ_GOV_PRESERVATIVE
 	  If in doubt, say N.
 
 	  If not in doubt, say N.
-
 
 config SEC_DVFS
 	bool "DVFS job"
