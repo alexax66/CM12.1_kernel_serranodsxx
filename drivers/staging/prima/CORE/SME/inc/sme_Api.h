@@ -1707,11 +1707,10 @@ eHalStatus sme_SetKeepAlive (tHalHandle hHal, tANI_U8 sessionId,
     \fn sme_AbortMacScan
     \brief  API to cancel MAC scan.
     \param  hHal - The handle returned by macOpen.
-    \return VOS_STATUS
-            VOS_STATUS_E_FAILURE - failure
-            VOS_STATUS_SUCCESS  success
+    \return tSirAbortScanStatus return status abort scan
+
   ---------------------------------------------------------------------------*/
-eHalStatus sme_AbortMacScan(tHalHandle hHal, eCsrAbortReason reason);
+tSirAbortScanStatus sme_AbortMacScan(tHalHandle hHal, eCsrAbortReason reason);
 
 /* ----------------------------------------------------------------------------
    \fn sme_GetOperationChannel
@@ -1874,6 +1873,7 @@ tANI_S8 sme_GetInfraSessionId(tHalHandle hHal);
 
   -------------------------------------------------------------------------------*/
 tANI_U8 sme_GetInfraOperationChannel( tHalHandle hHal, tANI_U8 sessionId);
+
 /* ---------------------------------------------------------------------------
 
     \fn sme_GetConcurrentOperationChannel
@@ -1893,11 +1893,10 @@ tANI_U8 sme_GetConcurrentOperationChannel( tHalHandle hHal );
     \fn sme_AbortMacScan
     \brief  API to cancel MAC scan.
     \param  hHal - The handle returned by macOpen.
-    \return VOS_STATUS
-            VOS_STATUS_E_FAILURE - failure
-            VOS_STATUS_SUCCESS  success
+    \return tSirAbortScanStatus return status abort scan
+
   ---------------------------------------------------------------------------*/
-eHalStatus sme_AbortMacScan(tHalHandle hHal, eCsrAbortReason reason);
+tSirAbortScanStatus sme_AbortMacScan(tHalHandle hHal, eCsrAbortReason reason);
 
 /* ---------------------------------------------------------------------------
     \fn sme_GetCfgValidChannels

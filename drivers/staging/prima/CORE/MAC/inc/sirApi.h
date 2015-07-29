@@ -4111,4 +4111,11 @@ typedef struct sSirSmeCandidateFoundInd
     tANI_U8             sessionId;  // Session Identifier
 } tSirSmeCandidateFoundInd, *tpSirSmeCandidateFoundInd;
 
+typedef enum eSirAbortScanStatus
+{
+    eSIR_ABORT_ACTIVE_SCAN_LIST_EMPTY,
+    eSIR_ABORT_ACTIVE_SCAN_LIST_NOT_EMPTY,
+    eSIR_ABORT_SCAN_FAILURE
+}tSirAbortScanStatus;
+
 #endif /* __SIR_API_H */
