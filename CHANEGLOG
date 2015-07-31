@@ -822,3 +822,29 @@ CM12.1-ALX-0.1.2
 Revert "kernel: fix stuck CPU frequencies" - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/c419d604c08cf93c405addd3618abbecbaebe5ab
 Merge with I9195XXUCOE4 - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/67a1812be602d999db800cb4ce3560daba714a26
 
+CM12.1-ALX-0.1.3
+Makefile: Use new Linaro GCC 4.9.4-2015.06 toolchain optimized for Cortex-A15 - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/589abab66c756e4c5acbe28984b0e01b466549f0
+[backport] Hotplug thread infrastructure - https://github.com/TEAM-Gummy/android_kernel_samsung_hlte/commit/e5916cfeacfbb97b6723628ddeb2f3f2f937aeca
+cpufreq: enable sibling cpu policy sharing - https://github.com/TEAM-Gummy/android_kernel_samsung_hlte/commit/b1391cea70634299b762325b3586cea07df29906
+Cpufreq: create/remove percpu sysfs nodes once - https://github.com/TEAM-Gummy/android_kernel_samsung_hlte/commit/19c657d41ee25241f4e22ccb67459fc1c847b8b2
+fix some stuff - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/4ed17a97e9de283c7c78545b18cb7477f4e0f8c3
+msm: sps: Support low memory condition in SPS driver - https://github.com/remittor/android_kernel_jsr_msm8226/commit/b8a8a699afd6ece2e5ad26bef7947bd9e5834e7f
+msm: sps: update the checking of free slots - https://github.com/remittor/android_kernel_jsr_msm8226/commit/16234057b30380e9ebfe4ca90bc130b2f473c651
+cpufreq: force cpuN policy to match cpu0 when changing freq or gov - https://github.com/remittor/android_kernel_jsr_msm8226/commit/f641387db4cd62e6df5ef6c6036ec7180fe65644
+ARM: fix for using -mcpu=cortex-a15 when targeting MSM Kriat CPUs (Cortex-A15 based) - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/c598d6b039e677244552f9885aaf7bdf36931ab3
+cpufreq: remove cpu-boost - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/871fbf14b18c705289df1475ac6d7765fb463f4b
+ARM: 7593/1: nommu: do not enable DCACHE_WORD_ACCESS when !CONFIG_MMU - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/bc35f9312458c3a67171dc9cf719d3e66577b11f
+smp: Add task_struct argument to __cpu_up() - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/af74d05e205b13dbbe220ddbe44ff491dd3a7a7f
+[boot loop!!!]arm: Use generic idle thread allocation - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/0698690e57b2b729efad986034dc35ac1df00a09
+Revert "arm: Use generic idle thread allocation" - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/b0c84643bcf71ca1e8efde88579a58c9a5fa1fda
+[not used but may be best]msm: thermal: use a simplified thermal driver. And another thermald bites the dust - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/79aea1af73a3c42bdd51fd6214798176c2e5addd
+Revert "cpufreq: force cpuN policy to match cpu0 when changing freq or gov" - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/9854d3f6c2347086b6fb3805255f054765e471e3
+cpufreq: add cpu-boost once more - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/687bfab5497096cbada30636d2a1d5bb95d1bd1d
+deadline: tweak generally recommended for SSDs - https://github.com/TEAM-Gummy/android_kernel_samsung_hlte/commit/3f718579cc1fb250a4943e738ca67a06628c076c
+deadline: Allow 0ms deadline latency, increase the read speed - https://github.com/TEAM-Gummy/android_kernel_samsung_hlte/commit/a05e0fa19d539f4e62e9756e1473cb132907db88
+wlan: Properly initialize abort scan completion variable. - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/b46ea297082d58f9c58e9fb1ec3470d25a840b98
+cpufreq: Sync on thread migration optimizations - https://github.com/CyanogenMod/android_kernel_motorola_msm8974/commit/62feb96bebd517949fe5349780deb25f52f62d91
+cpufreq: cpu-boost: Support separate input_boost_freq for different CPUs - https://github.com/CyanogenMod/android_kernel_motorola_msm8974/commit/df704e52c4a9c3345c7ddc50c3ca126ae17ef0c3
+cpufreq: cpu-boost: Use one work to remove input boost for all CPUs - https://github.com/CyanogenMod/android_kernel_motorola_msm8974/commit/85d39df66bea39909e807d4b27f444256bf7643a
+wlan: Fix Static analysis error - https://github.com/CyanogenMod/android_kernel_motorola_msm8974/commit/487486b08a3e90c2d56f2c5e8ab0b548d126dee5
+
