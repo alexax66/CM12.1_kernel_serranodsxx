@@ -408,16 +408,17 @@ CFLAGS_A15 	= -mcpu=cortex-a15 -mtune=cortex-a15 -mfpu=neon-vfpv4 -fgcse-las -ma
 CFLAGS_MODULO 	= -fmodulo-sched -fmodulo-sched-allow-regmoves
 KERNEL_MODS 	= $(CFLAGS_A15) $(CFLAGS_MODULO)
 KBUILD_CFLAGS   := -Wall -DNDEBUG -Wundef -Wstrict-prototypes -Wno-trigraphs \
-	   -fno-strict-aliasing -fno-common \
-	   -Werror-implicit-function-declaration \
-	   -Wno-format-security \
-	   -fno-delete-null-pointer-checks \
-	   -Wno-sizeof-pointer-memaccess \
-	   -mno-unaligned-access \
-            -ftree-vectorize \
-	   -pipe \
+		   -fno-strict-aliasing -fno-common \
+		   -Werror-implicit-function-declaration \
+		   -Wno-format-security \
+		   -fno-delete-null-pointer-checks \
+		   -Wno-sizeof-pointer-memaccess \
+		   -mno-unaligned-access \
+		   -ftree-vectorize \
+		   -pipe \
+		   -Wno-aggressive-loop-optimizations \
 		   $(KERNEL_MODS)
-KBUILD_AFLAGS_KERNEL := 
+KBUILD_AFLAGS_KERNEL :=
 KBUILD_CFLAGS_KERNEL := $(KERNEL_MODS)
 KBUILD_AFLAGS   := -D__ASSEMBLY__
 KBUILD_AFLAGS_MODULE  := -DMODULE
