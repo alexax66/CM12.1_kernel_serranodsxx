@@ -303,8 +303,6 @@ int __init reboot_setup(char *str)
 
 __setup("reboot=", reboot_setup);
 
-void machine_shutdown(void)
-{
 /*
  * Called by kexec, immediately prior to machine_kexec().
  *
@@ -314,6 +312,8 @@ void machine_shutdown(void)
  * avoid any code or data used by any SW CPU pin loop. The CPU hotplug
  * functionality embodied in disable_nonboot_cpus() to achieve this.
  */
+void machine_shutdown(void)
+{
 #ifdef CONFIG_SMP
 	/*
 	 * Disable preemption so we're guaranteed to
