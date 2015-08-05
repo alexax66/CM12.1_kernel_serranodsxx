@@ -349,6 +349,10 @@ static int ecryptfs_parse_options(struct ecryptfs_sb_info *sbi, char *options,
 	char *cipher_key_bytes_src;
 	char *fn_cipher_key_bytes_src;
 	u8 cipher_code;
+#ifdef CONFIG_CRYPTO_FIPS
+	char cipher_mode[ECRYPTFS_MAX_CIPHER_MODE_SIZE];
+	strncpy(cipher_mode, ECRYPTFS_AES_ECB_MODE, ECRYPTFS_MAX_CIPHER_MODE_SIZE);
+#endif
 
 	*check_ruid = 0;
 
@@ -474,7 +478,8 @@ static int ecryptfs_parse_options(struct ecryptfs_sb_info *sbi, char *options,
 #endif
 #ifdef CONFIG_CRYPTO_FIPS
 		case ecryptfs_opt_enable_cc:
-            mount_crypt_stat->flags |= ECRYPTFS_ENABLE_CC;
+			mount_crypt_stat->flags |= ECRYPTFS_ENABLE_CC;
+			strncpy(cipher_mode, ECRYPTFS_AES_CBC_MODE, ECRYPTFS_MAX_CIPHER_MODE_SIZE);
 			break;
 #endif
 		case ecryptfs_opt_err:
@@ -521,18 +526,14 @@ static int ecryptfs_parse_options(struct ecryptfs_sb_info *sbi, char *options,
 	}
 
 	mutex_lock(&key_tfm_list_mutex);
-	if (!ecryptfs_tfm_exists(mount_crypt_stat->global_default_cipher_name,
-				 NULL)) {
 #ifdef CONFIG_CRYPTO_FIPS
+	if (!ecryptfs_tfm_exists(mount_crypt_stat->global_default_cipher_name, cipher_mode,
+			NULL)) {
+
 		rc = ecryptfs_add_new_key_tfm(
 			NULL, mount_crypt_stat->global_default_cipher_name,
 			mount_crypt_stat->global_default_cipher_key_size,
 			mount_crypt_stat->flags);
-#else
-		rc = ecryptfs_add_new_key_tfm(
-			NULL, mount_crypt_stat->global_default_cipher_name,
-			mount_crypt_stat->global_default_cipher_key_size);
-#endif
 		if (rc) {
 			printk(KERN_ERR "Error attempting to initialize "
 			       "cipher with name = [%s] and key size = [%td]; "
@@ -545,19 +546,54 @@ static int ecryptfs_parse_options(struct ecryptfs_sb_info *sbi, char *options,
 			goto out;
 		}
 	}
+
 	if ((mount_crypt_stat->flags & ECRYPTFS_GLOBAL_ENCRYPT_FILENAMES)
-	    && !ecryptfs_tfm_exists(
-		    mount_crypt_stat->global_default_fn_cipher_name, NULL)) {
-#ifdef CONFIG_CRYPTO_FIPS
+		&& !ecryptfs_tfm_exists(
+			mount_crypt_stat->global_default_fn_cipher_name, cipher_mode, NULL)) {
 		rc = ecryptfs_add_new_key_tfm(
 			NULL, mount_crypt_stat->global_default_fn_cipher_name,
 			mount_crypt_stat->global_default_fn_cipher_key_bytes,
 			mount_crypt_stat->flags);
+
+		if (rc) {
+			printk(KERN_ERR "Error attempting to initialize "
+				   "cipher with name = [%s] and key size = [%td]; "
+				   "rc = [%d]\n",
+				   mount_crypt_stat->global_default_fn_cipher_name,
+				   mount_crypt_stat->global_default_fn_cipher_key_bytes,
+				   rc);
+			rc = -EINVAL;
+			mutex_unlock(&key_tfm_list_mutex);
+			goto out;
+		}
+	}
 #else
+	if (!ecryptfs_tfm_exists(mount_crypt_stat->global_default_cipher_name,
+				NULL)) {
+
+		rc = ecryptfs_add_new_key_tfm(
+			NULL, mount_crypt_stat->global_default_cipher_name,
+			mount_crypt_stat->global_default_cipher_key_size);
+
+		if (rc) {
+			printk(KERN_ERR "Error attempting to initialize "
+				   "cipher with name = [%s] and key size = [%td]; "
+				   "rc = [%d]\n",
+				   mount_crypt_stat->global_default_cipher_name,
+				   mount_crypt_stat->global_default_cipher_key_size,
+				   rc);
+			rc = -EINVAL;
+			mutex_unlock(&key_tfm_list_mutex);
+			goto out;
+		}
+	}
+
+	if ((mount_crypt_stat->flags & ECRYPTFS_GLOBAL_ENCRYPT_FILENAMES)
+	    && !ecryptfs_tfm_exists(
+		    mount_crypt_stat->global_default_fn_cipher_name, NULL)) {
 		rc = ecryptfs_add_new_key_tfm(
 			NULL, mount_crypt_stat->global_default_fn_cipher_name,
 			mount_crypt_stat->global_default_fn_cipher_key_bytes);
-#endif
 		if (rc) {
 			printk(KERN_ERR "Error attempting to initialize "
 			       "cipher with name = [%s] and key size = [%td]; "
@@ -570,6 +606,7 @@ static int ecryptfs_parse_options(struct ecryptfs_sb_info *sbi, char *options,
 			goto out;
 		}
 	}
+#endif
 	mutex_unlock(&key_tfm_list_mutex);
 	rc = ecryptfs_init_global_auth_toks(mount_crypt_stat);
 	if (rc)
@@ -594,7 +631,6 @@ static struct dentry *ecryptfs_mount(struct file_system_type *fs_type, int flags
 {
 	struct super_block *s;
 	struct ecryptfs_sb_info *sbi;
-	struct ecryptfs_mount_crypt_stat *mount_crypt_stat;
 	struct ecryptfs_dentry_info *root_info;
 	const char *err = "Getting sb failed";
 	struct inode *inode;
@@ -613,7 +649,6 @@ static struct dentry *ecryptfs_mount(struct file_system_type *fs_type, int flags
 		err = "Error parsing options";
 		goto out;
 	}
-	mount_crypt_stat = &sbi->mount_crypt_stat;
 
 	s = sget(fs_type, NULL, set_anon_super, NULL);
 	if (IS_ERR(s)) {
@@ -659,19 +694,11 @@ static struct dentry *ecryptfs_mount(struct file_system_type *fs_type, int flags
 
 	/**
 	 * Set the POSIX ACL flag based on whether they're enabled in the lower
-	 * mount.
+	 * mount. Force a read-only eCryptfs mount if the lower mount is ro.
+	 * Allow a ro eCryptfs mount even when the lower mount is rw.
 	 */
 	s->s_flags = flags & ~MS_POSIXACL;
-	s->s_flags |= path.dentry->d_sb->s_flags & MS_POSIXACL;
-
-	/**
-	 * Force a read-only eCryptfs mount when:
-	 *   1) The lower mount is ro
-	 *   2) The ecryptfs_encrypted_view mount option is specified
-	 */
-	if (path.dentry->d_sb->s_flags & MS_RDONLY ||
-	    mount_crypt_stat->flags & ECRYPTFS_ENCRYPTED_VIEW_ENABLED)
-		s->s_flags |= MS_RDONLY;
+	s->s_flags |= path.dentry->d_sb->s_flags & (MS_RDONLY | MS_POSIXACL);
 
 	s->s_maxbytes = path.dentry->d_sb->s_maxbytes;
 	s->s_blocksize = path.dentry->d_sb->s_blocksize;

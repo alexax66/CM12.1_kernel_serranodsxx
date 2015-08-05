@@ -1044,6 +1044,10 @@ static const struct snd_kcontrol_new tapan_msm8930_i2s_controls[] = {
 		msm8930_pmic_gain_get, msm8930_pmic_gain_put),
 	SOC_ENUM_EXT("AUX PCM SampleRate", msm8930_auxpcm_enum[0],
 		msm8930_auxpcm_rate_get, msm8930_auxpcm_rate_put),
+#if	defined(CONFIG_MACH_SERRANO_KOR_LTE)
+	SOC_ENUM_EXT("Internal BTSCO SampleRate", msm8930_btsco_enum[0],
+		msm8930_btsco_rate_get, msm8930_btsco_rate_put),
+#endif
 };
 
 static int msm8930_hdmi_rate_put(struct snd_kcontrol *kcontrol,
@@ -1492,7 +1496,7 @@ static int msm8930_hdmi_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
 	struct snd_interval *channels = hw_param_interval(params,
 					SNDRV_PCM_HW_PARAM_CHANNELS);
 
-#ifdef CONFIG_MACH_KS02
+#if defined(CONFIG_MACH_KS02) || defined(CONFIG_MACH_SERRANO_KOR_LTE)
 	if (channels->max < 2)
 		channels->min = channels->max = 2;
 
