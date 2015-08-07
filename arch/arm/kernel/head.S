@@ -459,7 +459,7 @@ ENTRY(__turn_mmu_on)
 	instr_sync
 	mov	r3, r3
 #ifdef CONFIG_ARCH_MSM_KRAIT
-	movw	r3, 0xfc0d
+	movw	r3, 0xff0d
 	movt	r3, 0xffff
 	and	r3, r9, r3
 	movw	r4, 0x0400
