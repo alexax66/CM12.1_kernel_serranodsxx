@@ -18,7 +18,6 @@ if [ ! -d $(pwd)/output ];
 	mkdir $(pwd)/output; 
     fi
 
-#make -C $(pwd) O=output alexax_serrano_defconfig  VARIANT_DEFCONFIG=msm8930_serrano_$VARIANT"_defconfig" SELINUX_DEFCONFIG=selinux_defconfig
 make -C $(pwd) O=output alexax_serrano_defconfig  VARIANT_DEFCONFIG=msm8930_serrano_$VARIANT"_defconfig"
 make -j5 -C $(pwd) O=output
 
