@@ -848,3 +848,33 @@ cpufreq: cpu-boost: Support separate input_boost_freq for different CPUs - https
 cpufreq: cpu-boost: Use one work to remove input boost for all CPUs - https://github.com/CyanogenMod/android_kernel_motorola_msm8974/commit/85d39df66bea39909e807d4b27f444256bf7643a
 wlan: Fix Static analysis error - https://github.com/CyanogenMod/android_kernel_motorola_msm8974/commit/487486b08a3e90c2d56f2c5e8ab0b548d126dee5
 
+CM12.1-ALX-0.1.4
+Makefile: desable GCC 4.9 warning about the undefined behavior in the loops - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/f1c4dc2854ae1e4cae299f0f241edffa13a83b7e
+iommu: msm: Handle unmapping of PTE properly - https://github.com/CyanogenMod/android_kernel_samsung_d2/commit/b64919a479625b83f28a941c36eb7bab27e1134b
+TCP: Network Speed Tweak - https://github.com/Mr-MEX/Nitrogen-Kernel/commit/95f0a93d3138a796ade0c0aec816aae54f8c15b8
+[copmilation errors!!!] ARM: Use TTBR1 instead of reserved context ID - https://github.com/CyanogenMod/android_kernel_sony_apq8064/commit/1ed6ce47d2e90251b1869b27dbbc3882b048da63
+Revert "ARM: Use TTBR1 instead of reserved context ID" - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/7719c2341d80f2edbbabcc9b06fcdf3b83b1ddd0
+ARM: gic: Bring inline with upstream - https://github.com/CyanogenMod/android_kernel_samsung_ks01lte/commit/4af8303fd7d7289cf804ac6ff1735ae62ec6b685
+ARM: gic: add missing gic_get_cpumask function - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/10d9b55ada9c44f84870aaa388d65e825156aff0
+ARM: 7489/1: errata: fix workaround for erratum #720789 on UP systems - https://github.com/CyanogenMod/android_kernel_samsung_ks01lte/commit/c31d8f0408af34ea9cd3168e51b53c8b6dd2ab06
+ARM: 7661/1: mm: perform explicit branch predictor maintenance when required - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/1513a024fc0d6416684c7d8ba25be2fb123e0c83
+arm: mm: clean proc-v7 asm source code - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/1e2682124133649b7edf568d80ced6d11bb9f998
+ARM: 7759/1: decouple CPU offlining from reboot/shutdown - https://github.com/CyanogenMod/android_kernel_samsung_ks01lte/commit/33a2d597a557fa98a9e42def6c14659ab6a5b3d1
+Implement kexec-hardboot - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/96d3ab0947d661a5f30e8237e47cd7f14fd370bb
+Update kexec hardboot patch - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/9e164dae9da2364da0b65fdc092b293b5d705cde
+ARM: Make low-level printk work - https://github.com/redmaner/redcore_kernel_xiaomi_aries/commit/c418732032cd872acc7112db0e22c35a9b0a684e
+ARM: Fix "Make low-level printk work" to use a separate config option - https://github.com/redmaner/redcore_kernel_xiaomi_aries/commit/cce81c8857a05e8a68f5318a7676e098e274395e
+
+CM12.1-ALX-0.1.5
+Compressed: optimize for Cortex A15 - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/7ea5918cc6cee08f5a1506753ce1a08b5f79e23b
+Merge with E370KKTU2BOD2 - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/4156c27c46118c356e28e3e3f040ed92635f8b8d
+fs: exfat: Update to v1.2.12 - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/c33552e54257a870ef9b2532ce2e8db0c1267fd1
+defconfig: Update with some Google recommended options - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/df94d73b159de91d21413592f2cfba5923f64e22
+android: drivers: workaround debugfs race in binder - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/998a6610db0278c8854db0845a8fc728670388e7
+ARM: msm: Configure Krait-specific setting - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/6d102220611607370e255e974e6a2dcaaabc3998
+msm: idle-v7: add Krait-specific code - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/323494d2bd09f4724c645e79ea5bf0df95a5ac43
+defconfig: enable MyFluxi's MSM Hotplug - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/2ab32d3429ca9c7b8b8ccd9dfd1161925e592d89
+defconfig: use common alexax'es defconfig for serrano-3g and serrano-lte variant - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/6f7ba80d37b80ae113b447f84057286ad9918c0c
+build_kernel.sh: add case between serrano-3g and serrano-lte variantes - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/37267b43f028f8e61db816ac6d9dfb5563a28676
+defconfig: abandoned separate selinux config - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/b86c2452f035bdeacfa98b27c4055d9a2c2eb003
+
