@@ -24,7 +24,6 @@
 #include <linux/slab.h>
 #include <linux/string.h>
 #include <linux/fs.h>
-
 #include "exfat_config.h"
 
 #ifdef __cplusplus
