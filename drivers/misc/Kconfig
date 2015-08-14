@@ -854,31 +854,25 @@ config DESKDOCK_DISABLE
 
 config GENERIC_BLN
 	bool "Generic BLN support for backlight notification"
-	depends on SYSFS
+	depends on SYSFS && EXPERIMENTAL
 	default n
 	help
-	 Say Y here to enable the backlight notification
-	 for android led-notification (modified liblight needed).
-	 A kernel wakelock is implemented to retain the leds
-	 enabled in suspend.
+	  Say Y here to enable the backlight notification
+	  for Android LED-notification (modified liblight needed)
 
-menu "BLN Options"
-
-config GENERIC_BLN_ENABLED
-	bool "Enable Generic BLN support by default"
+config GENERIC_BLN_EMULATE_BUTTONS_LED
+	bool "Emulate buttons led"
 	depends on GENERIC_BLN
 	default n
 	help
-	 Say Y here to enable BLN by default
+	  Say Y here to simulate buttons LED
 
-config GENERIC_BLN_BLINK_ENABLED
-	bool "Enable Generic BLN blinking by default"
+config GENERIC_BLN_USE_WAKELOCK
+	bool "Use a kernel wakelock to retain the LEDs enabled in suspend"
 	depends on GENERIC_BLN
 	default n
 	help
-	 Say Y here to enable BLN blinks by default
-
-endmenu
+	  Say Y here use the wakelock implementation of the BLN driver
 
 source "drivers/misc/c2port/Kconfig"
 source "drivers/misc/eeprom/Kconfig"
