@@ -7308,13 +7308,7 @@ void __init sched_init(void)
 		rq->online = 0;
 		rq->idle_stamp = 0;
 		rq->avg_idle = 2*sysctl_sched_migration_cost;
-<<<<<<< HEAD
-		rq->cur_freq = 0;
-		rq->max_freq = 0;
-		rq->min_freq = 0;
 		rq->cumulative_runnable_avg = 0;
-=======
->>>>>>> parent of 7307754... sched: Make scheduler aware of cpu frequency state 1
 
 		INIT_LIST_HEAD(&rq->cfs_tasks);
 
