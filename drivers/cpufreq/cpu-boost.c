@@ -357,17 +357,14 @@ static void cpuboost_input_event(struct input_handle *handle,
 	if (!cpu_boost)
 		return;
 
-	if (!input_boost_enabled)
-	return;
+	if (!input_boost_enabled || work_pending(&input_boost_work))
+		return;
 
 	now = ktime_to_us(ktime_get());
 	min_interval = max(min_input_interval, input_boost_ms);
 
 	if (now - last_input_time < min_interval * USEC_PER_MSEC)
 		return;
-
-	if (work_pending(&input_boost_work))
-	return;
 
 	queue_work(cpu_boost_wq, &input_boost_work);
 	last_input_time = ktime_to_us(ktime_get());
