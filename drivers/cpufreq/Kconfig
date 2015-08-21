@@ -156,6 +156,12 @@ config CPU_FREQ_DEFAULT_GOV_OPTIMAX
 	help
 	  Use the CPUFreq governor 'optimax' as default
 
+config CPU_FREQ_DEFAULT_GOV_DANCEDANCE
+	bool "DanceDance"
+	select CPU_FREQ_GOV_DANCEDANCE
+	help
+	  Use the CPUFreq governor 'DanceDance' as default.
+
 config CPU_FREQ_DEFAULT_GOV_PRESERVATIVE
 	bool "preservative"
 	select CPU_FREQ_GOV_PRESERVATIVE
@@ -338,6 +344,8 @@ config CPU_FREQ_GOV_OPTIMAX
 	tristate "'optimax' cpufreq policy governor"
 	select CPU_FREQ_TABLE
 
+config CPU_FREQ_GOV_DANCEDANCE
+	tristate "'DanceDance' governor"
 
 config CPU_FREQ_GOV_WHEATLEY
 	tristate "'wheatley' cpufreq governor"
