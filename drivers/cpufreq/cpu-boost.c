@@ -358,7 +358,7 @@ static void cpuboost_input_event(struct input_handle *handle,
 		return;
 
 	if (!input_boost_enabled)
-		return;
+	return;
 
 	now = ktime_to_us(ktime_get());
 	min_interval = max(min_input_interval, input_boost_ms);
@@ -367,10 +367,20 @@ static void cpuboost_input_event(struct input_handle *handle,
 		return;
 
 	if (work_pending(&input_boost_work))
-		return;
+	return;
 
 	queue_work(cpu_boost_wq, &input_boost_work);
 	last_input_time = ktime_to_us(ktime_get());
+}
+
+bool check_cpuboost(int cpu)
+{
+	struct cpu_sync *i_sync_info;
+	i_sync_info = &per_cpu(sync_info, cpu);
+
+	if (i_sync_info->input_boost_min > 0)
+		return true;
+	return false;
 }
 
 static int cpuboost_input_connect(struct input_handler *handler,
