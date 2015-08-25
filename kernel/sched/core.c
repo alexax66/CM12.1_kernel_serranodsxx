@@ -7183,13 +7183,6 @@ void __init sched_init(void)
 		rq->online = 0;
 		rq->idle_stamp = 0;
 		rq->avg_idle = 2*sysctl_sched_migration_cost;
-<<<<<<< HEAD
-		rq->cumulative_runnable_avg = 0;
-=======
-		rq->cur_freq = 0;
-		rq->max_freq = 0;
-		rq->min_freq = 0;
->>>>>>> parent of b2d026e... sched: window-based load stats for tasks 2
 
 		INIT_LIST_HEAD(&rq->cfs_tasks);
 
