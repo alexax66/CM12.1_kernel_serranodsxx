@@ -120,14 +120,10 @@ static void arm_dma_sync_single_for_device(struct device *dev,
 
 static int arm_dma_set_mask(struct device *dev, u64 dma_mask);
 
-static int arm_coherent_dma_mmap(struct device *dev, struct vm_area_struct *vma,
-		 void *cpu_addr, dma_addr_t dma_addr, size_t size,
-		 struct dma_attrs *attrs);
-
 struct dma_map_ops arm_dma_ops = {
 	.alloc			= arm_dma_alloc,
 	.free			= arm_dma_free,
-	.mmap			= arm_coherent_dma_mmap,
+	.mmap			= arm_dma_mmap,
 	.map_page		= arm_dma_map_page,
 	.unmap_page		= arm_dma_unmap_page,
 	.map_sg			= arm_dma_map_sg,
@@ -821,13 +817,18 @@ void *arm_dma_alloc(struct device *dev, size_t size, dma_addr_t *handle,
 			   __builtin_return_address(0), attrs);
 }
 
-static int __arm_dma_mmap(struct device *dev, struct vm_area_struct *vma,
+/*
+ * Create userspace mapping for the DMA-coherent memory.
+ */
+int arm_dma_mmap(struct device *dev, struct vm_area_struct *vma,
 		 void *cpu_addr, dma_addr_t dma_addr, size_t size,
 		 struct dma_attrs *attrs)
 {
 	int ret = -ENXIO;
 #ifdef CONFIG_MMU
 	unsigned long pfn = dma_to_pfn(dev, dma_addr);
+	vma->vm_page_prot = __get_dma_pgprot(attrs, vma->vm_page_prot);
+
 	if (dma_mmap_from_coherent(dev, vma, cpu_addr, size, &ret))
 		return ret;
 
@@ -838,26 +839,6 @@ static int __arm_dma_mmap(struct device *dev, struct vm_area_struct *vma,
 #endif	/* CONFIG_MMU */
 
 	return ret;
-}
-
-/*
- * Create userspace mapping for the DMA-coherent memory.
- */
-static int arm_coherent_dma_mmap(struct device *dev, struct vm_area_struct *vma,
-		 void *cpu_addr, dma_addr_t dma_addr, size_t size,
-		 struct dma_attrs *attrs)
-{
-	return __arm_dma_mmap(dev, vma, cpu_addr, dma_addr, size, attrs);
-}
-
-int arm_dma_mmap(struct device *dev, struct vm_area_struct *vma,
-		 void *cpu_addr, dma_addr_t dma_addr, size_t size,
-		 struct dma_attrs *attrs)
-{
-#ifdef CONFIG_MMU
-	vma->vm_page_prot = __get_dma_pgprot(attrs, vma->vm_page_prot);
-#endif	/* CONFIG_MMU */
-	return __arm_dma_mmap(dev, vma, cpu_addr, dma_addr, size, attrs);
 }
 
 /*
