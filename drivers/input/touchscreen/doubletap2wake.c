@@ -82,9 +82,6 @@ static int __init read_dt2w_cmdline(char *dt2w)
 	if (strcmp(dt2w, "1") == 0) {
 		pr_info("[cmdline_dt2w]: DoubleTap2Wake enabled. | dt2w='%s'\n", dt2w);
 		dt2w_switch = 1;
-	} else if (strcmp(dt2w, "2") == 0) {
-		pr_info("[cmdline_dt2w]: DoubleTap2Wake fullscreen enabled. | dt2w='%s'\n", dt2w);
-		dt2w_switch = 2;
 	} else if (strcmp(dt2w, "0") == 0) {
 		pr_info("[cmdline_dt2w]: DoubleTap2Wake disabled. | dt2w='%s'\n", dt2w);
 		dt2w_switch = 0;
@@ -134,6 +131,14 @@ static unsigned int calc_feather(int coord, int prev_coord) {
 	return calc_coord;
 }
 
+/* init a new touch */
+static void new_touch(int x, int y) {
+	tap_time_pre = ktime_to_ms(ktime_get());
+	x_pre = x;
+	y_pre = y;
+	touch_nr++;
+}
+
 /* Doubletap2wake main function */
 static void detect_doubletap2wake(int x, int y, bool st)
 {
@@ -142,30 +147,22 @@ static void detect_doubletap2wake(int x, int y, bool st)
         pr_info(LOGTAG"x,y(%4d,%4d) single:%s\n",
                 x, y, (single_touch) ? "true" : "false");
 #endif
-
-        if (dt2w_switch < 2 && y < 1000)
-        	return;
-
 	if ((single_touch) && (dt2w_switch > 0) && (exec_count) && (touch_cnt)) {
 		touch_cnt = false;
 		if (touch_nr == 0) {
-			tap_time_pre = ktime_to_ms(ktime_get());
-			x_pre = x;
-			y_pre = y;
-			touch_nr++;
+			new_touch(x, y);
 		} else if (touch_nr == 1) {
 			if ((calc_feather(x, x_pre) < DT2W_FEATHER) &&
 			    (calc_feather(y, y_pre) < DT2W_FEATHER) &&
 			    ((ktime_to_ms(ktime_get())-tap_time_pre) < DT2W_TIME))
 				touch_nr++;
-			else
+			else {
 				doubletap2wake_reset();
+				new_touch(x, y);
+			}
 		} else {
 			doubletap2wake_reset();
-			tap_time_pre = ktime_to_ms(ktime_get());
-			x_pre = x;
-			y_pre = y;
-			touch_nr++;
+			new_touch(x, y);
 		}
 		if ((touch_nr > 1)) {
 			pr_info(LOGTAG"ON\n");
