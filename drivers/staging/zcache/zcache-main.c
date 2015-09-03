@@ -31,25 +31,18 @@
 #include <linux/math64.h>
 #include <linux/crypto.h>
 #include <linux/string.h>
-#include <linux/idr.h>
 #include "tmem.h"
 
 #include <linux/zsmalloc.h>
 
 #if (!defined(CONFIG_CLEANCACHE) && !defined(CONFIG_FRONTSWAP))
 #error "zcache is useless without CONFIG_CLEANCACHE or CONFIG_FRONTSWAP"
+#endif
 #ifdef CONFIG_CLEANCACHE
 #include <linux/cleancache.h>
 #endif
 #ifdef CONFIG_FRONTSWAP
 #include <linux/frontswap.h>
-#endif
-
-
-#ifdef CONFIG_ZCACHE_LZ4_COMPRESS
-static const char *default_compressor = "lz4";
-#else
-static const char *default_compressor = "lzo";
 #endif
 
 #if 0
@@ -60,13 +53,22 @@ static const char *default_compressor = "lzo";
 	(__GFP_FS | __GFP_NORETRY | __GFP_NOWARN | __GFP_NOMEMALLOC)
 #endif
 
+#define MAX_POOLS_PER_CLIENT 16
+
 #define MAX_CLIENTS 16
 #define LOCAL_CLIENT ((uint16_t)-1)
+
+#ifdef CONFIG_ZCACHE_LZ4_COMPRESS
+static const char *default_compressor = "lz4";
+#else
+static const char *default_compressor = "lzo";
+#endif
+
 
 MODULE_LICENSE("GPL");
 
 struct zcache_client {
-	struct idr tmem_pools;
+	struct tmem_pool *tmem_pools[MAX_POOLS_PER_CLIENT];
 	struct zs_pool *zspool;
 	bool allocated;
 	atomic_t refcount;
@@ -81,17 +83,6 @@ static inline uint16_t get_client_id_from_client(struct zcache_client *cli)
 	if (cli == &zcache_host)
 		return LOCAL_CLIENT;
 	return cli - &zcache_clients[0];
-}
-
-static struct zcache_client *get_zcache_client(uint16_t cli_id)
-{
-	if (cli_id == LOCAL_CLIENT)
-		return &zcache_host;
-
-	if ((unsigned int)cli_id < MAX_CLIENTS)
-		return &zcache_clients[cli_id];
-
-	return NULL;
 }
 
 static inline bool is_local_client(struct zcache_client *cli)
@@ -126,8 +117,6 @@ static inline int zcache_comp_op(enum comp_op op,
 	case ZCACHE_COMPOP_DECOMPRESS:
 		ret = crypto_comp_decompress(tfm, src, slen, dst, dlen);
 		break;
-	default:
-		ret = -EINVAL;
 	}
 	put_cpu();
 	return ret;
@@ -620,14 +609,16 @@ out:
 	return;
 }
 
-static void __init zbud_init(void)
+static void zbud_init(void)
 {
 	int i;
 
 	INIT_LIST_HEAD(&zbud_buddied_list);
-
-	for (i = 0; i < NCHUNKS; i++)
+	zcache_zbud_buddied_count = 0;
+	for (i = 0; i < NCHUNKS; i++) {
 		INIT_LIST_HEAD(&zbud_unbuddied[i].list);
+		zbud_unbuddied[i].count = 0;
+	}
 }
 
 #ifdef CONFIG_SYSFS
@@ -955,14 +946,21 @@ static struct tmem_pool *zcache_get_pool_by_id(uint16_t cli_id, uint16_t poolid)
 	struct tmem_pool *pool = NULL;
 	struct zcache_client *cli = NULL;
 
-	cli = get_zcache_client(cli_id);
-	if (!cli)
-		goto out;
-
-	atomic_inc(&cli->refcount);
-	pool = idr_find(&cli->tmem_pools, poolid);
-	if (pool != NULL)
-		atomic_inc(&pool->refcount);
+	if (cli_id == LOCAL_CLIENT)
+		cli = &zcache_host;
+	else {
+		if (cli_id >= MAX_CLIENTS)
+			goto out;
+		cli = &zcache_clients[cli_id];
+		if (cli == NULL)
+			goto out;
+		atomic_inc(&cli->refcount);
+	}
+	if (poolid < MAX_POOLS_PER_CLIENT) {
+		pool = cli->tmem_pools[poolid];
+		if (pool != NULL)
+			atomic_inc(&pool->refcount);
+	}
 out:
 	return pool;
 }
@@ -980,11 +978,13 @@ static void zcache_put_pool(struct tmem_pool *pool)
 
 int zcache_new_client(uint16_t cli_id)
 {
-	struct zcache_client *cli;
+	struct zcache_client *cli = NULL;
 	int ret = -1;
 
-	cli = get_zcache_client(cli_id);
-
+	if (cli_id == LOCAL_CLIENT)
+		cli = &zcache_host;
+	else if ((unsigned int)cli_id < MAX_CLIENTS)
+		cli = &zcache_clients[cli_id];
 	if (cli == NULL)
 		goto out;
 	if (cli->allocated)
@@ -994,7 +994,6 @@ int zcache_new_client(uint16_t cli_id)
 	cli->zspool = zs_create_pool(ZCACHE_GFP_MASK);
 	if (cli->zspool == NULL)
 		goto out;
-	idr_init(&cli->tmem_pools);
 #endif
 	ret = 0;
 out:
@@ -1043,38 +1042,45 @@ static int zcache_do_preload(struct tmem_pool *pool)
 		goto out;
 	if (unlikely(zcache_obj_cache == NULL))
 		goto out;
-
-	/* IRQ has already been disabled. */
+	preempt_disable();
 	kp = &__get_cpu_var(zcache_preloads);
 	while (kp->nr < ARRAY_SIZE(kp->objnodes)) {
+		preempt_enable_no_resched();
 		objnode = kmem_cache_alloc(zcache_objnode_cache,
 				ZCACHE_GFP_MASK);
 		if (unlikely(objnode == NULL)) {
 			zcache_failed_alloc++;
 			goto out;
 		}
-
-		kp->objnodes[kp->nr++] = objnode;
+		preempt_disable();
+		kp = &__get_cpu_var(zcache_preloads);
+		if (kp->nr < ARRAY_SIZE(kp->objnodes))
+			kp->objnodes[kp->nr++] = objnode;
+		else
+			kmem_cache_free(zcache_objnode_cache, objnode);
 	}
-
-	if (!kp->obj) {
-		obj = kmem_cache_alloc(zcache_obj_cache, ZCACHE_GFP_MASK);
-		if (unlikely(obj == NULL)) {
-			zcache_failed_alloc++;
-			goto out;
-		}
+	preempt_enable_no_resched();
+	obj = kmem_cache_alloc(zcache_obj_cache, ZCACHE_GFP_MASK);
+	if (unlikely(obj == NULL)) {
+		zcache_failed_alloc++;
+		goto out;
+	}
+	page = (void *)__get_free_page(ZCACHE_GFP_MASK);
+	if (unlikely(page == NULL)) {
+		zcache_failed_get_free_pages++;
+		kmem_cache_free(zcache_obj_cache, obj);
+		goto out;
+	}
+	preempt_disable();
+	kp = &__get_cpu_var(zcache_preloads);
+	if (kp->obj == NULL)
 		kp->obj = obj;
-	}
-
-	if (!kp->page) {
-		page = (void *)__get_free_page(ZCACHE_GFP_MASK);
-		if (unlikely(page == NULL)) {
-			zcache_failed_get_free_pages++;
-			goto out;
-		}
-		kp->page =  page;
-	}
-
+	else
+		kmem_cache_free(zcache_obj_cache, obj);
+	if (kp->page == NULL)
+		kp->page = page;
+	else
+		free_page((unsigned long)page);
 	ret = 0;
 out:
 	return ret;
@@ -1583,14 +1589,15 @@ static int zcache_put_page(int cli_id, int pool_id, struct tmem_oid *oidp,
 			else
 				zcache_failed_pers_puts++;
 		}
+		zcache_put_pool(pool);
+		preempt_enable_no_resched();
 	} else {
 		zcache_put_to_flush++;
 		if (atomic_read(&pool->obj_count) > 0)
 			/* the put fails whether the flush succeeds or not */
 			(void)tmem_flush_page(pool, oidp, index);
+		zcache_put_pool(pool);
 	}
-
-	zcache_put_pool(pool);
 out:
 	return ret;
 }
@@ -1660,21 +1667,22 @@ static int zcache_flush_object(int cli_id, int pool_id,
 static int zcache_destroy_pool(int cli_id, int pool_id)
 {
 	struct tmem_pool *pool = NULL;
-	struct zcache_client *cli;
+	struct zcache_client *cli = NULL;
 	int ret = -1;
 
 	if (pool_id < 0)
 		goto out;
-
-	cli = get_zcache_client(cli_id);
+	if (cli_id == LOCAL_CLIENT)
+		cli = &zcache_host;
+	else if ((unsigned int)cli_id < MAX_CLIENTS)
+		cli = &zcache_clients[cli_id];
 	if (cli == NULL)
 		goto out;
-
 	atomic_inc(&cli->refcount);
-	pool = idr_find(&cli->tmem_pools, pool_id);
+	pool = cli->tmem_pools[pool_id];
 	if (pool == NULL)
 		goto out;
-	idr_remove(&cli->tmem_pools, pool_id);
+	cli->tmem_pools[pool_id] = NULL;
 	/* wait for pool activity on other cpus to quiesce */
 	while (atomic_read(&pool->refcount) != 0)
 		;
@@ -1694,12 +1702,13 @@ static int zcache_new_pool(uint16_t cli_id, uint32_t flags)
 	int poolid = -1;
 	struct tmem_pool *pool;
 	struct zcache_client *cli = NULL;
-	int r;
 
-	cli = get_zcache_client(cli_id);
+	if (cli_id == LOCAL_CLIENT)
+		cli = &zcache_host;
+	else if ((unsigned int)cli_id < MAX_CLIENTS)
+		cli = &zcache_clients[cli_id];
 	if (cli == NULL)
 		goto out;
-
 	atomic_inc(&cli->refcount);
 	pool = kmalloc(sizeof(struct tmem_pool), GFP_ATOMIC);
 	if (pool == NULL) {
@@ -1707,25 +1716,20 @@ static int zcache_new_pool(uint16_t cli_id, uint32_t flags)
 		goto out;
 	}
 
-	do {
-		r = idr_pre_get(&cli->tmem_pools, GFP_ATOMIC);
-		if (r != 1) {
-			kfree(pool);
-			pr_info("zcache: pool creation failed: out of memory\n");
-			goto out;
-		}
-		r = idr_get_new(&cli->tmem_pools, pool, &poolid);
-	} while (r == -EAGAIN);
-	if (r) {
-		pr_info("zcache: pool creation failed: error %d\n", r);
+	for (poolid = 0; poolid < MAX_POOLS_PER_CLIENT; poolid++)
+		if (cli->tmem_pools[poolid] == NULL)
+			break;
+	if (poolid >= MAX_POOLS_PER_CLIENT) {
+		pr_info("zcache: pool creation failed: max exceeded\n");
 		kfree(pool);
+		poolid = -1;
 		goto out;
 	}
-
 	atomic_set(&pool->refcount, 0);
 	pool->client = cli;
 	pool->pool_id = poolid;
 	tmem_new_pool(pool, flags);
+	cli->tmem_pools[poolid] = pool;
 	pr_info("zcache: created %s tmem pool, id=%d, client=%d\n",
 		flags & TMEM_POOL_PERSIST ? "persistent" : "ephemeral",
 		poolid, cli_id);
@@ -1921,8 +1925,8 @@ static void zcache_frontswap_init(unsigned ignored)
 }
 
 static struct frontswap_ops zcache_frontswap_ops = {
-	.put_page = zcache_frontswap_store,
-	.get_page = zcache_frontswap_load,
+	.store = zcache_frontswap_store,
+	.load = zcache_frontswap_load,
 	.invalidate_page = zcache_frontswap_flush_page,
 	.invalidate_area = zcache_frontswap_flush_area,
 	.init = zcache_frontswap_init
@@ -1943,7 +1947,7 @@ struct frontswap_ops *zcache_frontswap_register_ops(void)
  * NOTHING HAPPENS!
  */
 
-static int zcache_enabled = 1;
+static int zcache_enabled;
 
 static int __init enable_zcache(char *s)
 {
@@ -1983,7 +1987,7 @@ static int __init enable_zcache_compressor(char *s)
 __setup("zcache=", enable_zcache_compressor);
 
 
-static int __init zcache_comp_init(void)
+static int zcache_comp_init(void)
 {
 	int ret = 0;
 
@@ -2023,7 +2027,7 @@ static int __init zcache_init(void)
 		goto out;
 	}
 #endif /* CONFIG_SYSFS */
-
+#if defined(CONFIG_CLEANCACHE) || defined(CONFIG_FRONTSWAP)
 	if (zcache_enabled) {
 		unsigned int cpu;
 
@@ -2054,7 +2058,7 @@ static int __init zcache_init(void)
 		pr_err("zcache: can't create client\n");
 		goto out;
 	}
-
+#endif
 #ifdef CONFIG_CLEANCACHE
 	if (zcache_enabled && use_cleancache) {
 		struct cleancache_ops old_ops;
