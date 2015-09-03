@@ -366,7 +366,6 @@ config SPEEDUP_KEYRESUME
 	  Speed up system resume
 
 config QUICK_WAKEUP
-
 	bool "Quick wakeup"
 	depends on SUSPEND
 	default y
