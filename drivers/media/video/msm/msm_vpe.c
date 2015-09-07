@@ -1,4 +1,4 @@
-/* Copyright (c) 2012, The Linux Foundation. All rights reserved.
+/* Copyright (c) 2012, 2015, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -156,13 +156,14 @@ static int msm_vpe_cfg_update(void *pinfo)
 
 void vpe_update_scale_coef(uint32_t *p)
 {
-	uint32_t i, offset;
-	offset = *p;
-	for (i = offset; i < (VPE_SCALE_COEFF_NUM + offset); i++) {
+	uint32_t i;
+	uint32_t offset = *p;
+
+	for (i = 0; i < VPE_SCALE_COEFF_NUM; i++) {
 		msm_camera_io_w(*(++p),
-			vpe_ctrl->vpebase + VPE_SCALE_COEFF_LSBn(i));
+			vpe_ctrl->vpebase + VPE_SCALE_COEFF_LSBn(offset + i));
 		msm_camera_io_w(*(++p),
-			vpe_ctrl->vpebase + VPE_SCALE_COEFF_MSBn(i));
+			vpe_ctrl->vpebase + VPE_SCALE_COEFF_MSBn(offset + i));
 	}
 }
 
@@ -479,6 +480,11 @@ static void vpe_send_outmsg(void)
 		return;
 	}
 	event_qcmd = kzalloc(sizeof(struct msm_queue_cmd), GFP_ATOMIC);
+	if (!event_qcmd) {
+		pr_err("%s No memory for event q cmd", __func__);
+		spin_unlock_irqrestore(&vpe_ctrl->lock, flags);
+		return;
+	}
 	atomic_set(&event_qcmd->on_heap, 1);
 	event_qcmd->command = (void *)vpe_ctrl->pp_frame_info;
 	vpe_ctrl->pp_frame_info = NULL;
@@ -552,6 +558,11 @@ int vpe_enable(uint32_t clk_rate, struct msm_cam_media_controller *mctl)
 		goto vpe_clk_failed;
 
 #ifdef CONFIG_MSM_IOMMU
+	if (mctl->domain == NULL) {
+		pr_err("%s: iommu domain not initialized\n", __func__);
+		rc = -EINVAL;
+		goto src_attach_failed;
+	}
 	rc = iommu_attach_device(mctl->domain, vpe_ctrl->iommu_ctx_src);
 	if (rc < 0) {
 		pr_err("%s: Device attach failed\n", __func__);
@@ -770,7 +781,7 @@ static int msm_vpe_process_vpe_cmd(struct msm_vpe_cfg_cmd *vpe_cmd,
 		break;
 		}
 
-	case VPE_CMD_SCALE_CFG_TYPE:{
+	case VPE_CMD_SCALE_CFG_TYPE: {
 		struct msm_vpe_scaler_cfg scaler_cfg;
 		if (sizeof(struct msm_vpe_scaler_cfg) != vpe_cmd->length) {
 			pr_err("%s: size mismatch cmd=%d, len=%d, expected=%d",
@@ -894,7 +905,7 @@ static long msm_vpe_subdev_ioctl(struct v4l2_subdev *sd,
 	mctl = v4l2_get_subdev_hostdata(sd);
 	switch (cmd) {
 	case VIDIOC_MSM_VPE_INIT: {
-		msm_vpe_subdev_init(sd);
+		rc = msm_vpe_subdev_init(sd);
 		break;
 		}
 
@@ -1019,6 +1030,7 @@ static int msm_vpe_subdev_close(struct v4l2_subdev *sd,
 		msm_mctl_unmap_user_frame(&frame_info->dest_frame,
 			frame_info->p_mctl->client, mctl->domain_num);
 	}
+	vpe_ctrl->pp_frame_info = NULL;
 	/* Drain the payload queue. */
 	msm_queue_drain(&vpe_ctrl->eventData_q, list_eventdata);
 	atomic_dec(&vpe_ctrl->active);
