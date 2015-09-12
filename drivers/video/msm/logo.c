@@ -3,6 +3,7 @@
  * Show Logo in RLE 565 format
  *
  * Copyright (C) 2008 Google Incorporated
+ * Copyright (C) 2013 Sony Mobile Communications AB.
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -14,19 +15,38 @@
  * GNU General Public License for more details.
  *
  */
+#include <asm/cacheflush.h>
 #include <linux/module.h>
 #include <linux/types.h>
 #include <linux/fb.h>
 #include <linux/vt_kern.h>
 #include <linux/unistd.h>
 #include <linux/syscalls.h>
+#include <linux/workqueue.h>
 
 #include <linux/irq.h>
 #include <asm/system.h>
 
+#include "mdp.h"
+#include "mdp4.h"
+
 #define fb_width(fb)	((fb)->var.xres)
+#define fb_linewidth(fb) \
+	((fb)->fix.line_length / (fb_depth(fb) == 2 ? 2 : 4))
 #define fb_height(fb)	((fb)->var.yres)
-#define fb_size(fb)	((fb)->var.xres * (fb)->var.yres * 2)
+#define fb_depth(fb)	((fb)->var.bits_per_pixel >> 3)
+#define fb_size(fb)	(fb_width(fb) * fb_height(fb) * fb_depth(fb))
+#define INIT_IMAGE_FILE "/logo.rle"
+
+static void close_fb_work(struct work_struct *work)
+{
+	struct fb_info *fb_info;
+	struct delayed_work *fb_work = to_delayed_work(work);
+	fb_info = registered_fb[0];
+	if (fb_info && fb_info->fbops->fb_release)
+		fb_info->fbops->fb_release(fb_info, 0);
+	kfree(fb_work);
+}
 
 static void memset16(void *_ptr, unsigned short val, unsigned count)
 {
@@ -36,51 +56,22 @@ static void memset16(void *_ptr, unsigned short val, unsigned count)
 		*ptr++ = val;
 }
 
-static int total_pixel = 1;
-static int memset16_rgb8888(void *_ptr, unsigned short val, unsigned count,
-				struct fb_info *fb)
+static void memset32(void *_ptr, unsigned int val, unsigned count)
 {
-	unsigned short *ptr = _ptr;
-	unsigned short red;
-	unsigned short green;
-	unsigned short blue;
-	int need_align = (fb->fix.line_length >> 2) - fb->var.xres;
-	int align_amount = need_align << 1;
-	int pad = 0;
-	red = (val & 0xF800) >> 8;
-	green = (val & 0x7E0) >> 3;
-	blue = (val & 0x1F) << 3;
-	count >>= 1;
-	while (count--) {
-		*ptr++ = (green << 8) | red;
-		*ptr++ = blue;
-		if (need_align) {
-			if (!(total_pixel % fb->var.xres)) {
-				ptr += align_amount;
-				pad++;
-			}
-		}
-		total_pixel++;
-	}
-	return pad * align_amount;
+	unsigned int *ptr = _ptr;
+	count >>= 2;
+	while (count--)
+		*ptr++ = val;
 }
+
 /* 565RLE image format: [count(2 bytes), rle(2 bytes)] */
 int load_565rle_image(char *filename, bool bf_supported)
 {
 	struct fb_info *info;
-	int fd, count, err = 0;
-	unsigned max;
-	unsigned short *data, *bits, *ptr;
-	static int skip_logo;
-#ifndef CONFIG_FRAMEBUFFER_CONSOLE
-	struct module *owner;
-#endif
-	int pad;
-	/*  Skip logo display after fb[0] register since mdp and DSI is not ready*/
-	if(!skip_logo) {
-		skip_logo = 1;
-		return 0;
-	}
+	int fd, err = 0;
+	unsigned count, max, width, stride, line_pos = 0;
+	unsigned short *data, *ptr;
+	unsigned char *bits;
 
 	info = registered_fb[0];
 	if (!info) {
@@ -88,15 +79,6 @@ int load_565rle_image(char *filename, bool bf_supported)
 			__func__);
 		return -ENODEV;
 	}
-#ifndef CONFIG_FRAMEBUFFER_CONSOLE
-	owner = info->fbops->owner;
-	if (!try_module_get(owner))
-		return -ENODEV;
-	if (info->fbops->fb_open && info->fbops->fb_open(info, 0)) {
-		module_put(owner);
-		return -ENODEV;
-	}
-#endif
 
 	fd = sys_open(filename, O_RDONLY, 0);
 	if (fd < 0) {
@@ -120,8 +102,9 @@ int load_565rle_image(char *filename, bool bf_supported)
 		err = -EIO;
 		goto err_logo_free_data;
 	}
-
-	max = fb_width(info) * fb_height(info);
+	width = fb_width(info);
+	stride = fb_linewidth(info);
+	max = width * fb_height(info);
 	ptr = data;
 	if (bf_supported && (info->node == 1 || info->node == 2)) {
 		err = -EPERM;
@@ -130,94 +113,84 @@ int load_565rle_image(char *filename, bool bf_supported)
 		goto err_logo_free_data;
 	}
 	if (info->screen_base) {
-		bits = (unsigned short *)(info->screen_base);
+		bits = (unsigned char *)(info->screen_base);
 		while (count > 3) {
-			unsigned n = ptr[0];
+			int n = ptr[0];
+
 			if (n > max)
 				break;
-			if (info->var.bits_per_pixel >= 24) {
-				pad = memset16_rgb8888(bits, ptr[1], n << 1, info);
-				bits += n << 1;
-				bits += pad;
-			} else {
-				memset16(bits, ptr[1], n << 1);
-				bits += n;
-			}
 			max -= n;
+			while (n > 0) {
+				unsigned int j =
+				    (line_pos + n > width ? width-line_pos : n);
+
+				if (fb_depth(info) == 2)
+					memset16(bits, swab16(ptr[1]), j << 1);
+				else {
+					unsigned int widepixel = ptr[1];
+					/*
+					 * Format is RGBA, but fb is big
+					 * endian so we should make widepixel
+					 * as ABGR.
+					 */
+					widepixel =
+						/* red :   f800 -> 000000f8 */
+						(widepixel & 0xf800) >> 8 |
+						/* green : 07e0 -> 0000fc00 */
+						(widepixel & 0x07e0) << 5 |
+						/* blue :  001f -> 00f80000 */
+						(widepixel & 0x001f) << 19;
+					memset32(bits, widepixel, j << 2);
+				}
+				bits += j * fb_depth(info);
+				line_pos += j;
+				n -= j;
+				if (line_pos == width) {
+					bits += (stride-width) * fb_depth(info);
+					line_pos = 0;
+				}
+			}
 			ptr += 2;
 			count -= 4;
 		}
+		dmac_flush_range(info->screen_base, bits);
 	}
-#ifndef CONFIG_FRAMEBUFFER_CONSOLE
-	err = fb_pan_display(info, &info->var);
-	if (err < 0) {
-		printk(KERN_WARNING "%s: Can not update framebuffer\n",
-		__func__);
-		return -ENODEV;
-	}
-#endif
-
 err_logo_free_data:
 	kfree(data);
 err_logo_close_file:
 	sys_close(fd);
+
 	return err;
 }
-EXPORT_SYMBOL(load_565rle_image);
 
-int draw_rgb888_screen(void)
+static void __init draw_logo(void)
 {
-	struct fb_info *fb = registered_fb[0];
-	u32 height = fb->var.yres / 5;
-	u32 line = fb->fix.line_length;
-	u32 i, j;
-
-	for (i = 0; i < height; i++) {
-		for (j = 0; j < fb->var.xres; j++) {
-			memset(fb->screen_base + i * line + j * 4 + 0, 0xff, 1);
-			memset(fb->screen_base + i * line + j * 4 + 1, 0x00, 1);
-			memset(fb->screen_base + i * line + j * 4 + 2, 0x00, 1);
-			memset(fb->screen_base + i * line + j * 4 + 3, 0x00, 1);
+	struct fb_info *fb_info;
+	struct delayed_work *fb_work;
+	fb_info = registered_fb[0];
+	if (fb_info && fb_info->fbops->fb_open) {
+		printk(KERN_INFO "Drawing logo.\n");
+		fb_info->fbops->fb_open(fb_info, 0);
+		fb_info->fbops->fb_pan_display(&fb_info->var, fb_info);
+		fb_work = kmalloc(sizeof(struct delayed_work), GFP_KERNEL);
+		if (fb_work == NULL) {
+			printk(KERN_ERR"%s failed for kmalloc\n", __func__);
+		} else {
+			INIT_DELAYED_WORK(fb_work, close_fb_work);
+			schedule_delayed_work(fb_work, HZ*5);
 		}
 	}
+}
 
-	for (i = height; i < height * 2; i++) {
-		for (j = 0; j < fb->var.xres; j++) {
-			memset(fb->screen_base + i * line + j * 4 + 0, 0x00, 1);
-			memset(fb->screen_base + i * line + j * 4 + 1, 0xff, 1);
-			memset(fb->screen_base + i * line + j * 4 + 2, 0x00, 1);
-			memset(fb->screen_base + i * line + j * 4 + 3, 0x00, 1);
-		}
-	}
+int __init logo_init(void)
+{
+	boolean bf_supported;
+	bf_supported = mdp4_overlay_borderfill_supported();
 
-	for (i = height * 2; i < height * 3; i++) {
-		for (j = 0; j < fb->var.xres; j++) {
-			memset(fb->screen_base + i * line + j * 4 + 0, 0x00, 1);
-			memset(fb->screen_base + i * line + j * 4 + 1, 0x00, 1);
-			memset(fb->screen_base + i * line + j * 4 + 2, 0xff, 1);
-			memset(fb->screen_base + i * line + j * 4 + 3, 0x00, 1);
-		}
-	}
-
-	for (i = height * 3; i < height * 4; i++) {
-		for (j = 0; j < fb->var.xres; j++) {
-			memset(fb->screen_base + i * line + j * 4 + 0, 0x00, 1);
-			memset(fb->screen_base + i * line + j * 4 + 1, 0x00, 1);
-			memset(fb->screen_base + i * line + j * 4 + 2, 0x00, 1);
-			memset(fb->screen_base + i * line + j * 4 + 3, 0xff, 1);
-		}
-	}
-
-	for (i = height * 4; i < height * 5; i++) {
-		for (j = 0; j < fb->var.xres; j++) {
-			memset(fb->screen_base + i * line + j * 4 + 0, 0xff, 1);
-			memset(fb->screen_base + i * line + j * 4 + 1, 0xff, 1);
-			memset(fb->screen_base + i * line + j * 4 + 2, 0xff, 1);
-			memset(fb->screen_base + i * line + j * 4 + 3, 0x00, 1);
-		}
-	}
+	if (!load_565rle_image(INIT_IMAGE_FILE, bf_supported))
+		draw_logo();
 
 	return 0;
 }
-EXPORT_SYMBOL(draw_rgb888_screen);
 
+module_init(logo_init);
