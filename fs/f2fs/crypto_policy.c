@@ -79,7 +79,7 @@ static int f2fs_create_encryption_context_from_policy(
 	ctx.filenames_encryption_mode = policy->filenames_encryption_mode;
 	ctx.flags = policy->flags;
 	BUILD_BUG_ON(sizeof(ctx.nonce) != F2FS_KEY_DERIVATION_NONCE_SIZE);
-	get_random_bytes(ctx.nonce, F2FS_KEY_DERIVATION_NONCE_SIZE);
+	erandom_get_random_bytes((char *)ctx.nonce, F2FS_KEY_DERIVATION_NONCE_SIZE);
 
 	return f2fs_setxattr(inode, F2FS_XATTR_INDEX_ENCRYPTION,
 			F2FS_XATTR_NAME_ENCRYPTION_CONTEXT, &ctx,
@@ -202,7 +202,7 @@ int f2fs_inherit_context(struct inode *parent, struct inode *child,
 	memcpy(ctx.master_key_descriptor, ci->ci_master_key,
 			F2FS_KEY_DESCRIPTOR_SIZE);
 
-	get_random_bytes(ctx.nonce, F2FS_KEY_DERIVATION_NONCE_SIZE);
+	erandom_get_random_bytes((char *)ctx.nonce, F2FS_KEY_DERIVATION_NONCE_SIZE);
 	return f2fs_setxattr(child, F2FS_XATTR_INDEX_ENCRYPTION,
 				F2FS_XATTR_NAME_ENCRYPTION_CONTEXT, &ctx,
 				sizeof(ctx), ipage, XATTR_CREATE);
