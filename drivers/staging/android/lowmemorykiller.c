@@ -136,7 +136,7 @@ static bool is_in_donotkill_proc_list(char *proc_name)
 static bool is_in_donotkill_sysproc_list(char *proc_name)
 {
 	return is_in_donotkill_list(proc_name, &donotkill_sysproc);
-
+}
 #else
 #define MANAGED_PROCESS_TYPES		1	/* Numer of managed process types (lowmem_process_type) */
 
