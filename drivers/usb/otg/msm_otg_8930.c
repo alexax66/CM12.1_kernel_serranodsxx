@@ -51,6 +51,10 @@
 #include <mach/msm_bus.h>
 #include <mach/rpm-regulator.h>
 
+#ifdef CONFIG_FORCE_FAST_CHARGE
+#include <linux/fastchg.h>
+#endif
+
 #define MSM_USB_BASE	(motg->regs)
 #define DRIVER_NAME	"msm_otg"
 
@@ -967,7 +971,7 @@ static int msm_otg_resume(struct msm_otg *motg)
 	if (!atomic_read(&motg->in_lpm))
 		return 0;
 
-	//wake_lock(&motg->wlock);
+	wake_lock(&motg->wlock);
 
 	/* Vote for TCXO when waking up the phy */
 	if (motg->lpm_flags & XO_SHUTDOWN) {
@@ -1169,6 +1173,11 @@ static void msm_otg_notify_charger(struct msm_otg *motg, unsigned mA)
 
 	if (motg->cur_power == mA)
 		return;
+
+#ifdef CONFIG_FORCE_FAST_CHARGE
+	if (force_fast_charge > 0)
+		mA = IDEV_ACA_CHG_MAX;
+#endif
 
 	dev_info(motg->phy.dev, "Avail curr from USB = %u\n", mA);
 
@@ -3946,7 +3955,7 @@ static int __init msm_otg_probe(struct platform_device *pdev)
 	if (motg->pdata->enable_lpm_on_dev_suspend)
 		motg->caps |= ALLOW_LPM_ON_DEV_SUSPEND;
 
-	wake_lock(&motg->wlock);
+	//wake_lock(&motg->wlock);
 	pm_runtime_set_active(&pdev->dev);
 	pm_runtime_enable(&pdev->dev);
 
