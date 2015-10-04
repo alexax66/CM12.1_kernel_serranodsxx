@@ -232,9 +232,11 @@ static struct srcu_struct bam_dmux_srcu;
 
 /* A2 power collaspe */
 #define UL_TIMEOUT_DELAY 1000	/* in ms */
+#define UL_FAST_TIMEOUT_DELAY 100 /* in ms */
 #define ENABLE_DISCONNECT_ACK	0x1
 #define SHUTDOWN_TIMEOUT_MS	500
 #define UL_WAKEUP_TIMEOUT_MS	2000
+static uint32_t ul_timeout_delay = UL_TIMEOUT_DELAY;
 static void toggle_apps_ack(void);
 static void reconnect_to_bam(void);
 static void disconnect_to_bam(void);
@@ -1618,7 +1620,7 @@ static void ul_timeout(struct work_struct *work)
 	ret = write_trylock_irqsave(&ul_wakeup_lock, flags);
 	if (!ret) { /* failed to grab lock, reschedule and bail */
 		queue_delayed_work(system_power_efficient_wq, &ul_timeout_work,
-				msecs_to_jiffies(UL_TIMEOUT_DELAY));
+				msecs_to_jiffies(ul_timeout_delay));
 		return;
 	}
 	if (bam_is_connected) {
@@ -1647,11 +1649,11 @@ static void ul_timeout(struct work_struct *work)
 				__func__, ul_packet_written);
 			ul_packet_written = 0;
 			queue_delayed_work(system_power_efficient_wq, &ul_timeout_work,
-					msecs_to_jiffies(UL_TIMEOUT_DELAY));
-                } else if(polling_mode) {
-                        DMUX_LOG_KERR("%s: BAM is in polling mode, delay UL power down", __func__);
-                        queue_delayed_work(system_power_efficient_wq, &ul_timeout_work,
-                                       msecs_to_jiffies(UL_TIMEOUT_DELAY));
+					msecs_to_jiffies(ul_timeout_delay));
+		} else if(polling_mode) {
+			DMUX_LOG_KERR("%s: BAM is in polling mode, delay UL power down", __func__);
+			queue_delayed_work(system_power_efficient_wq, &ul_timeout_work,
+					msecs_to_jiffies(ul_timeout_delay));
                 } else {
 			ul_powerdown();
 		}
@@ -1739,7 +1741,7 @@ static void ul_wakeup(void)
 		if (likely(do_vote_dfab))
 			vote_dfab();
 		queue_delayed_work(system_power_efficient_wq, &ul_timeout_work,
-				msecs_to_jiffies(UL_TIMEOUT_DELAY));
+				msecs_to_jiffies(ul_timeout_delay));
 		bam_is_connected = 1;
 		mutex_unlock(&wakeup_lock);
 		return;
@@ -1784,7 +1786,7 @@ static void ul_wakeup(void)
 	bam_is_connected = 1;
 	BAM_DMUX_LOG("%s complete\n", __func__);
 	queue_delayed_work(system_power_efficient_wq, &ul_timeout_work,
-				msecs_to_jiffies(UL_TIMEOUT_DELAY));
+				msecs_to_jiffies(ul_timeout_delay));
 	mutex_unlock(&wakeup_lock);
 }
 
@@ -2471,10 +2473,15 @@ static int bam_dmux_probe(struct platform_device *pdev)
 			pr_err("%s: irq field missing\n", __func__);
 			return -ENODEV;
 		}
-		DBG("%s: base:%p size:%x irq:%d\n", __func__,
+
+		ul_timeout_delay = UL_FAST_TIMEOUT_DELAY;
+
+		DBG("%s: base:%p size:%x irq:%d ul_timeout_delay:%d\n",
+							__func__,
 							a2_phys_base,
 							a2_phys_size,
-							a2_bam_irq);
+							a2_bam_irq,
+							ul_timeout_delay);
 	} else { /* fallback to default init data */
 		a2_phys_base = (void *)(A2_PHYS_BASE);
 		a2_phys_size = A2_PHYS_SIZE;
