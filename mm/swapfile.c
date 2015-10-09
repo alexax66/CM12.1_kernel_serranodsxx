@@ -381,7 +381,7 @@ scan:
 			spin_lock(&si->lock);
 			goto checks;
 		}
-		if (si->swap_map[offset] == SWAP_HAS_CACHE) {
+		if (vm_swap_full() && si->swap_map[offset] == SWAP_HAS_CACHE) {
 			spin_lock(&si->lock);
 			goto checks;
 		}
@@ -396,7 +396,7 @@ scan:
 			spin_lock(&si->lock);
 			goto checks;
 		}
-		if (si->swap_map[offset] == SWAP_HAS_CACHE) {
+		if (vm_swap_full() && si->swap_map[offset] == SWAP_HAS_CACHE) {
 			spin_lock(&si->lock);
 			goto checks;
 		}
