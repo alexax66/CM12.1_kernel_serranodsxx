@@ -3257,8 +3257,6 @@ unsigned long global_reclaimable_pages(void)
 	return nr;
 }
 
-<<<<<<< HEAD
-=======
 unsigned long zone_reclaimable_pages(struct zone *zone)
 {
 	int nr;
@@ -3273,7 +3271,6 @@ unsigned long zone_reclaimable_pages(struct zone *zone)
 	return nr;
 }
 
->>>>>>> parent of a3581ca... swap: add per-partition lock for swapfile
 #ifdef CONFIG_HIBERNATION
 /*
  * Try to free `nr_to_reclaim' of memory, system-wide, and return the number of
