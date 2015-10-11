@@ -3143,8 +3143,8 @@ static int do_swap_page(struct mm_struct *mm, struct vm_area_struct *vma,
 	mem_cgroup_commit_charge_swapin(page, ptr);
 
 	swap_free(entry);
-	if ((vma->vm_flags & VM_LOCKED) || PageMlocked(page))
-		try_to_free_swap(page);
+	if ((PageSwapCache(page) && vm_swap_full(page_swap_info(page))) ||
+		(vma->vm_flags & VM_LOCKED) || PageMlocked(page))
 	unlock_page(page);
 	if (swapcache) {
 		/*
