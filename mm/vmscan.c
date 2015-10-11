@@ -1269,7 +1269,7 @@ static unsigned long isolate_lru_pages(unsigned long nr_to_scan,
 			 * anon page which don't already have a swap slot is
 			 * pointless.
 			 */
-			if (get_nr_swap_pages() <= 0 && PageSwapBacked(cursor_page) &&
+			if (nr_swap_pages <= 0 && PageSwapBacked(cursor_page) &&
 			    !PageSwapCache(cursor_page))
 				break;
 
@@ -1961,7 +1961,7 @@ static void get_scan_count(struct mem_cgroup_zone *mz, struct scan_control *sc,
 		force_scan = true;
 
 	/* If we have no swap space, do not bother scanning anon pages. */
-	if (!sc->may_swap || (get_nr_swap_pages() <= 0)) {
+	if (!sc->may_swap || (nr_swap_pages <= 0)) {
 		noswap = 1;
 		fraction[0] = 0;
 		fraction[1] = 1;
@@ -2097,7 +2097,7 @@ static inline bool should_continue_reclaim(struct mem_cgroup_zone *mz,
 	 */
 	pages_for_compaction = (2UL << sc->order);
 	inactive_lru_pages = zone_nr_lru_pages(mz, LRU_INACTIVE_FILE);
-	if (get_nr_swap_pages() > 0)
+	if (nr_swap_pages > 0)
 		inactive_lru_pages += zone_nr_lru_pages(mz, LRU_INACTIVE_ANON);
 	if (sc->nr_reclaimed < pages_for_compaction &&
 			inactive_lru_pages > pages_for_compaction)
@@ -3250,13 +3250,30 @@ unsigned long global_reclaimable_pages(void)
 	nr = global_page_state(NR_ACTIVE_FILE) +
 	     global_page_state(NR_INACTIVE_FILE);
 
-	if (get_nr_swap_pages() > 0)
+	if (nr_swap_pages > 0)
 		nr += global_page_state(NR_ACTIVE_ANON) +
 		      global_page_state(NR_INACTIVE_ANON);
 
 	return nr;
 }
 
+<<<<<<< HEAD
+=======
+unsigned long zone_reclaimable_pages(struct zone *zone)
+{
+	int nr;
+
+	nr = zone_page_state(zone, NR_ACTIVE_FILE) +
+	     zone_page_state(zone, NR_INACTIVE_FILE);
+
+	if (nr_swap_pages > 0)
+		nr += zone_page_state(zone, NR_ACTIVE_ANON) +
+		      zone_page_state(zone, NR_INACTIVE_ANON);
+
+	return nr;
+}
+
+>>>>>>> parent of a3581ca... swap: add per-partition lock for swapfile
 #ifdef CONFIG_HIBERNATION
 /*
  * Try to free `nr_to_reclaim' of memory, system-wide, and return the number of
