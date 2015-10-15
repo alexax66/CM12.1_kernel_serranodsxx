@@ -204,6 +204,30 @@ struct tsu6721_usbsw {
 
 static struct tsu6721_usbsw *local_usbsw;
 
+static int tsu6721_write_reg(struct i2c_client *client, int reg, int val)
+{
+	int ret;
+	ret = i2c_smbus_write_byte_data(client, reg, val);
+	if (ret < 0)
+	{
+		dev_err(&client->dev,
+			"%s, i2c write error %d\n",__func__, ret);
+	}
+	return ret;
+}
+
+static int tsu6721_read_reg(struct i2c_client *client, int reg)
+{
+	int ret;
+	ret = i2c_smbus_read_byte_data(client, reg);
+	if (ret < 0)
+	{
+		dev_err(&client->dev,
+			"%s, i2c read error %d\n",__func__, ret);
+	}
+	return ret;
+}
+
 static void tsu6721_disable_interrupt(void)
 {
 	struct i2c_client *client = local_usbsw->client;
@@ -248,10 +272,12 @@ static void tsu6721_dock_control(struct tsu6721_usbsw *usbsw,
 		ret = i2c_smbus_read_byte_data(client, REG_CONTROL);
 		if (ret < 0)
 			dev_err(&client->dev, "%s: err %d\n", __func__, ret);
-		ret = i2c_smbus_write_byte_data(client,
-				REG_CONTROL, ret & ~CON_MANUAL_SW);
+		else {
+			ret = i2c_smbus_write_byte_data(client,
+					REG_CONTROL, ret & ~CON_MANUAL_SW);
+		}
 		if (ret < 0)
-			dev_err(&client->dev, "%s: err %d\n", __func__, ret);
+			dev_err(&client->dev, "%s: err %x\n", __func__, ret);
 	} else {
 		pdata->callback(dock_type, state);
 		ret = i2c_smbus_read_byte_data(client, REG_CONTROL);
@@ -306,6 +332,10 @@ static void tsu6721_reg_init(struct tsu6721_usbsw *usbsw)
 		dev_err(&client->dev, "%s: err %d\n", __func__, ret);
 
 	ret = i2c_smbus_write_byte_data(client, REG_CONTROL, ctrl);
+	if (ret < 0)
+		dev_err(&client->dev, "%s: err %d\n", __func__, ret);
+
+	ret = i2c_smbus_write_byte_data(client, REG_TIMING_SET1, 0xb);
 	if (ret < 0)
 		dev_err(&client->dev, "%s: err %d\n", __func__, ret);
 }
@@ -463,19 +493,14 @@ static ssize_t tsu6721_reset(struct device *dev,
 {
 	struct tsu6721_usbsw *usbsw = dev_get_drvdata(dev);
 	struct i2c_client *client = usbsw->client;
-	int ret;
 
 	if (!strncmp(buf, "1", 1)) {
 		dev_info(&client->dev,
 			"tsu6721 reset after delay 1000 msec.\n");
 		msleep(1000);
-		ret = i2c_smbus_write_byte_data(client,
-					REG_RESET, 0x01);
-		if (ret < 0)
-				dev_err(&client->dev,
-					"cannot soft reset, err %d\n", ret);
-
-	dev_info(&client->dev, "tsu6721_reset_control done!\n");
+		tsu6721_write_reg(client, REG_RESET, 0x01);
+		dev_info(&client->dev,
+			"tsu6721_reset_control done!\n");
 	} else {
 		dev_info(&client->dev,
 			"tsu6721_reset_control, but not reset_value!\n");
@@ -844,39 +869,25 @@ static irqreturn_t tsu6721_irq_thread(int irq, void *data)
 	struct tsu6721_usbsw *usbsw = data;
 	struct i2c_client *client = usbsw->client;
 	int intr1, intr2;
-	int val1, val2, val3, adc;
+	int val1, val3, adc;
 	/* TSU6721 : Read interrupt -> Read Device */
 	pr_info("tsu6721_irq_thread is called\n");
 
-	/* device detection */
 	mutex_lock(&usbsw->mutex);
 	tsu6721_disable_interrupt();
 	intr1 = i2c_smbus_read_byte_data(client, REG_INT1);
 	intr2 = i2c_smbus_read_byte_data(client, REG_INT2);
+	tsu6721_enable_interrupt();
 	dev_info(&client->dev, "%s: intr : 0x%x intr2 : 0x%x\n",
 		__func__, intr1, intr2);
-
-	local_usbsw->last_state.int1 = intr1;
-	local_usbsw->last_state.int2 = intr2;
-
-	if ((intr1 + intr2) == DATA_NONE) {
-		val1 = i2c_smbus_read_byte_data(client, REG_DEVICE_TYPE1);
-		val2 = i2c_smbus_read_byte_data(client, REG_DEVICE_TYPE2);
-		val3 = i2c_smbus_read_byte_data(client, REG_DEVICE_TYPE3);
-		adc = i2c_smbus_read_byte_data(client, REG_ADC);
-		if (((val1 + val2 + val3) == DATA_NONE) && (adc == ADC_OPEN))
-			tsu6721_detach_dev(usbsw);
-		else
-			tsu6721_attach_dev(usbsw);
-	}
 
 	/* MUIC OVP Check */
 	if (intr1 & INT_OVP_ENABLE)
 		usbsw->pdata->oxp_callback(ENABLE);
 	else if (intr1 & INT_OXP_DISABLE)
 		usbsw->pdata->oxp_callback(DISABLE);
-	msleep(20);
 
+	/* device detection */
 	/* interrupt both attach and detach */
 	if (intr1 == (INT_ATTACH + INT_DETACH)) {
 		val1 = i2c_smbus_read_byte_data(client, REG_DEVICE_TYPE1);
@@ -888,17 +899,17 @@ static irqreturn_t tsu6721_irq_thread(int irq, void *data)
 			tsu6721_detach_dev(usbsw);
 		else
 			tsu6721_attach_dev(usbsw);
+	}
 	/* interrupt attach */
-	} else if (intr1 & INT_ATTACH || intr2 &
+	else if (intr1 & INT_ATTACH || intr2 &
 			(INT_AV_CHANGE | INT_RESERVED_ATTACH))
 		tsu6721_attach_dev(usbsw);
+
 	/* interrupt detach */
 	else if (intr1 & INT_DETACH)
 		tsu6721_detach_dev(usbsw);
-
-	tsu6721_enable_interrupt();
 	mutex_unlock(&usbsw->mutex);
-
+	pr_info("tsu6721_irq_thread,end\n");
 	return IRQ_HANDLED;
 }
 
@@ -915,11 +926,7 @@ static int tsu6721_irq_init(struct tsu6721_usbsw *usbsw)
 			dev_err(&client->dev, "failed to reqeust IRQ\n");
 			return ret;
 		}
-
-		ret = enable_irq_wake(client->irq);
-		if (ret < 0)
-			dev_err(&client->dev,
-				"failed to enable wakeup src %d\n", ret);
+		enable_irq_wake(client->irq);
 	}
 
 	return 0;
@@ -929,7 +936,8 @@ static void tsu6721_init_detect(struct work_struct *work)
 {
 	struct tsu6721_usbsw *usbsw = container_of(work,
 			struct tsu6721_usbsw, init_work.work);
-	int ret = 0;
+	int ret;
+	int int_reg1, int_reg2;
 
 	dev_info(&usbsw->client->dev, "%s\n", __func__);
 
@@ -942,15 +950,14 @@ static void tsu6721_init_detect(struct work_struct *work)
 		dev_info(&usbsw->client->dev,
 				"failed to enable  irq init %s\n", __func__);
 
-	ret = i2c_smbus_read_byte_data(usbsw->client, REG_INT1);
+	int_reg1 = tsu6721_read_reg(usbsw->client, REG_INT1);
 	dev_info(&usbsw->client->dev, "%s: intr1 : 0x%x\n",
-		__func__, ret);
-	local_usbsw->last_state.int1 = ret;
-
-	ret = i2c_smbus_read_byte_data(usbsw->client, REG_INT2);
+		__func__, int_reg1);
+	int_reg2 = i2c_smbus_read_byte_data(usbsw->client, REG_INT2);
 	dev_info(&usbsw->client->dev, "%s: intr2 : 0x%x\n",
-		__func__, ret);
-	local_usbsw->last_state.int2 = ret;
+		__func__, int_reg2);
+//	local_usbsw->last_state.int2 = ret;
+	local_usbsw->last_state.int2 = int_reg2;
 }
 
 static int __devinit tsu6721_probe(struct i2c_client *client,
@@ -1064,6 +1071,7 @@ static int tsu6721_resume(struct i2c_client *client)
 {
 	struct tsu6721_usbsw *usbsw = i2c_get_clientdata(client);
 
+	pr_info("%s: resume \n",__func__);
 	i2c_smbus_read_byte_data(client, REG_INT1);
 	i2c_smbus_read_byte_data(client, REG_INT2);
 
@@ -1085,6 +1093,7 @@ MODULE_DEVICE_TABLE(i2c, tsu6721_id);
 static struct i2c_driver tsu6721_i2c_driver = {
 	.driver = {
 		.name = "tsu6721",
+		.owner = THIS_MODULE,
 	},
 	.probe = tsu6721_probe,
 	.remove = __devexit_p(tsu6721_remove),
