@@ -57,7 +57,9 @@ static int f2fs_vm_page_mkwrite(struct vm_area_struct *vma,
 	f2fs_put_dnode(&dn);
 	f2fs_unlock_op(sbi);
 
-	file_update_time(vma->vm_file);
+	err = file_update_time(vma->vm_file);
+	if (err)
+		goto out;
 	lock_page(page);
 	if (unlikely(page->mapping != inode->i_mapping ||
 			page_offset(page) > i_size_read(inode) ||
