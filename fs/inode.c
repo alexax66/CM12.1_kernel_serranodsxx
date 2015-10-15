@@ -526,6 +526,18 @@ static void evict(struct inode *inode)
 	BUG_ON(!(inode->i_state & I_FREEING));
 	BUG_ON(!list_empty(&inode->i_lru));
 
+	if (inode->i_nlink && inode->i_state & I_DIRTY_TIME) {
+		if (inode->i_op->write_time)
+			inode->i_op->write_time(inode);
+		else if (inode->i_sb->s_op->write_inode) {
+			struct writeback_control wbc = {
+				.sync_mode = WB_SYNC_NONE,
+			};
+			mark_inode_dirty(inode);
+			inode->i_sb->s_op->write_inode(inode, &wbc);
+		}
+	}
+
 	if (!list_empty(&inode->i_wb_list))
 		inode_wb_list_del(inode);
 
@@ -1486,17 +1498,24 @@ static int relatime_need_update(struct vfsmount *mnt, struct inode *inode,
  */
 static int update_time(struct inode *inode, struct timespec *time, int flags)
 {
-	if (inode->i_op->update_time)
-		return inode->i_op->update_time(inode, time, flags);
-
 	if (flags & S_ATIME)
 		inode->i_atime = *time;
+	if (inode->i_sb->s_flags & MS_LAZYTIME) {
+		spin_lock(&inode->i_lock);
+		inode->i_state |= I_DIRTY_TIME;
+		spin_unlock(&inode->i_lock);
+		return 0;
+	}
 	if (flags & S_VERSION)
 		inode_inc_iversion(inode);
 	if (flags & S_CTIME)
 		inode->i_ctime = *time;
 	if (flags & S_MTIME)
 		inode->i_mtime = *time;
+	if (inode->i_op->update_time)
+		inode->i_op->update_time(inode);
+	if (inode->i_op->write_time)
+		return inode->i_op->write_time(inode);
 	mark_inode_dirty_sync(inode);
 	return 0;
 }

@@ -449,7 +449,7 @@ writeback_single_inode(struct inode *inode, struct bdi_writeback *wb,
 	spin_unlock(&inode->i_lock);
 
 	/* Don't write the inode if only I_DIRTY_PAGES was set */
-	if (dirty & (I_DIRTY_SYNC | I_DIRTY_DATASYNC)) {
+	if (dirty & (I_DIRTY_SYNC | I_DIRTY_DATASYNC | I_DIRTY_TIME)) {
 		int err = write_inode(inode, wbc);
 		if (ret == 0)
 			ret = err;
@@ -1304,6 +1304,41 @@ int writeback_inodes_sb_nr_if_idle(struct super_block *sb,
 }
 EXPORT_SYMBOL(writeback_inodes_sb_nr_if_idle);
 
+/*
+ * This works like wait_sb_inodes(), but it is called *before* we kick
+ * the bdi so the inodes can get written out.
+ */
+static void flush_sb_dirty_time(struct super_block *sb)
+{
+       struct inode *inode, *old_inode = NULL;
+
+       WARN_ON(!rwsem_is_locked(&sb->s_umount));
+       spin_lock(&inode_sb_list_lock);
+       list_for_each_entry(inode, &sb->s_inodes, i_sb_list) {
+               int dirty_time;
+
+               spin_lock(&inode->i_lock);
+               if (inode->i_state & (I_FREEING|I_WILL_FREE|I_NEW)) {
+                       spin_unlock(&inode->i_lock);
+                       continue;
+               }
+               dirty_time = inode->i_state & I_DIRTY_TIME;
+               __iget(inode);
+               spin_unlock(&inode->i_lock);
+               spin_unlock(&inode_sb_list_lock);
+
+               iput(old_inode);
+               old_inode = inode;
+
+               if (dirty_time)
+                       mark_inode_dirty(inode);
+               cond_resched();
+               spin_lock(&inode_sb_list_lock);
+       }
+       spin_unlock(&inode_sb_list_lock);
+       iput(old_inode);
+}
+
 /**
  * sync_inodes_sb	-	sync sb inode pages
  * @sb: the superblock
@@ -1326,6 +1361,7 @@ void sync_inodes_sb(struct super_block *sb)
 
 	WARN_ON(!rwsem_is_locked(&sb->s_umount));
 
+	flush_sb_dirty_time(sb);
 	bdi_queue_work(sb->s_bdi, &work);
 	wait_for_completion(&done);
 
