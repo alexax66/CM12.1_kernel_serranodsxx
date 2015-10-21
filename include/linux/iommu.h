@@ -41,6 +41,7 @@ typedef int (*iommu_fault_handler_t)(struct iommu_domain *,
 
 struct iommu_domain {
 	struct iommu_ops *ops;
+	unsigned long pgsize_bitmap;	/* Bitmap of supported page sizes */
 	void *priv;
 	iommu_fault_handler_t handler;
 	void *handler_token;
@@ -62,7 +63,6 @@ struct iommu_domain {
  * @iova_to_phys: translate iova to physical address
  * @domain_has_cap: domain capabilities query
  * @commit: commit iommu domain
- * @pgsize_bitmap: bitmap of supported page sizes
  */
 struct iommu_ops {
 	int (*domain_init)(struct iommu_domain *domain, int flags);
@@ -83,7 +83,6 @@ struct iommu_ops {
 			      unsigned long cap);
 	phys_addr_t (*get_pt_base_addr)(struct iommu_domain *domain);
 	int (*device_group)(struct device *dev, unsigned int *groupid);
-	unsigned long pgsize_bitmap;
 };
 
 extern int bus_set_iommu(struct bus_type *bus, struct iommu_ops *ops);
