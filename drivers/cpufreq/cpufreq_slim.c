@@ -53,7 +53,7 @@ static int g_count = 0;
 #define INPUT_EVENT_MAX_TIMEOUT 		(3000)
 #define INPUT_EVENT_TIMEOUT			(500)
 #define MIN_SAMPLING_RATE_RATIO			(2)
-#define DEF_OPTIMAL_FREQ			(300000)
+#define DEF_OPTIMAL_FREQ			(384000)
 
 static unsigned int min_sampling_rate;
 static unsigned int skip_slim = 0;
@@ -387,7 +387,7 @@ static ssize_t store_two_phase_freq(struct kobject *a, struct attribute *b,
 	return count;
 }
 
-static int input_event_min_freq_array[NR_CPUS] = {1728000, 1267200, 1267200, 1267200} ;
+static int input_event_min_freq_array[NR_CPUS] = {1728000, 1267200} ;
 
 static ssize_t show_input_event_min_freq
 (struct kobject *kobj, struct attribute *attr, char *buf)
@@ -901,7 +901,7 @@ void set_two_phase_freq_by_cpu ( int cpu_nr, int cpufreq){
 	two_phase_freq_array[cpu_nr-1] = cpufreq;
 }
 
-int input_event_boosted(void)
+int input_event_boosted_sl(void)
 {
 	unsigned long flags;
 
@@ -1129,7 +1129,7 @@ static void dbs_check_cpu(struct cpu_dbs_info_s *this_dbs_info)
 		}
 	}
 
-	if (input_event_boosted())
+	if (input_event_boosted_sl())
 	{
 		trace_cpufreq_slim_already (policy->cpu, cur_load, policy->cur, policy->cur, policy->cur);
 		return;
@@ -1205,7 +1205,7 @@ static void do_dbs_timer(struct work_struct *work)
 				delay -= jiffies % delay;
 		}
 	} else {
-		if (input_event_boosted())
+		if (input_event_boosted_sl())
 			goto sched_wait;
 
 		__cpufreq_driver_target(dbs_info->cur_policy,
