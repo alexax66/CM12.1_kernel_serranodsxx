@@ -4,8 +4,8 @@
  * Copyright (C) 2010 Google, Inc.
  * Copyright (C) 2015 Javier Sayago <admin@lonasdigital.com>
  *
- * Barry_Allen Version 1.0
- * Last Update >> 13-06-2015
+ * Barry_Allen Version 0.9
+ * Last Update >> 04-06-2015
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -994,7 +994,7 @@ static ssize_t store_timer_rate(struct kobject *kobj,
 			struct attribute *attr, const char *buf, size_t count)
 {
 	int ret;
-	unsigned long val, val_round;
+	unsigned long val;
 
 	if (ba_locked)
 		return count;
@@ -1002,13 +1002,7 @@ static ssize_t store_timer_rate(struct kobject *kobj,
 	ret = strict_strtoul(buf, 0, &val);
 	if (ret < 0)
 		return ret;
-
-	val_round = jiffies_to_usecs(usecs_to_jiffies(val));
-	if (val != val_round)
-		pr_warn("timer_rate not aligned to jiffy. Rounded up to %lu\n",
-				val_round);
-
-	timer_rate = val_round;
+	timer_rate = val;
 	return count;
 }
 
