@@ -1633,8 +1633,8 @@ static void dbs_check_cpu(struct cpu_dbs_info_s *this_dbs_info)
 				this_dbs_info->freq_stay_count = 1;
 				target = policy->max;
 
-				//int inc = (policy->max * dbs_tuners_ins.freq_step) / 100;
-				//target = min(policy->max, policy->cur + inc);
+				inc = (policy->max * dbs_tuners_ins.freq_step) / 100;
+				target = min(policy->max, policy->cur + inc);
 			}
 
 			pr_debug("%s: cpu=%d, cur=%d, target=%d\n",
@@ -2105,10 +2105,6 @@ int set_input_event_min_freq(int cpufreq)
 	for ( i = 0 ; i < NR_CPUS; i++)
 		input_event_min_freq_array[i] = cpufreq;
 	return 0;
-}
-
-void set_input_event_min_freq_by_cpu ( int cpu_nr, int cpufreq){
-	input_event_min_freq_array[cpu_nr-1] = cpufreq;
 }
 
 static int cpufreq_governor_dbs(struct cpufreq_policy *policy,
