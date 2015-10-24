@@ -227,6 +227,18 @@ config CPU_FREQ_DEFAULT_GOV_YANKACTIVE
 	  loading your cpufreq low-level hardware driver, using the
 	  'yankactive' governor for latency-sensitive workloads.
 
+config CPU_FREQ_DEFAULT_GOV_NIGHTMARE
+	bool "nightmare"
+	select CPU_FREQ_GOV_NIGHTMARE
+	help
+	  Use the CPUFreq governor 'nightmare' as default.
+
+config CPU_FREQ_DEFAULT_GOV_DARKNESS
+	bool "darkness"
+	select CPU_FREQ_GOV_DARKNESS
+	help
+	  Use the CPUFreq governor 'darkness' as default.
+
 endchoice
 
 config CPU_FREQ_GOV_PERFORMANCE
@@ -476,6 +488,22 @@ config CPU_FREQ_GOV_YANKACTIVE
 	  The governor is based on interactive with just different default settings
 	  and can be achieved using interactive with a script. This is added for
 	  simplification purposes for myself.
+
+config CPU_FREQ_GOV_NIGHTMARE
+	tristate "'nightmare' cpufreq governor"
+	depends on CPU_FREQ
+	help
+	 'nightmare' - This driver is based on PegasusQ, but less aggressive
+	  and more stable.  This governor is a good compromise between
+	  performance and battery. In addition to the SoD is a prevention
+	  because it usually does not hotplug.
+
+config CPU_FREQ_GOV_DARKNESS
+	tristate "'darkness' cpufreq governor"
+	depends on CPU_FREQ
+	help
+	 It's based on 'nightmare' but more simple and fast, basic configs but
+	 very complex structure.
 
 config CPU_BOOST
 	tristate "Event base short term CPU freq boost"
