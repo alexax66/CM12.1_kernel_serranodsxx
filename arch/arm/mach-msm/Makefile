@@ -464,6 +464,7 @@ obj-$(CONFIG_MSM_CPU_PWRCTL) +=  msm_cpu_pwrctl.o
 
 obj-$(CONFIG_FORCE_FAST_CHARGE) += fastchg.o
 obj-$(CONFIG_ARCH_RANDOM) += early_random.o
+obj-$(CONFIG_MSM_LIMITER) += msm_limiter.o
 # obj-$(CONFIG_BRICKED_HOTPLUG) += bricked_hotplug.o
 
 obj-$(CONFIG_CPU_FREQ_MSM) += cpufreq.o
