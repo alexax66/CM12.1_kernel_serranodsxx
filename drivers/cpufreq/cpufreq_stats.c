@@ -268,6 +268,10 @@ static void cpufreq_stats_free_table(unsigned int cpu)
 static void cpufreq_stats_free_sysfs(unsigned int cpu)
 {
 	struct cpufreq_policy *policy = cpufreq_cpu_get(cpu);
+
+	if (!cpufreq_frequency_get_table(cpu))
+		return;
+
 	if (policy && policy->cpu == cpu)
 		sysfs_remove_group(policy->kobj, &stats_attr_group);
 	if (policy)
@@ -276,19 +280,19 @@ static void cpufreq_stats_free_sysfs(unsigned int cpu)
 
 static void cpufreq_allstats_free(void)
 {
-	int i;
+	int cpu;
 	struct all_cpufreq_stats *all_stat;
 
 	sysfs_remove_file(cpufreq_global_kobject,
 						&_attr_all_time_in_state.attr);
 
-	for (i = 0; i < total_cpus; i++) {
-		all_stat = per_cpu(all_cpufreq_stats, i);
+	for_each_possible_cpu(cpu) {
+		all_stat = per_cpu(all_cpufreq_stats, cpu);
 		if (!all_stat)
 			continue;
 		kfree(all_stat->time_in_state);
 		kfree(all_stat);
-		per_cpu(all_cpufreq_stats, i) = NULL;
+		per_cpu(all_cpufreq_stats, cpu) = NULL;
 	}
 	if (all_freq_table) {
 		kfree(all_freq_table->freq_table);
@@ -305,10 +309,8 @@ static int cpufreq_stats_create_table(struct cpufreq_policy *policy,
 	struct cpufreq_policy *data;
 	unsigned int alloc_size;
 	unsigned int cpu = policy->cpu;
-
 	if (per_cpu(cpufreq_stats_table, cpu))
-		return 0;
-
+		return -EBUSY;
 	stat = kzalloc(sizeof(struct cpufreq_stats), GFP_KERNEL);
 	if ((stat) == NULL)
 		return -ENOMEM;
@@ -407,7 +409,7 @@ static void add_all_freq_table(unsigned int freq)
 	unsigned int size;
 	size = sizeof(unsigned int) * (all_freq_table->table_size + 1);
 	all_freq_table->freq_table = krealloc(all_freq_table->freq_table,
-			size, GFP_KERNEL);
+			size, GFP_ATOMIC);
 	if (IS_ERR(all_freq_table->freq_table)) {
 		pr_warn("Could not reallocate memory for freq_table\n");
 		all_freq_table->freq_table = NULL;
@@ -554,7 +556,7 @@ out:
 	return ret;
 }
 
-static int __cpuinit cpufreq_stat_cpu_callback(struct notifier_block *nfb,
+static int cpufreq_stat_cpu_callback(struct notifier_block *nfb,
 					       unsigned long action,
 					       void *hcpu)
 {
@@ -564,10 +566,6 @@ static int __cpuinit cpufreq_stat_cpu_callback(struct notifier_block *nfb,
 	case CPU_ONLINE:
 	case CPU_ONLINE_FROZEN:
 		cpufreq_update_policy(cpu);
-		break;
-	case CPU_DOWN_PREPARE:
-	case CPU_DOWN_PREPARE_FROZEN:
-		cpufreq_stats_free_sysfs(cpu);
 		break;
 	case CPU_DEAD:
 	case CPU_DEAD_FROZEN:
