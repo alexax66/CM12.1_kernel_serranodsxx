@@ -37,10 +37,6 @@
 
 #include <trace/events/power.h>
 
-#ifdef CONFIG_CPUFREQ_HARDLIMIT
-#include <linux/cpufreq_hardlimit.h>
-#endif
-
 /**
  * The "cpufreq driver" - the arch- or hardware-dependent low
  * level driver of CPUFreq support, and its spinlock. This lock
@@ -513,9 +509,6 @@ static ssize_t store_##file_name					\
 }
 
 store_one(scaling_min_freq, min);
-#ifndef CONFIG_CPUFREQ_HARDLIMIT
-store_one(scaling_max_freq, max);
-#else
 static ssize_t store_scaling_max_freq
 (struct cpufreq_policy *policy, const char *buf, size_t count)
 {
@@ -528,7 +521,6 @@ static ssize_t store_scaling_max_freq
 		return -EINVAL;
 
 	ret = sscanf(buf, "%u", &new_freq);
-	new_policy.max = check_cpufreq_hardlimit(new_freq); /* Enforce hardlimit */
 	if (ret != 1)
 		return -EINVAL;
 
@@ -537,7 +529,6 @@ static ssize_t store_scaling_max_freq
 
 	return ret ? ret : count;
 }
-#endif
 
 /**
  * show_cpuinfo_cur_freq - current CPU frequency as detected by hardware
