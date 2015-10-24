@@ -1150,6 +1150,19 @@ static int cpufreq_add_dev(struct device *dev, struct subsys_interface *sif)
 	blocking_notifier_call_chain(&cpufreq_policy_notifier_list,
 				     CPUFREQ_START, policy);
 
+ #ifdef CONFIG_HOTPLUG_CPU
+	if (per_cpu(cpufreq_policy_save, cpu).min) {
+		policy->min = per_cpu(cpufreq_policy_save, cpu).min;
+		policy->user_policy.min = policy->min;
+	}
+	if (per_cpu(cpufreq_policy_save, cpu).max) {
+		policy->max = per_cpu(cpufreq_policy_save, cpu).max;
+		policy->user_policy.max = policy->max;
+	}
+	pr_debug("Restoring CPU%d min %d and max %d\n",
+		cpu, policy->min, policy->max);
+ #endif
+
 	policy->kobj = &cpu_sysnode[cpu].cpu_kobj;
 
 	ret = cpufreq_add_dev_policy(cpu, policy, dev);
