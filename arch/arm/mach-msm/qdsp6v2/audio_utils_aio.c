@@ -287,7 +287,11 @@ void audio_aio_async_write_ack(struct q6audio_aio *audio, uint32_t token,
 		return;
 
 	spin_lock_irqsave(&audio->dsp_lock, flags);
-	BUG_ON(list_empty(&audio->out_queue));
+	if (list_empty(&audio->out_queue)) {
+		pr_warning("%s: ingore unexpected event from dsp\n", __func__);
+		spin_unlock_irqrestore(&audio->dsp_lock, flags);
+		return;
+	}
 	used_buf = list_first_entry(&audio->out_queue,
 					struct audio_aio_buffer_node, list);
 	if (token == used_buf->token) {
@@ -753,11 +757,12 @@ static int audio_aio_ion_add(struct q6audio_aio *audio,
 				1);
 	if (rc < 0) {
 		pr_err("%s[%p]: memory map failed\n", __func__, audio);
-		goto ion_error;
+		goto mmap_error;
 	} else {
 		goto end;
 	}
-
+mmap_error:
+	list_del(&region->list);
 ion_error:
 	ion_unmap_kernel(audio->client, handle);
 map_error:
@@ -842,10 +847,9 @@ static void audio_aio_async_write(struct q6audio_aio *audio,
 	}
 	param.msw_ts = buf_node->meta_info.meta_in.ntimestamp.highpart;
 	param.lsw_ts = buf_node->meta_info.meta_in.ntimestamp.lowpart;
+	param.flags  = buf_node->meta_info.meta_in.nflags;
 	/* If no meta_info enaled, indicate no time stamp valid */
-	if (audio->buf_cfg.meta_info_enable)
-		param.flags = 0;
-	else
+	if (!audio->buf_cfg.meta_info_enable)
 		param.flags = 0xFF00;
 
 	if (buf_node->meta_info.meta_in.nflags & AUDIO_DEC_EOF_SET)
@@ -1148,7 +1152,7 @@ long audio_aio_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 	}
 	case AUDIO_ASYNC_READ: {
 		mutex_lock(&audio->read_lock);
-		if ((audio->feedback) && (audio->enabled))
+		if (audio->feedback)
 			rc = audio_aio_buf_add(audio, 0,
 					(void __user *)arg);
 		else
@@ -1186,6 +1190,11 @@ long audio_aio_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 		}
 		audio->enabled = 0;
 		audio->drv_status &= ~ADRV_STATUS_PAUSE;
+		if (audio->drv_status & ADRV_STATUS_FSYNC) {
+			pr_debug("%s[%p] Waking up the audio_aio_fsync\n",
+				__func__, audio);
+			wake_up(&audio->write_wait);
+		}
 		mutex_unlock(&audio->lock);
 		break;
 	}
@@ -1222,6 +1231,11 @@ long audio_aio_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 		mutex_lock(&audio->lock);
 		audio->rflush = 1;
 		audio->wflush = 1;
+		if (audio->drv_status & ADRV_STATUS_FSYNC) {
+			pr_debug("%s[%p] Waking up the audio_aio_fsync\n",
+				__func__, audio);
+			wake_up(&audio->write_wait);
+		}
 		/* Flush DSP */
 		rc = audio_aio_flush(audio);
 		if (rc < 0) {
