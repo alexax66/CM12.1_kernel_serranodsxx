@@ -629,25 +629,23 @@ static int audit_netlink_ok(struct sk_buff *skb, u16 msg_type)
 	return err;
 }
 
-static int audit_log_common_recv_msg(struct audit_buffer **ab, u16 msg_type,
+static void audit_log_common_recv_msg(struct audit_buffer **ab, u16 msg_type,
 				     u32 pid, u32 uid, uid_t auid, u32 ses,
 				     u32 sid)
 {
-	int rc = 0;
 	char *ctx = NULL;
 	u32 len;
 
 	if (!audit_enabled) {
 		*ab = NULL;
-		return rc;
+		return ;
 	}
 
 	*ab = audit_log_start(NULL, GFP_KERNEL, msg_type);
 	audit_log_format(*ab, "pid=%d uid=%u auid=%u ses=%u",
 			 pid, uid, auid, ses);
 	if (sid) {
-		rc = security_secid_to_secctx(sid, &ctx, &len);
-		if (rc)
+		if (security_secid_to_secctx(sid, &ctx, &len))
 			audit_log_format(*ab, " ssid=%u", sid);
 		else {
 			audit_log_format(*ab, " subj=%s", ctx);
@@ -655,7 +653,7 @@ static int audit_log_common_recv_msg(struct audit_buffer **ab, u16 msg_type,
 		}
 	}
 
-	return rc;
+	return ;
 }
 
 static int audit_receive_msg(struct sk_buff *skb, struct nlmsghdr *nlh)
