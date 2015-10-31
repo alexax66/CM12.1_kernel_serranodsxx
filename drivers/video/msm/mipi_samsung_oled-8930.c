@@ -17,6 +17,9 @@
 
 #include "mipi_samsung_oled-8930.h"
 #include "mdp4.h"
+#ifdef CONFIG_LCD_NOTIFY
+#include <linux/lcd_notify.h>
+#endif
 
 #if defined(CONFIG_FB_MDP4_ENHANCE)
 #include "mdp4_video_enhance.h"
@@ -1047,6 +1050,10 @@ static int mipi_samsung_disp_on(struct platform_device *pdev)
 
 	pr_info("[lcd] %s\n", __func__);
 
+#ifdef CONFIG_LCD_NOTIFY
+	lcd_notifier_call_chain(LCD_EVENT_ON_END, NULL);
+#endif
+
 	return 0;
 }
 
@@ -1087,6 +1094,10 @@ static int mipi_samsung_disp_off(struct platform_device *pdev)
 #endif
 
 	pr_info("[lcd] %s\n", __func__);
+
+#if defined(CONFIG_MACH_LGE)
+	lcd_notifier_call_chain(LCD_EVENT_OFF_END, NULL);
+#endif
 
 	return 0;
 }
