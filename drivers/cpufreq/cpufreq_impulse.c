@@ -73,6 +73,10 @@ static unsigned int hispeed_freq;
 #define DEFAULT_GO_HISPEED_LOAD 99
 static unsigned long go_hispeed_load = DEFAULT_GO_HISPEED_LOAD;
 
+/* Go to lowest speed when CPU load at or below this value. */
+#define DEFAULT_GO_LOWSPEED_LOAD 5
+static unsigned long go_lowspeed_load = DEFAULT_GO_LOWSPEED_LOAD;
+
 /* Target load.  Lower values result in higher CPU speeds. */
 #define DEFAULT_TARGET_LOAD 90
 static unsigned int default_target_loads[] = {DEFAULT_TARGET_LOAD};
@@ -123,6 +127,9 @@ static int timer_slack_val = DEFAULT_TIMER_SLACK;
  * will always be aligned.
  */
 static bool align_windows = true;
+
+/* Improves frequency selection for more energy */
+static bool powersave_bias;
 
 /*
  * Stay at max freq for at least max_freq_hysteresis before dropping
@@ -397,21 +404,19 @@ static void cpufreq_impulse_timer(unsigned long data)
 	do_div(cputime_speedadj, delta_time);
 	loadadjfreq = (unsigned int)cputime_speedadj * 100;
 	cpu_load = loadadjfreq / pcpu->policy->cur;
-	boosted = boost_val || now < boostpulse_endtime;
+	boosted = boost_val || now < boostpulse_endtime ||
+			check_cpuboost(data) || cpu_load >= go_hispeed_load;
 	this_hispeed_freq = max(hispeed_freq, pcpu->policy->min);
 
-	if (cpu_load >= go_hispeed_load || boosted) {
-		if (pcpu->policy->cur < this_hispeed_freq) {
-			new_freq = this_hispeed_freq;
-		} else {
-			new_freq = choose_freq(pcpu, loadadjfreq);
-
-			if (new_freq < this_hispeed_freq)
-				new_freq = this_hispeed_freq;
-		}
+	if (cpu_load <= go_lowspeed_load && !boost_val) {
+		boosted = false;
+		new_freq = pcpu->policy->cpuinfo.min_freq;
 	} else {
 		new_freq = choose_freq(pcpu, loadadjfreq);
 	}
+
+	if (boosted)
+		new_freq = max(new_freq, this_hispeed_freq);
 
 	if (pcpu->policy->cur >= this_hispeed_freq &&
 	    new_freq > pcpu->policy->cur &&
@@ -463,7 +468,8 @@ static void cpufreq_impulse_timer(unsigned long data)
 		pcpu->floor_validate_time = now;
 	}
 
-	if (pcpu->target_freq == new_freq) {
+	if (pcpu->target_freq == new_freq &&
+			pcpu->target_freq <= pcpu->policy->cur) {
 		spin_unlock_irqrestore(&pcpu->target_freq_lock, flags);
 		goto rearm_if_notmax;
 	}
@@ -627,9 +633,15 @@ static int cpufreq_impulse_speedchange_task(void *data)
 			}
 
 			if (max_freq != pcpu->policy->cur) {
-				__cpufreq_driver_target(pcpu->policy,
-							max_freq,
-							CPUFREQ_RELATION_H);
+				if (!powersave_bias)
+					__cpufreq_driver_target(pcpu->policy,
+								max_freq,
+								CPUFREQ_RELATION_H);
+				else
+					__cpufreq_driver_target(pcpu->policy,
+								max_freq,
+								CPUFREQ_RELATION_C);
+
 				for_each_cpu(j, pcpu->policy->cpus) {
 					pjcpu = &per_cpu(cpuinfo, j);
 					pjcpu->hispeed_validate_time = hvt;
@@ -945,6 +957,28 @@ static ssize_t store_go_hispeed_load(struct kobject *kobj,
 static struct global_attr go_hispeed_load_attr = __ATTR(go_hispeed_load, 0644,
 		show_go_hispeed_load, store_go_hispeed_load);
 
+static ssize_t show_go_lowspeed_load(struct kobject *kobj,
+				     struct attribute *attr, char *buf)
+{
+	return sprintf(buf, "%lu\n", go_lowspeed_load);
+}
+
+static ssize_t store_go_lowspeed_load(struct kobject *kobj,
+			struct attribute *attr, const char *buf, size_t count)
+{
+	int ret;
+	unsigned long val;
+
+	ret = strict_strtoul(buf, 0, &val);
+	if (ret < 0)
+		return ret;
+	go_lowspeed_load = val;
+	return count;
+}
+
+static struct global_attr go_lowspeed_load_attr = __ATTR(go_lowspeed_load, 0644,
+		show_go_lowspeed_load, store_go_lowspeed_load);
+
 static ssize_t show_min_sample_time(struct kobject *kobj,
 				struct attribute *attr, char *buf)
 {
@@ -1109,11 +1143,34 @@ static ssize_t store_io_is_busy(struct kobject *kobj,
 static struct global_attr io_is_busy_attr = __ATTR(io_is_busy, 0644,
 		show_io_is_busy, store_io_is_busy);
 
+static ssize_t show_powersave_bias(struct kobject *kobj,
+				     struct attribute *attr, char *buf)
+{
+	return sprintf(buf, "%u\n", powersave_bias);
+}
+
+static ssize_t store_powersave_bias(struct kobject *kobj,
+			struct attribute *attr, const char *buf, size_t count)
+{
+	int ret;
+	unsigned long val;
+
+	ret = strict_strtoul(buf, 0, &val);
+	if (ret < 0)
+		return ret;
+	powersave_bias = val;
+	return count;
+}
+
+static struct global_attr powersave_bias_attr = __ATTR(powersave_bias, 0644,
+		show_powersave_bias, store_powersave_bias);
+
 static struct attribute *impulse_attributes[] = {
 	&target_loads_attr.attr,
 	&above_hispeed_delay_attr.attr,
 	&hispeed_freq_attr.attr,
 	&go_hispeed_load_attr.attr,
+	&go_lowspeed_load_attr.attr,
 	&min_sample_time_attr.attr,
 	&timer_rate_attr.attr,
 	&timer_slack.attr,
@@ -1123,6 +1180,7 @@ static struct attribute *impulse_attributes[] = {
 	&io_is_busy_attr.attr,
 	&max_freq_hysteresis_attr.attr,
 	&align_windows_attr.attr,
+	&powersave_bias_attr.attr,
 	NULL,
 };
 
@@ -1301,7 +1359,7 @@ static int cpufreq_governor_impulse(struct cpufreq_policy *policy,
 	return 0;
 }
 
-#ifndef CONFIG_CPU_FREQ_DEFAULT_GOV_IMPULSE
+#ifndef CONFIG_CPU_FREQ_DEFAULT_GOV_impulse
 static
 #endif
 struct cpufreq_governor cpufreq_gov_impulse = {
@@ -1353,7 +1411,7 @@ static int __init cpufreq_impulse_init(void)
 	return cpufreq_register_governor(&cpufreq_gov_impulse);
 }
 
-#ifdef CONFIG_CPU_FREQ_DEFAULT_GOV_IMPULSE
+#ifdef CONFIG_CPU_FREQ_DEFAULT_GOV_impulse
 fs_initcall(cpufreq_impulse_init);
 #else
 module_init(cpufreq_impulse_init);
