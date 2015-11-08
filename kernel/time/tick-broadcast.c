@@ -65,14 +65,14 @@ static void tick_broadcast_start_periodic(struct clock_event_device *bc)
 /*
  * Check, if the device can be utilized as broadcast device:
  */
-int tick_check_broadcast_device(struct clock_event_device *dev)
+void tick_install_broadcast_device(struct clock_event_device *dev)
 {
 	if ((tick_broadcast_device.evtdev &&
 	     tick_broadcast_device.evtdev->rating >= dev->rating) ||
 	     (dev->features & CLOCK_EVT_FEAT_C3STOP))
-		return 0;
+		return;
 	if (!try_module_get(dev->owner))
-		return 0;
+		return;
 
 	clockevents_exchange_device(tick_broadcast_device.evtdev, dev);
 	tick_broadcast_device.evtdev = dev;
@@ -88,7 +88,7 @@ int tick_check_broadcast_device(struct clock_event_device *dev)
 	 
 	if (dev->features & CLOCK_EVT_FEAT_ONESHOT)
 		tick_clock_notify(); */
-	return 1;
+	return;
 }
 
 /*
@@ -639,4 +639,15 @@ bool tick_broadcast_oneshot_available(void)
 	return bc ? bc->features & CLOCK_EVT_FEAT_ONESHOT : false;
 }
 
+#endif
+
+void __init tick_broadcast_init(void)
+{
+	zalloc_cpumask_var(&tick_broadcast_mask, GFP_NOWAIT);
+	zalloc_cpumask_var(&tick_broadcast_on, GFP_NOWAIT);
+	zalloc_cpumask_var(&tmpmask, GFP_NOWAIT);
+#ifdef CONFIG_TICK_ONESHOT
+	zalloc_cpumask_var(&tick_broadcast_oneshot_mask, GFP_NOWAIT);
+	zalloc_cpumask_var(&tick_broadcast_pending_mask, GFP_NOWAIT);
+	zalloc_cpumask_var(&tick_broadcast_force_mask, GFP_NOWAIT);
 #endif
