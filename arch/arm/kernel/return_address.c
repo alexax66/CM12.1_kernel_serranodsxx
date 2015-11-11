@@ -57,13 +57,6 @@ void *return_address(unsigned int level)
 		return NULL;
 }
 
-#else /* if defined(CONFIG_FRAME_POINTER) || !defined(CONFIG_ARM_UNWIND) */
-
-#if defined(CONFIG_ARM_UNWIND)
-/* #warning "TODO: return_address should use unwind tables" */
-#include <asm/unwind.h>
-#endif
-
-#endif /* if defined(CONFIG_FRAME_POINTER) || !defined(CONFIG_ARM_UNWIND) / else */
+#endif /* if defined(CONFIG_FRAME_POINTER) && !defined(CONFIG_ARM_UNWIND)  */
 
 EXPORT_SYMBOL_GPL(return_address);
