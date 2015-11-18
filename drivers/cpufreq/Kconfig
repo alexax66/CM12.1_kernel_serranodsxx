@@ -239,11 +239,6 @@ config CPU_FREQ_DEFAULT_GOV_DARKNESS
 	help
 	  Use the CPUFreq governor 'darkness' as default.
 
-config CPU_FREQ_DEFAULT_GOV_ALUCARD
-	bool "alucard"
-	select CPU_FREQ_GOV_ALUCARD
-	help
-
 endchoice
 
 config CPU_FREQ_GOV_PERFORMANCE
@@ -509,14 +504,6 @@ config CPU_FREQ_GOV_DARKNESS
 	help
 	 It's based on 'nightmare' but more simple and fast, basic configs but
 	 very complex structure.
-
-config CPU_FREQ_GOV_ALUCARD
-	tristate "'alucard' cpufreq governor"
-	depends on CPU_FREQ
-	help
-	 Alucard is based on ondemand but has been heavily tweaked to bring
-	 better battery life and performance. It has been known to be battery
-	 friendly without sacrificing much performance.
 
 config CPU_BOOST
 	tristate "Event base short term CPU freq boost"
