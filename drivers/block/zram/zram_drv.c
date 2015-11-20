@@ -190,8 +190,9 @@ static ssize_t mem_used_max_store(struct device *dev,
 		struct zram_meta *meta = zram->meta;
 		atomic_long_set(&zram->stats.max_used_pages,
 				zs_get_total_pages(meta->mem_pool));
-	up_read(&zram->init_lock);
 	}
+	up_read(&zram->init_lock);
+
 	return len;
 }
 
@@ -243,9 +244,6 @@ static ssize_t comp_algorithm_store(struct device *dev,
 	struct zram *zram = dev_to_zram(dev);
 	size_t sz;
 
-	if (!zcomp_available_algorithm(buf))
-		return -EINVAL;
-
 	down_write(&zram->init_lock);
 	if (init_done(zram)) {
 		up_write(&zram->init_lock);
@@ -258,6 +256,9 @@ static ssize_t comp_algorithm_store(struct device *dev,
 	sz = strlen(zram->compressor);
 	if (sz > 0 && zram->compressor[sz - 1] == '\n')
 		zram->compressor[sz - 1] = 0x00;
+
+	if (!zcomp_available_algorithm(zram->compressor))
+		len = -EINVAL;
 
 	up_write(&zram->init_lock);
 	return len;
@@ -348,6 +349,7 @@ static struct zram_meta *zram_meta_alloc(u64 disksize)
 {
 	size_t num_pages;
 	struct zram_meta *meta = kmalloc(sizeof(*meta), GFP_KERNEL);
+
 	if (!meta)
 		return NULL;
 
@@ -600,7 +602,7 @@ static int zram_bvec_write(struct zram *zram, struct bio_vec *bvec, u32 index,
 
 	if (page_zero_filled(uncmem)) {
 		if (user_mem)
-		kunmap_atomic(user_mem);
+			kunmap_atomic(user_mem);
 		/* Free memory associated with this sector now. */
 		bit_spin_lock(ZRAM_ACCESS, &meta->table[index].value);
 		zram_free_page(zram, index);
@@ -780,8 +782,8 @@ static void zram_reset_device(struct zram *zram)
 	/* Reset stats */
 	memset(&zram->stats, 0, sizeof(zram->stats));
 	zram->disksize = 0;
-	set_capacity(zram->disk, 0);
 	zram->max_comp_streams = 1;
+	set_capacity(zram->disk, 0);
 
 	up_write(&zram->init_lock);
 	/* I/O operation under all of CPU are done so let's free */
@@ -870,7 +872,7 @@ static ssize_t reset_store(struct device *dev,
 
 	ret = kstrtou16(buf, 10, &do_reset);
 	if (ret)
-		goto  out;
+		goto out;
 
 	if (!do_reset) {
 		ret = -EINVAL;
@@ -1084,32 +1086,34 @@ static struct attribute_group zram_disk_attr_group = {
 
 static int create_device(struct zram *zram, int device_id)
 {
+	struct request_queue *queue;
 	int ret = -ENOMEM;
 
 	init_rwsem(&zram->init_lock);
 
-	zram->queue = blk_alloc_queue(GFP_KERNEL);
-	if (!zram->queue) {
+	queue = blk_alloc_queue(GFP_KERNEL);
+	if (!queue) {
 		pr_err("Error allocating disk queue for device %d\n",
 			device_id);
 		goto out;
 	}
 
-	blk_queue_make_request(zram->queue, zram_make_request);
-	zram->queue->queuedata = zram;
+	blk_queue_make_request(queue, zram_make_request);
 
 	 /* gendisk structure */
 	zram->disk = alloc_disk(1);
 	if (!zram->disk) {
 		pr_warn("Error allocating disk structure for device %d\n",
 			device_id);
+		ret = -ENOMEM;
 		goto out_free_queue;
 	}
 
 	zram->disk->major = zram_major;
 	zram->disk->first_minor = device_id;
 	zram->disk->fops = &zram_devops;
-	zram->disk->queue = zram->queue;
+	zram->disk->queue = queue;
+	zram->disk->queue->queuedata = zram;
 	zram->disk->private_data = zram;
 	snprintf(zram->disk->disk_name, 16, "zram%d", device_id);
 
@@ -1160,7 +1164,7 @@ out_free_disk:
 	del_gendisk(zram->disk);
 	put_disk(zram->disk);
 out_free_queue:
-	blk_cleanup_queue(zram->queue);
+	blk_cleanup_queue(queue);
 out:
 	return ret;
 }
@@ -1181,10 +1185,9 @@ static void destroy_devices(unsigned int nr)
 
 		zram_reset_device(zram);
 
-	del_gendisk(zram->disk);
-	put_disk(zram->disk);
-
-	blk_cleanup_queue(zram->queue);
+		blk_cleanup_queue(zram->disk->queue);
+		del_gendisk(zram->disk);
+		put_disk(zram->disk);
 	}
 
 	kfree(zram_devices);
