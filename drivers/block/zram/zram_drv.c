@@ -831,7 +831,7 @@ static ssize_t reset_store(struct device *dev,
 	mutex_lock(&bdev->bd_mutex);
 	/* Do not reset an active device! */
 	if (bdev->bd_holders) {
-		return -EBUSY;
+		ret = -EBUSY;
 		goto out;
 	}
 
@@ -840,7 +840,7 @@ static ssize_t reset_store(struct device *dev,
 		goto  out;
 
 	if (!do_reset) {
-		return -EINVAL;
+		ret = -EINVAL;
 		goto out;
 	}
 
