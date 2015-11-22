@@ -885,58 +885,37 @@ static struct notifier_block zs_cpu_nb = {
 	.notifier_call = zs_cpu_notifier
 };
 
-static void zs_unregister_cpu_notifier(void)
+static void zs_exit(void)
 {
 	int cpu;
 
-	cpu_notifier_register_begin();
+#ifdef CONFIG_ZPOOL
+	zpool_unregister_driver(&zs_zpool_driver);
+#endif
 
 	for_each_online_cpu(cpu)
 		zs_cpu_notifier(NULL, CPU_DEAD, (void *)(long)cpu);
-	__unregister_cpu_notifier(&zs_cpu_nb);
-
-	cpu_notifier_register_done();
-
+	unregister_cpu_notifier(&zs_cpu_nb);
 }
 
-static int zs_register_cpu_notifier(void)
+static int zs_init(void)
 {
-	int cpu, uninitialized_var(ret);
-
-	cpu_notifier_register_begin();
-
-	__register_cpu_notifier(&zs_cpu_nb);
-	for_each_online_cpu(cpu) {
-		ret = zs_cpu_notifier(NULL, CPU_UP_PREPARE, (void *)(long)cpu);
-		if (notifier_to_errno(ret))
-			break;
-	}
-
-	cpu_notifier_register_done();
-	return notifier_to_errno(ret);
-}
-
-static void __exit zs_exit(void)
-{
- #ifdef CONFIG_ZPOOL
-	zpool_unregister_driver(&zs_zpool_driver);
- #endif
-	zs_unregister_cpu_notifier();
-}
-
-static int __init zs_init(void)
-{
-	int ret = zs_register_cpu_notifier();
-
-	if (ret) {
-		zs_unregister_cpu_notifier();
-		return ret;
-	}
+	int cpu, ret;
 
 #ifdef CONFIG_ZPOOL
 	zpool_register_driver(&zs_zpool_driver);
 #endif
+
+	register_cpu_notifier(&zs_cpu_nb);
+	for_each_online_cpu(cpu) {
+		ret = zs_cpu_notifier(NULL, CPU_UP_PREPARE, (void *)(long)cpu);
+		if (notifier_to_errno(ret))
+			goto fail;
+	}
 	return 0;
+fail:
+	zs_exit();
+	return notifier_to_errno(ret);
 }
 
 static unsigned int get_maxobj_per_zspage(int size, int pages_per_zspage)
