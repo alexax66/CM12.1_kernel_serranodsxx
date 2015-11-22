@@ -7,6 +7,19 @@
 
 typedef struct page *new_page_t(struct page *, unsigned long private, int **);
 
+/*
+ *
+ * The balloon page migration introduces this special case where a 'distinct'
+ * return code is used to flag a successful page migration to unmap_and_move().
+ * This approach is necessary because page migration can race against balloon
+ * deflation procedure, and for such case we could introduce a nasty page leak
+ * if a successfully migrated balloon page gets released concurrently with
+ * migration's unmap_and_move() wrap-up steps.
+ */
+#define MIGRATEPAGE_BALLOON_SUCCESS	1 /* special ret code for balloon page
+					   * sucessful migration case.
+					   */
+
 #ifdef CONFIG_MIGRATION
 
 extern void putback_lru_pages(struct list_head *l);
