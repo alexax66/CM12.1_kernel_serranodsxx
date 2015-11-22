@@ -95,10 +95,6 @@ struct zbud_pool {
 	struct list_head lru;
 	u64 pages_nr;
 	struct zbud_ops *ops;
-#ifdef CONFIG_ZPOOL
-	struct zpool *zpool;
-	struct zpool_ops *zpool_ops;
-#endif
 };
 
 /*
@@ -125,10 +121,7 @@ struct zbud_header {
 
 static int zbud_zpool_evict(struct zbud_pool *pool, unsigned long handle)
 {
-	if (pool->zpool && pool->zpool_ops && pool->zpool_ops->evict)
-		return pool->zpool_ops->evict(pool->zpool, handle);
-	else
-		return -ENOENT;
+	return zpool_evict(pool, handle);
 }
 
 static struct zbud_ops zbud_zpool_ops = {
@@ -136,17 +129,9 @@ static struct zbud_ops zbud_zpool_ops = {
 };
 
 static void *zbud_zpool_create(char *name, gfp_t gfp,
-			       struct zpool_ops *zpool_ops,
-			       struct zpool *zpool)
+			struct zpool_ops *zpool_ops)
 {
-	struct zbud_pool *pool;
-
-	pool = zbud_create_pool(gfp, zpool_ops ? &zbud_zpool_ops : NULL);
-	if (pool) {
-		pool->zpool = zpool;
-		pool->zpool_ops = zpool_ops;
-	}
-	return pool;
+	return zbud_create_pool(gfp, &zbud_zpool_ops);
 }
 
 static void zbud_zpool_destroy(void *pool)
@@ -306,7 +291,7 @@ struct zbud_pool *zbud_create_pool(gfp_t gfp, struct zbud_ops *ops)
 	struct zbud_pool *pool;
 	int i;
 
-	pool = kzalloc(sizeof(struct zbud_pool), gfp);
+	pool = kmalloc(sizeof(struct zbud_pool), gfp);
 	if (!pool)
 		return NULL;
 	spin_lock_init(&pool->lock);
