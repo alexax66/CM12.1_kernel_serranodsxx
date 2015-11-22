@@ -140,35 +140,6 @@ config ARCH_DISCARD_MEMBLOCK
 config NO_BOOTMEM
 	boolean
 
-config MEMORY_ISOLATION
-	boolean
-
-config MOVABLE_NODE
-	boolean "Enable to assign a node which has only movable memory"
-	depends on HAVE_MEMBLOCK
-	depends on NO_BOOTMEM
-	depends on X86_64
-	depends on NUMA
-	default n
-	help
-	 Allow a node to have only movable memory.  Pages used by the kernel,
-	 such as direct mapping pages cannot be migrated.  So the corresponding
-	 memory device cannot be hotplugged.  This option allows users to
-	 online all the memory of a node as movable memory so that the whole
-	 node can be hotplugged.  Users who don't use the memory hotplug
-	 feature are fine with this option on since they don't online memory
-	 as movable.
-
-	 Say Y here if you want to hotplug a whole node.
-	 Say N here if you want kernel to use memory on all nodes evenly.
-
-#
-# Only be set on architectures that have completely implemented memory hotplug
-# feature. If you are not sure, don't touch it.
-#
-config HAVE_BOOTMEM_INFO_NODE
-	def_bool n
-
 # eventually, we can have this option just 'select SPARSEMEM'
 config MEMORY_HOTPLUG
 	bool "Allow for memory hot-add"
@@ -182,8 +153,6 @@ config MEMORY_HOTPLUG_SPARSE
 
 config MEMORY_HOTREMOVE
 	bool "Allow for memory hot remove"
-	select MEMORY_ISOLATION
-	select HAVE_BOOTMEM_INFO_NODE if X86_64
 	depends on MEMORY_HOTPLUG && ARCH_ENABLE_MEMORY_HOTREMOVE
 	depends on MIGRATION
 
@@ -218,7 +187,6 @@ config SPLIT_PTLOCK_CPUS
 # support for memory compaction
 config COMPACTION
 	bool "Allow for memory compaction"
-	def_bool y
 	select MIGRATION
 	depends on MMU
 	help
@@ -248,14 +216,8 @@ config ZONE_DMA_FLAG
 	default "1"
 
 config BOUNCE
-	bool "Enable bounce buffers"
-	default y
+	def_bool y
 	depends on BLOCK && MMU && (ZONE_DMA || HIGHMEM)
-	help
-	  Enable bounce buffers for devices that cannot access
-	  the full range of memory available to the CPU. Enabled
-	  by default when ZONE_DMA or HIGHMEM is selected, but you
-	  may say n to override this.
 
 config NR_QUICK
 	int
@@ -264,11 +226,8 @@ config NR_QUICK
 	default "1"
 
 config VIRT_TO_BUS
-	bool
-	help
-	  An architecture should select this if it implements the
-	  deprecated interface virt_to_bus().  All new architectures
-	  should probably not select this.
+	def_bool y
+	depends on !ARCH_NO_VIRT_TO_BUS
 
 config MMU_NOTIFIER
 	bool
@@ -391,7 +350,7 @@ config NOMMU_INITIAL_TRIM_EXCESS
 
 config TRANSPARENT_HUGEPAGE
 	bool "Transparent Hugepage Support"
-	depends on HAVE_ARCH_TRANSPARENT_HUGEPAGE
+	depends on X86 && MMU
 	select COMPACTION
 	help
 	  Transparent Hugepages allows the kernel to use huge pages and
@@ -426,16 +385,6 @@ choice
 	  memory footprint of applications without a guaranteed
 	  benefit.
 endchoice
-
-config CROSS_MEMORY_ATTACH
-	bool "Cross Memory Support"
-	depends on MMU
-	default y
-	help
-	  Enabling this option adds the system calls process_vm_readv and
-	  process_vm_writev which allow a process with the correct privileges
-	  to directly read from or write to to another process's address space.
-	  See the man page for more details.
 
 #
 # UP and nommu archs use km based percpu allocator
@@ -539,35 +488,20 @@ config PGTABLE_MAPPING
 	  You can check speed with zsmalloc benchmark[1].
 	  [1] https://github.com/spartacus06/zsmalloc
 
-config ZBUD
-	tristate
-	default n
-	help
-	  A special purpose allocator for storing compressed pages.
-	  It is designed to store up to two compressed pages per physical
-	  page.  While this design limits storage density, it has simple and
-	  deterministic reclaim properties that make it preferable to a higher
-	  density approach when reclaim will be used.
-
 config ZSWAP
 	bool "In-kernel swap page compression"
-	depends on FRONTSWAP && CRYPTO=y
+	depends on FRONTSWAP && CRYPTO
 	select CRYPTO_LZO
-	select ZBUD
+	select ZSMALLOC
 	default n
 	help
-	  A lightweight compressed cache for swap pages.  It takes
-	  pages that are in the process of being swapped out and attempts to
-	  compress them into a dynamically allocated RAM-based memory pool.
-	  This can result in a significant I/O reduction on swap device and,
-	  in the case where decompressing from RAM is faster that swap device
-	  reads, can also improve workload performance.
-
-	  This is marked experimental because it is a new feature (as of
-	  v3.11) that interacts heavily with memory reclaim.  While these
-	  interactions don't cause any known issues on simple memory setups,
-	  they have not be fully explored on the large set of potential
-	  configurations and workloads that exist.
+	  Zswap is a backend for the frontswap mechanism in the VMM.
+	  It receives pages from frontswap and attempts to store them
+	  in a compressed memory pool, resulting in an effective
+	  partial memory reclaim.  In addition, pages and be retrieved
+	  from this compressed store much faster than most tradition
+	  swap devices resulting in reduced I/O and faster performance
+	  for many workloads.
 
 config ZSWAP_ENABLE_WRITEBACK
 	bool "Enable writeback"
@@ -603,6 +537,3 @@ config SWAP_ENABLE_READAHEAD
 	  also paged in expecting those pages will be used in near future.
 	  This behaviour is good at disk-based system, but not on in-memory
 	  compression (e.g. zram).
-
-config GENERIC_EARLY_IOREMAP
-	bool
