@@ -1546,7 +1546,7 @@ static void do_remove_conflicting_framebuffers(struct apertures_struct *a,
 	int i;
 
 	/* check all firmware fbs and kick off if the base addr overlaps */
-	for (i = 0 ; i < FB_MAX; i++) {
+	for (i = 0 ; i < FB_MAX-1; i++) {
 		struct apertures_struct *gen_aper;
 		if (!registered_fb[i])
 			continue;
