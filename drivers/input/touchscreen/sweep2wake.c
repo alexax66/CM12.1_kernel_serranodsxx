@@ -30,13 +30,10 @@
 #include <linux/workqueue.h>
 #include <linux/hrtimer.h>
 #include <linux/input.h>
-#ifdef CONFIG_POWERSUSPEND
-#include <linux/powersuspend.h>
-#endif
-#ifdef CONFIG_HAS_EARLYSUSPEND
-#include <linux/earlysuspend.h>
-#endif
 
+#ifdef CONFIG_STATE_NOTIFIER
+#include <linux/state_notifier.h>
+#endif
 
 /* Version, author, desc, etc */
 #define DRIVER_AUTHOR "Dennis Rassmann <showp1984@gmail.com>"
@@ -55,8 +52,8 @@
 #define S2W_PWRKEY_DUR          60
 
 /* Screen size */
-#define DEFAULT_S2W_Y_MAX               960
-#define DEFAULT_S2W_Y_LIMIT             DEFAULT_S2W_Y_MAX-98
+#define DEFAULT_S2W_Y_MAX		960
+#define DEFAULT_S2W_Y_LIMIT		DEFAULT_S2W_Y_MAX-98
 #define DEFAULT_S2W_X_MAX		540
 
 /* 0
@@ -82,7 +79,7 @@
 int s2w_switch = S2W_DEFAULT, s2w = S2W_DEFAULT;
 static int touch_x = 0, touch_y = 0;
 static bool touch_x_called = false, touch_y_called = false;
-static bool scr_suspended = false, exec_count = true;
+static bool exec_count = true;
 static bool scr_on_touch = false, barrier[2] = {false, false};
 static bool reverse_barrier[2] = {false, false};
 static struct input_dev * sweep2wake_pwrdev;
@@ -156,7 +153,7 @@ static void detect_sweep2wake(int sweep_coord, int sweep_height, bool st)
 			(single_touch) ? "true" : "false");
 #endif
 	/* s2s: right->left */
-	if ((single_touch) && (scr_suspended == false) && (s2w_switch > 0)) {
+	if ((single_touch) && (s2w_switch > 0)) {
 		scr_on_touch = true;
 		prev_coord = DEFAULT_S2W_X_B5;
 		next_coord = DEFAULT_S2W_X_B2;
@@ -325,35 +322,6 @@ static struct input_handler s2w_input_handler = {
 	.id_table	= s2w_ids,
 };
 
-#ifdef CONFIG_POWERSUSPEND
-static void s2w_power_suspend(struct power_suspend *h) {
-	scr_suspended = true;
-}
-
-static void s2w_power_resume(struct power_suspend *h) {
-	scr_suspended = false;
-}
-
-static struct power_suspend s2w_power_suspend_handler = {
-	.suspend = s2w_power_suspend,
-	.resume = s2w_power_resume,
-};
-#endif
-#ifdef CONFIG_HAS_EARLYSUSPEND
-static void s2w_early_suspend(struct early_suspend *h) {
-	scr_suspended = true;
-}
-
-static void s2w_late_resume(struct early_suspend *h) {
-	scr_suspended = false;
-}
-
-static struct early_suspend s2w_early_suspend_handler = {
-	.level = EARLY_SUSPEND_LEVEL_BLANK_SCREEN,
-	.suspend = s2w_early_suspend,
-	.resume = s2w_late_resume,
-};
-#endif
 /*
  * SYSFS stuff below here
  */
@@ -435,13 +403,6 @@ static int __init sweep2wake_init(void)
 	if (rc)
 		pr_err("%s: Failed to register s2w_input_handler\n", __func__);
 
-#ifdef CONFIG_POWERSUSPEND
-	register_power_suspend(&s2w_power_suspend_handler);
-#endif
-#ifdef CONFIG_HAS_EARLYSUSPEND
-	register_early_suspend(&s2w_early_suspend_handler);
-#endif
-
 	sweep2sleep_kobj = kobject_create_and_add("sweep2sleep", NULL) ;
 	if (sweep2sleep_kobj == NULL) {
 		pr_warn("%s: sweep2sleep_kobj create_and_add failed\n",
@@ -471,12 +432,6 @@ static void __exit sweep2wake_exit(void)
 {
 	kobject_del(sweep2sleep_kobj);
 
-#ifdef CONFIG_POWERSUSPEND
-	unregister_power_suspend(&s2w_power_suspend_handler);
-#endif
-#ifdef CONFIG_HAS_EARLYSUSPEND
-    unregister_early_suspend(&s2w_early_suspend_handler);
-#endif
 	input_unregister_handler(&s2w_input_handler);
 	destroy_workqueue(s2w_input_wq);
 	input_unregister_device(sweep2wake_pwrdev);
