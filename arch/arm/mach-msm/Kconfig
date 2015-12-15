@@ -3270,6 +3270,12 @@ config ALUCARD_HOTPLUG
 	help
 	  Generic Alucard-hotplug cpu hotplug driver for ARM SOCs
 
+config SLEEPY_PLUG
+	bool "sleepy_plug by rmbq"
+	default y
+	help
+	  CPU hotplug driver based on intelli_plug by faux123
+
 config MSM_LIMITER
 	bool "MSM Frequency Limiter Driver"
 	default y
