@@ -16,8 +16,8 @@
 #ifndef __MXT_H__
 #define __MXT_H__
 
-#ifdef CONFIG_HAS_EARLYSUSPEND
-#include <linux/earlysuspend.h>
+#ifdef CONFIG_POWERSUSPEND
+#include <linux/powersuspend.h>
 #endif
 #include <asm/system_info.h>
 
@@ -682,8 +682,8 @@ struct mxt_data {
 	u8		PalmFlag;
 	u8		PressEventCheck;
 #endif
-#ifdef CONFIG_HAS_EARLYSUSPEND
-	struct early_suspend early_suspend;
+#ifdef CONFIG_POWERSUSPEND
+	struct power_suspend power_suspend;
 #endif
 #ifdef TSP_BOOSTER
 	struct touch_booster booster;

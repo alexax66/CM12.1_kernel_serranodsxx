@@ -31,6 +31,7 @@
 #include <mach/board.h>
 #include <linux/uaccess.h>
 #include <mach/iommu_domains.h>
+//#include <linux/earlysuspend.h>
 
 #include <linux/workqueue.h>
 #include <linux/string.h>
@@ -55,6 +56,14 @@
 #include "tvenc.h"
 #include "mdp.h"
 #include "mdp4.h"
+
+#ifdef CONFIG_LCD_NOTIFY
+#include <linux/lcd_notify.h>
+#endif
+
+#ifdef CONFIG_POWERSUSPEND
+#include <linux/powersuspend.h>
+#endif
 
 #ifdef CONFIG_FB_MSM_TRIPLE_BUFFER
 #define MSM_FB_NUM	3
@@ -90,10 +99,10 @@ static struct ion_client *iclient;
 
 u32 msm_fb_debug_enabled;
 /* Setting msm_fb_msg_level to 8 prints out ALL messages */
-u32 msm_fb_msg_level = 7;
+u32 msm_fb_msg_level = 0;
 
 /* Setting mddi_msg_level to 8 prints out ALL messages */
-u32 mddi_msg_level = 5;
+u32 mddi_msg_level = 0;
 
 extern int32 mdp_block_power_cnt[MDP_MAX_BLOCK];
 extern unsigned long mdp_timer_duration;
@@ -208,6 +217,12 @@ static void msm_fb_set_bl_brightness(struct led_classdev *led_cdev,
 			(mfd->panel_info.bl_max - mfd->panel_info.bl_min) +
 			MAX_BACKLIGHT_BRIGHTNESS - 1) /
 			(MAX_BACKLIGHT_BRIGHTNESS - 1) / 2;
+
+	/*
+	 * Little hack to allow the lowest brightness value to be as low as possible
+	 */
+	if (bl_lvl <= 5)
+		bl_lvl = mfd->panel_info.bl_min;
 
         down(&mfd->sem);
 	msm_fb_set_backlight(mfd, bl_lvl);
@@ -638,7 +653,7 @@ static int msm_fb_remove(struct platform_device *pdev)
 	return 0;
 }
 
-#if defined(CONFIG_PM) && !defined(CONFIG_HAS_EARLYSUSPEND)
+#if defined(CONFIG_PM) && !defined(CONFIG_POWERSUSPEND)
 static int msm_fb_suspend(struct platform_device *pdev, pm_message_t state)
 {
 	struct msm_fb_data_type *mfd;
@@ -662,6 +677,14 @@ static int msm_fb_suspend(struct platform_device *pdev, pm_message_t state)
 		fb_set_suspend(mfd->fbi, FBINFO_STATE_RUNNING);
 	} else {
 		pdev->dev.power.power_state = state;
+#if defined(CONFIG_MACH_LGE)
+		lcd_notifier_call_chain(LCD_EVENT_OFF_END, NULL);
+#endif
+#ifdef CONFIG_POWERSUSPEND
+		if (suspend_mode == 2)
+			set_power_suspend_state_panel_hook(
+				POWER_SUSPEND_ACTIVE);
+#endif
 	}
 
 	console_unlock();
@@ -774,7 +797,7 @@ static int msm_fb_resume_sub(struct msm_fb_data_type *mfd)
 }
 #endif
 
-#if defined(CONFIG_PM) && !defined(CONFIG_HAS_EARLYSUSPEND)
+#if defined(CONFIG_PM) && !defined(CONFIG_POWERSUSPEND)
 static int msm_fb_resume(struct platform_device *pdev)
 {
 	/* This resume function is called when interrupt is enabled.
@@ -795,6 +818,14 @@ static int msm_fb_resume(struct platform_device *pdev)
 	ret = msm_fb_resume_sub(mfd);
 	pdev->dev.power.power_state = PMSG_ON;
 	fb_set_suspend(mfd->fbi, FBINFO_STATE_RUNNING);
+#ifdef CONFIG_LCD_NOTIFY
+	lcd_notifier_call_chain(LCD_EVENT_ON_END, NULL);
+#endif
+#ifdef CONFIG_POWERSUSPEND
+	if (suspend_mode == 2)
+		set_power_suspend_state_panel_hook(
+			POWER_SUSPEND_INACTIVE);
+#endif
 	console_unlock();
 
 	return ret;
@@ -900,7 +931,7 @@ static struct dev_pm_ops msm_fb_dev_pm_ops = {
 static struct platform_driver msm_fb_driver = {
 	.probe = msm_fb_probe,
 	.remove = msm_fb_remove,
-#ifndef CONFIG_HAS_EARLYSUSPEND
+#ifndef CONFIG_POWERSUSPEND
 	.suspend = msm_fb_suspend,
 	.resume = msm_fb_resume,
 #endif
@@ -912,7 +943,7 @@ static struct platform_driver msm_fb_driver = {
 		   },
 };
 
-#if defined(CONFIG_HAS_EARLYSUSPEND) && defined(CONFIG_FB_MSM_MDP303)
+#if defined(CONFIG_POWERSUSPEND) && defined(CONFIG_FB_MSM_MDP303)
 static void memset32_io(u32 __iomem *_ptr, u32 val, size_t count)
 {
 	count >>= 2;
@@ -921,11 +952,11 @@ static void memset32_io(u32 __iomem *_ptr, u32 val, size_t count)
 }
 #endif
 
-#ifdef CONFIG_HAS_EARLYSUSPEND
-static void msmfb_early_suspend(struct early_suspend *h)
+#ifdef CONFIG_POWERSUSPEND
+static void msmfb_power_suspend(struct power_suspend *h)
 {
 	struct msm_fb_data_type *mfd = container_of(h, struct msm_fb_data_type,
-						early_suspend);
+						power_suspend);
 	struct msm_fb_panel_data *pdata = NULL;
 
 	msm_fb_pan_idle(mfd);
@@ -960,10 +991,10 @@ static void msmfb_early_suspend(struct early_suspend *h)
 	}
 }
 
-static void msmfb_early_resume(struct early_suspend *h)
+static void msmfb_early_resume(struct power_suspend *h)
 {
 	struct msm_fb_data_type *mfd = container_of(h, struct msm_fb_data_type,
-						early_suspend);
+						power_suspend);
 	struct msm_fb_panel_data *pdata = NULL;
 
 	msm_fb_pan_idle(mfd);
@@ -1767,14 +1798,14 @@ static int msm_fb_register(struct msm_fb_data_type *mfd)
 #endif
 	ret = 0;
 
-#ifdef CONFIG_HAS_EARLYSUSPEND
+#ifdef CONFIG_POWERSUSPEND
 
 	if (hdmi_prim_display ||
 		(mfd->panel_info.type != DTV_PANEL)) {
-		mfd->early_suspend.suspend = msmfb_early_suspend;
-		mfd->early_suspend.resume = msmfb_early_resume;
-		mfd->early_suspend.level = EARLY_SUSPEND_LEVEL_DISABLE_FB - 2;
-		register_early_suspend(&mfd->early_suspend);
+		mfd->power_suspend.suspend = msmfb_power_suspend;
+		mfd->power_suspend.resume = msmfb_early_resume;
+//		mfd->power_suspend.level = EARLY_SUSPEND_LEVEL_DISABLE_FB - 2;
+		register_power_suspend(&mfd->power_suspend);
 	}
 #endif
 

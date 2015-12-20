@@ -3256,6 +3256,13 @@ config SAMSUNG_PRODUCT_SHIP
 	bool "Enable to turn off some driver debug noise"
 	default n
 
+config MSM_LIMITER
+	bool "MSM Frequency Limiter Driver"
+	default y
+	help
+	  The MSM Frequency Limiter Driver controls max frequency limit for each CPU
+	  to desired value on suspend/resume
+
 config BRICKED_HOTPLUG
 	bool "Enable kernel based mpdecision"
 	depends on MSM_RUN_QUEUE_STATS
@@ -3270,17 +3277,14 @@ config ALUCARD_HOTPLUG
 	help
 	  Generic Alucard-hotplug cpu hotplug driver for ARM SOCs
 
+config ALUCARD_HOTPLUG_USE_CPU_UTIL
+	bool "Enable alucard-hotplug cpu statistics utilization"
+	depends on (ALUCARD_HOTPLUG)
+	default n
+	help
+	  Alucard-hotplug cpu statistics utilization
+
 config SLEEPY_PLUG
 	bool "sleepy_plug by rmbq"
 	default y
-	help
-	  CPU hotplug driver based on intelli_plug by faux123
-
-config MSM_LIMITER
-	bool "MSM Frequency Limiter Driver"
-	default y
-	help
-	  The MSM Frequency Limiter Driver controls max frequency limit for each CPU
-	  to desired value on suspend/resume
-
 endif

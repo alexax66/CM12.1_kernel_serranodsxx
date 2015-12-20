@@ -116,7 +116,7 @@ void start_bandwidth_timer(struct hrtimer *period_timer, ktime_t period)
 DEFINE_MUTEX(sched_domains_mutex);
 DEFINE_PER_CPU_SHARED_ALIGNED(struct rq, runqueues);
 
-#ifdef CONFIG_INTELLI_PLUG
+#if defined(CONFIG_INTELLI_PLUG) || defined(CONFIG_LAZYPLUG)
 DEFINE_PER_CPU_SHARED_ALIGNED(struct nr_stats_s, runqueue_stats);
 #endif
 
@@ -1392,7 +1392,7 @@ out:
 		 * leave kernel.
 		 */
 		if (p->mm && printk_ratelimit()) {
-			printk_deferred("process %d (%s) no longer affine to cpu%d\n",
+			printk_sched("process %d (%s) no longer affine to cpu%d\n",
 					task_pid_nr(p), p->comm, cpu);
 		}
 	}
@@ -1824,7 +1824,7 @@ static void try_to_wake_up_local(struct task_struct *p)
 	struct rq *rq = task_rq(p);
 
 	if (rq != this_rq() || p == current) {
-		printk_deferred("%s: Failed to wakeup task %d (%s), rq = %p, this_rq = %p, p = %p, current = %p\n",
+		printk_sched("%s: Failed to wakeup task %d (%s), rq = %p, this_rq = %p, p = %p, current = %p\n",
 			__func__, task_pid_nr(p), p->comm, rq,
 			this_rq(), p, current);
 		return;
@@ -2333,7 +2333,7 @@ unsigned long this_cpu_load(void)
 	return this->cpu_load[0];
 }
 
-#ifdef CONFIG_INTELLI_PLUG
+#if defined(CONFIG_INTELLI_PLUG) || defined(CONFIG_LAZYPLUG)
 unsigned long avg_nr_running(void)
 {
 	unsigned long i, sum = 0;

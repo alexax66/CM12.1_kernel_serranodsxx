@@ -106,6 +106,13 @@ static struct adreno_device device_3d0 = {
 		.iomemname = KGSL_3D0_REG_MEMORY,
 		.shadermemname = KGSL_3D0_SHADER_MEMORY,
 		.ftbl = &adreno_functable,
+//#ifdef CONFIG_POWERSUSPEND
+//		.display_off = {
+//			/*.level = EARLY_SUSPEND_LEVEL_STOP_DRAWING,*//
+//			.suspend = kgsl_early_suspend_driver,
+//			.resume = kgsl_late_resume_driver,
+//		},
+//#endif
 		.cmd_log = KGSL_LOG_LEVEL_DEFAULT,
 		.ctxt_log = KGSL_LOG_LEVEL_DEFAULT,
 		.drv_log = KGSL_LOG_LEVEL_DEFAULT,

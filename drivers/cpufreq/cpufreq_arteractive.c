@@ -53,7 +53,7 @@
 #include <linux/kthread.h>
 #include <linux/slab.h>
 #include <linux/kernel_stat.h>
-#include <linux/earlysuspend.h>
+#include <linux/powersuspend.h>
 #include <asm/cputime.h>
 
 #define CONFIG_MODE_AUTO_CHANGE
@@ -1990,20 +1990,20 @@ static void cpufreq_interactive_nop_timer(unsigned long data)
 {
 }
 
-static void arteractive_early_suspend(struct early_suspend *handler)
+static void arteractive_power_suspend(struct power_suspend *handler)
 {
 	suspended = true;
 	return;
 }
 
-static void arteractive_late_resume(struct early_suspend *handler)
+static void arteractive_late_resume(struct power_suspend *handler)
 {
 	suspended = false;
 	return;
 }
 
-static struct early_suspend arteractive_suspend = {
-	.suspend = arteractive_early_suspend,
+static struct power_suspend arteractive_suspend = {
+	.suspend = arteractive_power_suspend,
 	.resume = arteractive_late_resume,
 };
 
@@ -2039,7 +2039,7 @@ static int __init cpufreq_arteractive_init(void)
 #endif
 	}
 
-	register_early_suspend(&arteractive_suspend);
+	register_power_suspend(&arteractive_suspend);
 
 	spin_lock_init(&target_loads_lock);
 	spin_lock_init(&speedchange_cpumask_lock);

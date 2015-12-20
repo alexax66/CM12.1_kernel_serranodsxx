@@ -12,7 +12,9 @@
 
 #include <linux/platform_device.h>
 #include <linux/init.h>
-#include <linux/earlysuspend.h>
+#ifdef CONFIG_POWERSUSPEND
+#include <linux/powersuspend.h>
+#endif
 #include <linux/device.h>
 #include <linux/miscdevice.h>
 #include <linux/bln.h>
@@ -105,21 +107,21 @@ static void bln_power_off(void)
 	}
 }
 
-static void bln_early_suspend(struct early_suspend *h)
+static void bln_power_suspend(struct power_suspend *h)
 {
 	bln_suspended = true;
 }
 
-static void bln_late_resume(struct early_suspend *h)
+static void bln_late_resume(struct power_suspend *h)
 {
 	bln_suspended = false;
 
 	reset_bln_states();
 }
 
-static struct early_suspend bln_suspend_data = {
-	.level = EARLY_SUSPEND_LEVEL_BLANK_SCREEN + 1,
-	.suspend = bln_early_suspend,
+static struct power_suspend bln_suspend_data = {
+//	.level = EARLY_SUSPEND_LEVEL_BLANK_SCREEN + 1,
+	.suspend = bln_power_suspend,
 	.resume = bln_late_resume,
 };
 
@@ -554,7 +556,7 @@ static int __init bln_control_init(void)
 	wake_lock_init(&bln_wake_lock, WAKE_LOCK_SUSPEND, "bln_kernel_wake_lock");
 #endif
 
-	register_early_suspend(&bln_suspend_data);
+	register_power_suspend(&bln_suspend_data);
 
 	return 0;
 }

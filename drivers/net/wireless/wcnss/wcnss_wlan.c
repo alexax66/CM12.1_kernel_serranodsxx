@@ -85,7 +85,6 @@ static DEFINE_SPINLOCK(reg_spinlock);
 #define WCNSS_USR_CTRL_MSG_START  0x00000000
 #define WCNSS_USR_SERIAL_NUM      (WCNSS_USR_CTRL_MSG_START + 1)
 #define WCNSS_USR_HAS_CAL_DATA    (WCNSS_USR_CTRL_MSG_START + 2)
-#define WCNSS_USR_WLAN_MAC_ADDR   (WCNSS_USR_CTRL_MSG_START + 3)
 
 #define MAC_ADDRESS_STR "%02x:%02x:%02x:%02x:%02x:%02x"
 
@@ -267,8 +266,8 @@ static struct {
 	int	user_cal_available;
 	u32	user_cal_rcvd;
 	int	user_cal_exp_size;
-	int	device_opened;
 	int	ctrl_device_opened;
+	int	device_opened;
 	char	wlan_nv_macAddr[WLAN_MAC_ADDR_SIZE];
 	struct mutex dev_lock;
 	struct mutex ctrl_lock;
@@ -391,6 +390,41 @@ static ssize_t wcnss_version_show(struct device *dev,
 
 static DEVICE_ATTR(wcnss_version, S_IRUSR,
 		wcnss_version_show, NULL);
+		
+/* wcnss_reset_intr() is invoked when host drivers fails to
+ * communicate with WCNSS over SMD; so logging these registers
+ * helps to know WCNSS failure reason */
+void wcnss_riva_log_debug_regs(void)
+{
+	void __iomem *ccu_base;
+	void __iomem *ccu_reg;
+	u32 reg = 0;
+
+	ccu_base = ioremap(MSM_RIVA_CCU_BASE, SZ_512);
+	if (!ccu_base) {
+		pr_err("%s: ioremap WCNSS CCU reg failed\n", __func__);
+		return;
+	}
+
+	ccu_reg = ccu_base + CCU_INVALID_ADDR_OFFSET;
+	reg = readl_relaxed(ccu_reg);
+	pr_info_ratelimited("%s: CCU_CCPU_INVALID_ADDR %08x\n", __func__, reg);
+
+	ccu_reg = ccu_base + CCU_LAST_ADDR0_OFFSET;
+	reg = readl_relaxed(ccu_reg);
+	pr_info_ratelimited("%s: CCU_CCPU_LAST_ADDR0 %08x\n", __func__, reg);
+
+	ccu_reg = ccu_base + CCU_LAST_ADDR1_OFFSET;
+	reg = readl_relaxed(ccu_reg);
+	pr_info_ratelimited("%s: CCU_CCPU_LAST_ADDR1 %08x\n", __func__, reg);
+
+	ccu_reg = ccu_base + CCU_LAST_ADDR2_OFFSET;
+	reg = readl_relaxed(ccu_reg);
+	pr_info_ratelimited("%s: CCU_CCPU_LAST_ADDR2 %08x\n", __func__, reg);
+
+	iounmap(ccu_base);
+}
+EXPORT_SYMBOL(wcnss_riva_log_debug_regs);
 
 void wcnss_riva_dump_pmic_regs(void)
 {
@@ -413,6 +447,7 @@ void wcnss_riva_dump_pmic_regs(void)
 /* interface to reset Riva by sending the reset interrupt */
 void wcnss_reset_intr(void)
 {
+	wcnss_riva_log_debug_regs();
 	wcnss_riva_dump_pmic_regs();
 	wmb();
 	__raw_writel(1 << 24, MSM_APCS_GCC_BASE + 0x8);
@@ -501,21 +536,9 @@ static void wcnss_smd_notify_event(void *data, unsigned int event)
 	}
 }
 
-#if defined(CONFIG_PRIMA_WLAN) && !defined(CONFIG_PRIMA_WLAN_MODULE)
-static struct platform_device wcnss_ready = {
-	.name = "wcnss_ready",
-	.id = -1,
-};
-#endif
-
-
 static void wcnss_post_bootup(struct work_struct *work)
 {
 	pr_info("%s: Cancel APPS vote for Iris & Riva\n", __func__);
-
-#if defined(CONFIG_PRIMA_WLAN) && !defined(CONFIG_PRIMA_WLAN_MODULE)
-	platform_device_register(&wcnss_ready);
-#endif
 
 	/* Since Riva is up, cancel any APPS vote for Iris & Riva VREGs  */
 	wcnss_wlan_power(&penv->pdev->dev, &penv->wlan_config,
@@ -550,7 +573,7 @@ fail:
 static int __devinit
 wcnss_wlan_ctrl_probe(struct platform_device *pdev)
 {
-	if (!penv || !penv->triggered)
+	if (!penv)
 		return -ENODEV;
 
 	penv->smd_channel_ready = 1;
@@ -605,7 +628,7 @@ wcnss_ctrl_probe(struct platform_device *pdev)
 {
 	int ret = 0;
 
-	if (!penv || !penv->triggered)
+	if (!penv)
 		return -ENODEV;
 
 	ret = smd_named_open_on_edge(WCNSS_CTRL_CHANNEL, SMD_APPS_WCNSS,
@@ -1080,7 +1103,7 @@ static void wcnssctrl_rx_handler(struct work_struct *worker)
 		smd_read(penv->smd_ch, NULL, len);
 		return;
 	}
-	if (len < sizeof(struct smd_msg_hdr))
+	if (len <= 0)
 		return;
 
 	rc = smd_read(penv->smd_ch, buf, sizeof(struct smd_msg_hdr));
@@ -1448,16 +1471,6 @@ void process_usr_ctrl_cmd(u8 *buf, size_t len)
 		has_calibrated_data = buf[2];
 		break;
 
-	case WCNSS_USR_WLAN_MAC_ADDR:
-		memcpy(&penv->wlan_nv_macAddr,  &buf[2],
-				sizeof(penv->wlan_nv_macAddr));
-
-		pr_debug("%s: MAC Addr:" MAC_ADDRESS_STR "\n", __func__,
-			penv->wlan_nv_macAddr[0], penv->wlan_nv_macAddr[1],
-			penv->wlan_nv_macAddr[2], penv->wlan_nv_macAddr[3],
-			penv->wlan_nv_macAddr[4], penv->wlan_nv_macAddr[5]);
-		break;
-
 	default:
 		pr_err("%s: Invalid command %d\n", __func__, cmd);
 		break;
@@ -1542,6 +1555,15 @@ wcnss_trigger_config(struct platform_device *pdev)
 		goto fail_power;
 	}
 
+	/* trigger initialization of the WCNSS */
+	penv->pil = pil_get(WCNSS_PIL_DEVICE);
+	if (IS_ERR(penv->pil)) {
+		dev_err(&pdev->dev, "Peripheral Loader failed on WCNSS.\n");
+		ret = PTR_ERR(penv->pil);
+		penv->pil = NULL;
+		goto fail_pil;
+	}
+
 	/* allocate resources */
 	penv->mmio_res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
 							"wcnss_mmio");
@@ -1568,25 +1590,15 @@ wcnss_trigger_config(struct platform_device *pdev)
 		goto fail_wake;
 	}
 
-	/* trigger initialization of the WCNSS */
-	penv->pil = pil_get(WCNSS_PIL_DEVICE);
-	if (IS_ERR(penv->pil)) {
-		dev_err(&pdev->dev, "Peripheral Loader failed on WCNSS.\n");
-		ret = PTR_ERR(penv->pil);
-		penv->pil = NULL;
-		goto fail_pil;
-	}
-
 	return 0;
-
-fail_pil:
-	if (penv->msm_wcnss_base)
-               iounmap(penv->msm_wcnss_base);
 
 fail_wake:
 	wake_lock_destroy(&penv->wcnss_wake_lock);
 
 fail_res:
+	if (penv->pil)
+		pil_put(penv->pil);
+fail_pil:
 	wcnss_wlan_power(&pdev->dev, &penv->wlan_config,
 				WCNSS_WLAN_SWITCH_OFF);
 fail_power:

@@ -18,7 +18,7 @@
 #include "internal.h"
 
 #ifdef CONFIG_DYNAMIC_FSYNC
-extern bool early_suspend_active;
+extern bool power_suspend_active;
 extern bool dyn_fsync_active;
 #endif
 
@@ -104,10 +104,16 @@ static void sync_one_sb(struct super_block *sb, void *arg)
  * Sync all the data for all the filesystems (called by sys_sync() and
  * emergency sync)
  */
+#ifndef CONFIG_DYNAMIC_FSYNC
+static
+#endif
 void sync_filesystems(int wait)
 {
 	iterate_supers(sync_one_sb, &wait);
 }
+#ifdef CONFIG_DYNAMIC_FSYNC
+EXPORT_SYMBOL_GPL(sync_filesystems);
+#endif
 
 /*
  * sync everything.  Start out by waking pdflush, because that writes back
@@ -237,7 +243,7 @@ SYSCALL_DEFINE1(syncfs, int, fd)
 int vfs_fsync_range(struct file *file, loff_t start, loff_t end, int datasync)
 {
 #ifdef CONFIG_DYNAMIC_FSYNC
-	if (likely(dyn_fsync_active && !early_suspend_active))
+	if (likely(dyn_fsync_active && !power_suspend_active))
 		return 0;
 	else {
 #endif
@@ -383,7 +389,7 @@ no_async:
 SYSCALL_DEFINE1(fsync, unsigned int, fd)
 {
 #ifdef CONFIG_DYNAMIC_FSYNC
-	if (likely(dyn_fsync_active && !early_suspend_active))
+	if (likely(dyn_fsync_active && !power_suspend_active))
 		return 0;
 	else
 #endif
@@ -468,7 +474,7 @@ SYSCALL_DEFINE(sync_file_range)(int fd, loff_t offset, loff_t nbytes,
 				unsigned int flags)
 {
 #ifdef CONFIG_DYNAMIC_FSYNC
-	if (likely(dyn_fsync_active && !early_suspend_active))
+	if (likely(dyn_fsync_active && !power_suspend_active))
 		return 0;
 	else {
 #endif
@@ -571,7 +577,7 @@ SYSCALL_DEFINE(sync_file_range2)(int fd, unsigned int flags,
 				 loff_t offset, loff_t nbytes)
 {
 #ifdef CONFIG_DYNAMIC_FSYNC
-	if (likely(dyn_fsync_active && !early_suspend_active))
+	if (likely(dyn_fsync_active && !power_suspend_active))
 		return 0;
 	else
 #endif

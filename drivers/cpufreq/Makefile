@@ -31,7 +31,6 @@ obj-$(CONFIG_CPU_FREQ_GOV_YANKACTIVE)	+= cpufreq_yankactive.o
 obj-$(CONFIG_CPU_FREQ_GOV_NIGHTMARE)	+= cpufreq_nightmare.o
 obj-$(CONFIG_CPU_FREQ_GOV_DARKNESS)	+= cpufreq_darkness.o
 obj-$(CONFIG_CPU_FREQ_GOV_ALUCARD)	+= cpufreq_alucard.o
-obj-$(CONFIG_CPU_FREQ_GOV_UBERDEMAND)	+= cpufreq_uberdemand.o
 
 # CPUfreq cross-arch helpers
 obj-$(CONFIG_CPU_FREQ_TABLE)		+= freq_table.o
@@ -76,3 +75,6 @@ obj-$(CONFIG_ARM_OMAP2PLUS_CPUFREQ)     += omap-cpufreq.o
 # PowerPC platform drivers
 obj-$(CONFIG_CPU_FREQ_MAPLE)		+= maple-cpufreq.o
 obj-$(CONFIG_MSM_DCVS)			+= cpufreq_gov_msm.o
+
+obj-$(CONFIG_LAZYPLUG)			+= lazyplug.o
+CFLAGS_lazyplug.o			+= -finline-functions

@@ -18,31 +18,28 @@
 #include <linux/slab.h>
 #include <linux/input.h>
 #include <linux/kobject.h>
-
+#ifdef CONFIG_STATE_NOTIFIER
 #include <linux/state_notifier.h>
-
+#endif
 #include <linux/cpufreq.h>
 
 #define INTELLI_PLUG			"intelli_plug"
 #define INTELLI_PLUG_MAJOR_VERSION	5
-#define INTELLI_PLUG_MINOR_VERSION	1
+#define INTELLI_PLUG_MINOR_VERSION	4
 
-#define DEF_SAMPLING_MS			268
+#define DEF_SAMPLING_MS			30
 #define RESUME_SAMPLING_MS		HZ / 10
-#define START_DELAY_MS			HZ * 20
+#define START_DELAY_MS			HZ * 10
 #define MIN_INPUT_INTERVAL		150 * 1000L
-#define BOOST_LOCK_DUR			2500 * 1000L
-#define DEFAULT_NR_CPUS_BOOSTED		1
+#define BOOST_LOCK_DUR			500 * 1000L
+#define DEFAULT_NR_CPUS_BOOSTED		2
 #define DEFAULT_MIN_CPUS_ONLINE		1
 #define DEFAULT_MAX_CPUS_ONLINE		NR_CPUS
 #define DEFAULT_NR_FSHIFT		DEFAULT_MAX_CPUS_ONLINE - 1
-#define DEFAULT_DOWN_LOCK_DUR		2500
-#define DEFAULT_MAX_CPUS_ONLINE_SUSP	1
+#define DEFAULT_DOWN_LOCK_DUR		2000
 
 #define CAPACITY_RESERVE		50
-#if defined(CONFIG_ARCH_APQ8084) || defined(CONFIG_ARM64)
-#define THREAD_CAPACITY (430 - CAPACITY_RESERVE)
-#elif defined(CONFIG_ARCH_MSM8960) || defined(CONFIG_ARCH_APQ8064) || \
+#if defined(CONFIG_ARCH_MSM8960) || defined(CONFIG_ARCH_APQ8064) || \
 defined(CONFIG_ARCH_MSM8974)
 #define THREAD_CAPACITY			(339 - CAPACITY_RESERVE)
 #elif defined(CONFIG_ARCH_MSM8226) || defined (CONFIG_ARCH_MSM8926) || \
@@ -51,7 +48,8 @@ defined (CONFIG_ARCH_MSM8610) || defined (CONFIG_ARCH_MSM8228)
 #else
 #define THREAD_CAPACITY			(250 - CAPACITY_RESERVE)
 #endif
-#define CPU_NR_THRESHOLD		((THREAD_CAPACITY << 1) + (THREAD_CAPACITY / 2))
+#define CPU_NR_THRESHOLD		((THREAD_CAPACITY << 1) + \
+					(THREAD_CAPACITY / 2))
 #define MULT_FACTOR			4
 #define DIV_FACTOR			100000
 
@@ -73,13 +71,17 @@ static atomic_t intelli_plug_active = ATOMIC_INIT(0);
 static unsigned int cpus_boosted = DEFAULT_NR_CPUS_BOOSTED;
 static unsigned int min_cpus_online = DEFAULT_MIN_CPUS_ONLINE;
 static unsigned int max_cpus_online = DEFAULT_MAX_CPUS_ONLINE;
-static unsigned int full_mode_profile = 0;
+static unsigned int full_mode_profile = 0; /* balance profile */
 static unsigned int cpu_nr_run_threshold = CPU_NR_THRESHOLD;
 
 static bool hotplug_suspended = false;
 static unsigned int min_cpus_online_res = DEFAULT_MIN_CPUS_ONLINE;
 static unsigned int max_cpus_online_res = DEFAULT_MAX_CPUS_ONLINE;
-static unsigned int max_cpus_online_susp = DEFAULT_MAX_CPUS_ONLINE_SUSP;
+/*
+ * suspend mode, if set = 1 hotplug will sleep,
+ * if set = 0, then hoplug will be active all the time.
+ */
+static unsigned int hotplug_suspend = 0;
 
 /* HotPlug Driver Tuning */
 static unsigned int target_cpus = 0;
@@ -87,10 +89,10 @@ static u64 boost_lock_duration = BOOST_LOCK_DUR;
 static unsigned int def_sampling_ms = DEF_SAMPLING_MS;
 static unsigned int nr_fshift = DEFAULT_NR_FSHIFT;
 static unsigned int nr_run_hysteresis = DEFAULT_MAX_CPUS_ONLINE * 2;
-static unsigned int debug_intelli_plug = 0;
+static unsigned int debug_intelli_plug = 1;
 
 #define dprintk(msg...)		\
-do { 				\
+do {				\
 	if (debug_intelli_plug)		\
 		pr_info(msg);	\
 } while (0)
@@ -236,17 +238,19 @@ static void __ref cpu_up_down_work(struct work_struct *work)
 
 	if (target < online_cpus) {
 		if (online_cpus <= cpus_boosted &&
-		    (ktime_to_us(ktime_get()) - last_input < boost_lock_duration))
+		    (ktime_to_us(ktime_get()) - last_input <
+				boost_lock_duration))
 			return;
 
 		update_per_cpu_stat();
 		for_each_online_cpu(cpu) {
 			if (cpu == 0)
 				continue;
-			if (check_down_lock(cpu) || check_cpuboost(cpu))
+			if (check_down_lock(cpu))
 				break;
 			l_nr_threshold =
-				cpu_nr_run_threshold << 1 / (num_online_cpus());
+				cpu_nr_run_threshold << 1 /
+					(num_online_cpus());
 			l_ip_info = &per_cpu(ip_info, cpu);
 			if (l_ip_info->cpu_nr_running < l_nr_threshold)
 				cpu_down(cpu);
@@ -267,7 +271,7 @@ static void __ref cpu_up_down_work(struct work_struct *work)
 
 static void intelli_plug_work_fn(struct work_struct *work)
 {
-	if (hotplug_suspended && max_cpus_online_susp <= 1) {
+	if (hotplug_suspended) {
 		dprintk("intelli_plug is suspended!\n");
 		return;
 	}
@@ -280,32 +284,41 @@ static void intelli_plug_work_fn(struct work_struct *work)
 					msecs_to_jiffies(def_sampling_ms));
 }
 
-static void intelli_plug_suspend(void)
+static void __ref intelli_plug_suspend(void)
 {
 	int cpu = 0;
 
-	mutex_lock(&intelli_plug_mutex);
-	hotplug_suspended = true;
-	min_cpus_online_res = min_cpus_online;
-	min_cpus_online = 1;
-	max_cpus_online_res = max_cpus_online;
-	max_cpus_online = max_cpus_online_susp;
-	mutex_unlock(&intelli_plug_mutex);
-
-	/* Do not cancel hotplug work unless max_cpus_online_susp is 1 */
-	if (max_cpus_online_susp > 1 &&
-		full_mode_profile != 3)
+	if (!hotplug_suspend)
 		return;
 
-	/* Flush hotplug workqueue */
-	flush_workqueue(intelliplug_wq);
-	cancel_delayed_work_sync(&intelli_plug_work);
+	if (hotplug_suspended == false) {
+		mutex_lock(&intelli_plug_mutex);
+		hotplug_suspended = true;
+		min_cpus_online_res = min_cpus_online;
+		min_cpus_online = 1;
+		max_cpus_online_res = max_cpus_online;
+		max_cpus_online = 3;
+		mutex_unlock(&intelli_plug_mutex);
 
-	/* Put all sibling cores to sleep */
-	for_each_online_cpu(cpu) {
-		if (cpu == 0)
-			continue;
-		cpu_down(cpu);
+		/* Flush hotplug workqueue */
+		flush_workqueue(intelliplug_wq);
+		cancel_delayed_work_sync(&intelli_plug_work);
+
+		/* Put sibling cores to sleep */
+		for_each_online_cpu(cpu) {
+			if (cpu == 0)
+				continue;
+			cpu_down(cpu);
+		}
+
+		/*
+		 * Enable core 1,2 so we will have 0-2 online
+		 * when screen is OFF to reduce system lags and reboots.
+		 */
+		cpu_up(1);
+		cpu_up(2);
+
+		dprintk("%s: suspended!\n", INTELLI_PLUG);
 	}
 }
 
@@ -321,14 +334,12 @@ static void __ref intelli_plug_resume(void)
 		mutex_unlock(&intelli_plug_mutex);
 		required_wakeup = 1;
 		/* Initiate hotplug work if it was cancelled */
-		if (max_cpus_online_susp <= 1 ||
-			full_mode_profile == 3) {
-			required_reschedule = 1;
-			INIT_DELAYED_WORK(&intelli_plug_work, intelli_plug_work_fn);
-		}
+		required_reschedule = 1;
+		INIT_DELAYED_WORK(&intelli_plug_work,
+				intelli_plug_work_fn);
+		dprintk("%s: resumed.\n", INTELLI_PLUG);
 	}
 
-//	if (wakeup_boost || required_wakeup) {
 	if (required_wakeup) {
 		/* Fire up all CPUs */
 		for_each_cpu_not(cpu, cpu_online_mask) {
@@ -337,6 +348,7 @@ static void __ref intelli_plug_resume(void)
 			cpu_up(cpu);
 			apply_down_lock(cpu);
 		}
+		dprintk("%s: wakeup boosted.\n", INTELLI_PLUG);
 	}
 
 	/* Resume hotplug workqueue if required */
@@ -349,7 +361,8 @@ static void __ref intelli_plug_resume(void)
 static int state_notifier_callback(struct notifier_block *this,
 				unsigned long event, void *data)
 {
-	if (atomic_read(&intelli_plug_active) == 0)
+	if ((atomic_read(&intelli_plug_active) == 0) ||
+			hotplug_suspended)
 		return NOTIFY_OK;
 
 	switch (event) {
@@ -372,7 +385,7 @@ static void intelli_plug_input_event(struct input_handle *handle,
 {
 	u64 now;
 
-	if (hotplug_suspended || cpus_boosted == 1)
+	if (hotplug_suspended)
 		return;
 
 	now = ktime_to_us(ktime_get());
@@ -412,8 +425,6 @@ static int intelli_plug_input_connect(struct input_handler *handler,
 	err = input_open_device(handle);
 	if (err)
 		goto err_open;
-
-	dprintk("%s found and connected!\n", dev->name);
 
 	return 0;
 err_open:
@@ -462,7 +473,8 @@ static int __ref intelli_plug_start(void)
 	int cpu, ret = 0;
 	struct down_lock *dl;
 
-	intelliplug_wq = alloc_workqueue("intelliplug", WQ_HIGHPRI | WQ_FREEZABLE, 0);
+	intelliplug_wq = alloc_workqueue("intelliplug",
+			WQ_HIGHPRI | WQ_FREEZABLE, 0);
 	if (!intelliplug_wq) {
 		pr_err("%s: Failed to allocate hotplug workqueue\n",
 		       INTELLI_PLUG);
@@ -482,7 +494,7 @@ static int __ref intelli_plug_start(void)
 	ret = input_register_handler(&intelli_plug_input_handler);
 	if (ret) {
 		pr_err("%s: Failed to register input handler: %d\n",
-		       INTELLI_PLUG, ret);
+			INTELLI_PLUG, ret);
 		goto err_dev;
 	}
 
@@ -495,7 +507,14 @@ static int __ref intelli_plug_start(void)
 		INIT_DELAYED_WORK(&dl->lock_rem, remove_down_lock);
 	}
 
-	/* Fire up all CPUs */
+	/* Put all sibling cores to sleep to release all locks */
+	for_each_online_cpu(cpu) {
+		if (cpu == 0)
+			continue;
+		cpu_down(cpu);
+	}
+
+	/* Fire up all CPUs to boost performance */
 	for_each_cpu_not(cpu, cpu_online_mask) {
 		if (cpu == 0)
 			continue;
@@ -534,6 +553,13 @@ static void intelli_plug_stop(void)
 
 	input_unregister_handler(&intelli_plug_input_handler);
 	destroy_workqueue(intelliplug_wq);
+
+	/* Put all sibling cores to sleep */
+	for_each_online_cpu(cpu) {
+		if (cpu == 0)
+			continue;
+		cpu_down(cpu);
+	}
 }
 
 static void intelli_plug_active_eval_fn(unsigned int status)
@@ -560,7 +586,7 @@ static ssize_t show_##file_name					\
 show_one(cpus_boosted, cpus_boosted);
 show_one(min_cpus_online, min_cpus_online);
 show_one(max_cpus_online, max_cpus_online);
-show_one(max_cpus_online_susp, max_cpus_online_susp);
+show_one(hotplug_suspend, hotplug_suspend);
 show_one(full_mode_profile, full_mode_profile);
 show_one(cpu_nr_run_threshold, cpu_nr_run_threshold);
 show_one(def_sampling_ms, def_sampling_ms);
@@ -571,8 +597,8 @@ show_one(down_lock_duration, down_lock_dur);
 
 #define store_one(file_name, object)		\
 static ssize_t store_##file_name		\
-(struct kobject *kobj, 				\
- struct kobj_attribute *attr, 			\
+(struct kobject *kobj,				\
+ struct kobj_attribute *attr,			\
  const char *buf, size_t count)			\
 {						\
 	unsigned int input;			\
@@ -588,6 +614,7 @@ static ssize_t store_##file_name		\
 }
 
 store_one(cpus_boosted, cpus_boosted);
+store_one(hotplug_suspend, hotplug_suspend);
 store_one(full_mode_profile, full_mode_profile);
 store_one(cpu_nr_run_threshold, cpu_nr_run_threshold);
 store_one(def_sampling_ms, def_sampling_ms);
@@ -597,7 +624,7 @@ store_one(nr_run_hysteresis, nr_run_hysteresis);
 store_one(down_lock_duration, down_lock_dur);
 
 static ssize_t show_intelli_plug_active(struct kobject *kobj,
-					struct kobj_attribute *attr, 
+					struct kobj_attribute *attr,
 					char *buf)
 {
 	return sprintf(buf, "%d\n",
@@ -629,7 +656,7 @@ static ssize_t store_intelli_plug_active(struct kobject *kobj,
 }
 
 static ssize_t show_boost_lock_duration(struct kobject *kobj,
-					struct kobj_attribute *attr, 
+					struct kobj_attribute *attr,
 					char *buf)
 {
 	return sprintf(buf, "%llu\n", div_u64(boost_lock_duration, 1000));
@@ -689,31 +716,15 @@ static ssize_t store_max_cpus_online(struct kobject *kobj,
 	return count;
 }
 
-static ssize_t store_max_cpus_online_susp(struct kobject *kobj,
-				     struct kobj_attribute *attr,
-				     const char *buf, size_t count)
-{
-	int ret;
-	unsigned int val;
-
-	ret = sscanf(buf, "%u", &val);
-	if (ret != 1 || val < 1 || val > NR_CPUS)
-		return -EINVAL;
-
-	max_cpus_online_susp = val;
-
-	return count;
-}
-
 #define KERNEL_ATTR_RW(_name) \
 static struct kobj_attribute _name##_attr = \
-	__ATTR(_name, 0664, show_##_name, store_##_name)
+	__ATTR(_name, 0644, show_##_name, store_##_name)
 
 KERNEL_ATTR_RW(intelli_plug_active);
 KERNEL_ATTR_RW(cpus_boosted);
 KERNEL_ATTR_RW(min_cpus_online);
 KERNEL_ATTR_RW(max_cpus_online);
-KERNEL_ATTR_RW(max_cpus_online_susp);
+KERNEL_ATTR_RW(hotplug_suspend);
 KERNEL_ATTR_RW(full_mode_profile);
 KERNEL_ATTR_RW(cpu_nr_run_threshold);
 KERNEL_ATTR_RW(boost_lock_duration);
@@ -728,7 +739,7 @@ static struct attribute *intelli_plug_attrs[] = {
 	&cpus_boosted_attr.attr,
 	&min_cpus_online_attr.attr,
 	&max_cpus_online_attr.attr,
-	&max_cpus_online_susp_attr.attr,
+	&hotplug_suspend_attr.attr,
 	&full_mode_profile_attr.attr,
 	&cpu_nr_run_threshold_attr.attr,
 	&boost_lock_duration_attr.attr,
@@ -763,16 +774,17 @@ static int __init intelli_plug_init(void)
 
 static void __exit intelli_plug_exit(void)
 {
-
 	if (atomic_read(&intelli_plug_active) == 1)
 		intelli_plug_stop();
+
 	sysfs_remove_group(kernel_kobj, &intelli_plug_attr_group);
 }
 
 late_initcall(intelli_plug_init);
 module_exit(intelli_plug_exit);
 
-MODULE_AUTHOR("Paul Reioux <reioux@gmail.com>");
+MODULE_AUTHOR("Paul Reioux <reioux@gmail.com>, \
+		Alucard24, Dorimanx, neobuddy89");
 MODULE_DESCRIPTION("'intell_plug' - An intelligent cpu hotplug driver for "
 	"Low Latency Frequency Transition capable processors");
 MODULE_LICENSE("GPLv2");

@@ -16,7 +16,7 @@
 //#define ISP_VERY_VERBOSE_DEBUG
 
 #include <linux/delay.h>
-#include <linux/earlysuspend.h>
+#include <linux/powersuspend.h>
 #include <linux/firmware.h>
 #include <linux/gpio.h>
 #include <linux/i2c.h>
@@ -138,7 +138,7 @@ struct tc360_data {
 	struct input_dev		*input_dev;
 	char				phys[32];
 	struct tc360_platform_data	*pdata;
-	struct early_suspend		early_suspend;
+	struct power_suspend		power_suspend;
 	struct mutex			lock;
 	struct fw_image			*fw_img;
 	bool				enabled;
@@ -167,9 +167,9 @@ struct tc360_data {
 #endif
 };
 
-#ifdef CONFIG_HAS_EARLYSUSPEND
-static void tc360_early_suspend(struct early_suspend *h);
-static void tc360_late_resume(struct early_suspend *h);
+#ifdef CONFIG_POWERSUSPEND
+static void tc360_power_suspend(struct power_suspend *h);
+static void tc360_late_resume(struct power_suspend *h);
 #endif
 
 static irqreturn_t tc360_interrupt(int irq, void *dev_id)
@@ -887,8 +887,8 @@ err:
 
 /* early suspend is not removed for debugging. */
 /*
-#ifdef CONFIG_HAS_EARLYSUSPEND
-	unregister_early_suspend(&data->early_suspend);
+#ifdef CONFIG_POWERSUSPEND
+	unregister_power_suspend(&data->power_suspend);
 #endif
 */
 	data->fw_flash_state = STATE_FLASH_FAIL;
@@ -1828,11 +1828,11 @@ static int __devinit tc360_probe(struct i2c_client *client,
 		break;
 	}
 
-#ifdef CONFIG_HAS_EARLYSUSPEND
-	data->early_suspend.level = EARLY_SUSPEND_LEVEL_BLANK_SCREEN + 1;
-	data->early_suspend.suspend = tc360_early_suspend;
-	data->early_suspend.resume = tc360_late_resume;
-	register_early_suspend(&data->early_suspend);
+#ifdef CONFIG_POWERSUSPEND
+//	data->power_suspend.level = EARLY_SUSPEND_LEVEL_BLANK_SCREEN + 1;
+	data->power_suspend.suspend = tc360_power_suspend;
+	data->power_suspend.resume = tc360_late_resume;
+	register_power_suspend(&data->power_suspend);
 #endif
 
 #ifdef CONFIG_GENERIC_BLN
@@ -1893,8 +1893,8 @@ static int __devexit tc360_remove(struct i2c_client *client)
 {
 	struct tc360_data *data = i2c_get_clientdata(client);
 
-#ifdef CONFIG_HAS_EARLYSUSPEND
-	unregister_early_suspend(&data->early_suspend);
+#ifdef CONFIG_POWERSUSPEND
+	unregister_power_suspend(&data->power_suspend);
 #endif
 	free_irq(client->irq, data);
 	gpio_free(data->pdata->gpio_int);
@@ -1910,7 +1910,7 @@ static int __devexit tc360_remove(struct i2c_client *client)
 	return 0;
 }
 
-#if defined(CONFIG_PM) || defined(CONFIG_HAS_EARLYSUSPEND)
+#if defined(CONFIG_PM) || defined(CONFIG_POWERSUSPEND)
 static int tc360_suspend(struct device *dev)
 {
 	struct i2c_client *client = to_i2c_client(dev);
@@ -2030,23 +2030,23 @@ out:
 }
 #endif
 
-#ifdef CONFIG_HAS_EARLYSUSPEND
-static void tc360_early_suspend(struct early_suspend *h)
+#ifdef CONFIG_POWERSUSPEND
+static void tc360_power_suspend(struct power_suspend *h)
 {
 	struct tc360_data *data;
-	data = container_of(h, struct tc360_data, early_suspend);
+	data = container_of(h, struct tc360_data, power_suspend);
 	tc360_suspend(&data->client->dev);
 }
 
-static void tc360_late_resume(struct early_suspend *h)
+static void tc360_late_resume(struct power_suspend *h)
 {
 	struct tc360_data *data;
-	data = container_of(h, struct tc360_data, early_suspend);
+	data = container_of(h, struct tc360_data, power_suspend);
 	tc360_resume(&data->client->dev);
 }
 #endif
 
-#if defined(CONFIG_PM) || defined(CONFIG_HAS_EARLYSUSPEND)
+#if defined(CONFIG_PM) || defined(CONFIG_POWERSUSPEND)
 static const struct dev_pm_ops tc360_pm_ops = {
 	.suspend	= tc360_suspend,
 	.resume		= tc360_resume,
@@ -2064,7 +2064,7 @@ static struct i2c_driver tc360_driver = {
 	.remove		= tc360_remove,
 	.driver = {
 		.name	= TC360_DEVICE,
-#if defined(CONFIG_PM) && !defined(CONFIG_HAS_EARLYSUSPEND)
+#if defined(CONFIG_PM) && !defined(CONFIG_POWERSUSPEND)
 		.pm	= &tc360_pm_ops,
 #endif
 	},
