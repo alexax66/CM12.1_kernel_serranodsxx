@@ -35,7 +35,6 @@
 
 #include "smd_private.h"
 #include "smd_rpc_sym.h"
-#include "modem_notifier.h"
 
 #define DEBUG
 #undef DEBUG
