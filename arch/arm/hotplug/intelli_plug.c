@@ -304,7 +304,7 @@ static void __ref intelli_plug_suspend(void)
 		flush_workqueue(intelliplug_wq);
 		cancel_delayed_work_sync(&intelli_plug_work);
 
-		/* Put sibling cores to sleep */
+		/* Put all sibling cores to sleep */
 		for_each_online_cpu(cpu) {
 			if (cpu == 0)
 				continue;

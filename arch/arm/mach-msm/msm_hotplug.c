@@ -507,7 +507,7 @@ static void __ref msm_hotplug_suspend(void)
 		flush_workqueue(hotplug_wq);
 		cancel_delayed_work_sync(&hotplug_work);
 
-		/* Put sibling cores to sleep */
+		/* Put all sibling cores to sleep */
 		for_each_online_cpu(cpu) {
 			if (cpu == 0)
 				continue;
