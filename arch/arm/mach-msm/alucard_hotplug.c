@@ -358,7 +358,7 @@ static void __ref alucard_hotplug_early_suspend(struct early_suspend *handler)
 {
 	int cpu;
 
-    if (hotplug_tuners_ins.hotplug_enable > 0
+	if (hotplug_tuners_ins.hotplug_enable > 0
 			&& hotplug_tuners_ins.hotplug_suspend == 1 &&
 			hotplug_tuners_ins.suspended == false) {
 		    hotplug_tuners_ins.suspended = true;
