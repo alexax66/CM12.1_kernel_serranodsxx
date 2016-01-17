@@ -31,10 +31,8 @@
 #endif  /* CONFIG_POWERSUSPEND || CONFIG_HAS_EARLYSUSPEND */
 
 struct hotplug_cpuinfo {
-#ifndef CONFIG_ALUCARD_HOTPLUG_USE_CPU_UTIL
 	u64 prev_cpu_wall;
 	u64 prev_cpu_idle;
-#endif
 	unsigned int up_load;
 	unsigned int down_load;
 	unsigned int up_freq;
@@ -45,6 +43,9 @@ struct hotplug_cpuinfo {
 	unsigned int down_rate;
 	unsigned int cur_up_rate;
 	unsigned int cur_down_rate;
+	unsigned int cpu;
+	struct work_struct up_work;
+	struct work_struct down_work;
 };
 
 static DEFINE_PER_CPU(struct hotplug_cpuinfo, od_hotplug_cpuinfo);
@@ -163,6 +164,30 @@ static unsigned int get_nr_run_avg(void)
 
 typedef enum {IDLE, ON, OFF} HOTPLUG_STATUS;
 
+static void __ref cpu_up_work(struct work_struct *work)
+{
+	struct hotplug_cpuinfo *pcpu_info = 
+			container_of(work, struct hotplug_cpuinfo, up_work);
+	unsigned int upcpu;
+	int ret;
+
+	upcpu = (pcpu_info->cpu + 1);
+	ret = cpu_up(upcpu);
+	if (!ret) {
+		pcpu_info->cur_up_rate = 1;
+		pcpu_info->cur_down_rate = 1;
+	}
+}
+
+static void __ref cpu_down_work(struct work_struct *work)
+{
+	struct hotplug_cpuinfo *pcpu_info =
+			container_of(work, struct hotplug_cpuinfo, down_work);
+	int ret;
+
+	ret = cpu_down(pcpu_info->cpu);
+}
+
 static void __ref hotplug_work_fn(struct work_struct *work)
 {
 	unsigned int upmaxcoreslimit = 0;
@@ -195,18 +220,13 @@ static void __ref hotplug_work_fn(struct work_struct *work)
 	for_each_online_cpu(cpu) {
 		struct hotplug_cpuinfo *pcpu_info = &per_cpu(od_hotplug_cpuinfo, cpu);
 		unsigned int upcpu = (cpu + 1);
-#ifndef CONFIG_ALUCARD_HOTPLUG_USE_CPU_UTIL
 		u64 cur_wall_time, cur_idle_time;
 		unsigned int wall_time, idle_time;
-#endif
 		int cur_load = -1;
 		unsigned int cur_freq = 0;
 		bool check_up = false, check_down = false;
 		int online_cpus;
 
-#ifdef CONFIG_ALUCARD_HOTPLUG_USE_CPU_UTIL
-		cur_load = cpufreq_quick_get_util(cpu);
-#else
 		cur_idle_time = get_cpu_idle_time(cpu, &cur_wall_time, io_busy);
 
 		wall_time = (unsigned int)
@@ -228,7 +248,6 @@ static void __ref hotplug_work_fn(struct work_struct *work)
 			cur_load = wall_time > idle_time ? (100 *
 				(wall_time - idle_time)) / wall_time : 0;
 		}
-#endif
 
 		/* if cur_load < 0, evaluate cpu load next time */
 		if (cur_load >= 0) {
@@ -404,12 +423,13 @@ static int hotplug_start(void)
 	for_each_possible_cpu(cpu) {
 		struct hotplug_cpuinfo *pcpu_info = &per_cpu(od_hotplug_cpuinfo, cpu);
 
-#ifndef CONFIG_ALUCARD_HOTPLUG_USE_CPU_UTIL
+		pcpu_info->cpu = cpu;
 		pcpu_info->prev_cpu_idle = get_cpu_idle_time(cpu,
 				&pcpu_info->prev_cpu_wall, hotplug_tuners_ins.hp_io_is_busy);
-#endif
 		pcpu_info->cur_up_rate = 1;
 		pcpu_info->cur_down_rate = 1;
+		INIT_WORK(&pcpu_info->up_work, cpu_up_work);
+		INIT_WORK(&pcpu_info->down_work, cpu_down_work);
 	}
 	put_online_cpus();
 
@@ -434,6 +454,8 @@ static int hotplug_start(void)
 
 static void hotplug_stop(void)
 {
+	unsigned int cpu;
+
 #if defined(CONFIG_POWERSUSPEND) || \
 	defined(CONFIG_HAS_EARLYSUSPEND)
 	mutex_destroy(&hotplug_tuners_ins.alu_hotplug_mutex);
@@ -446,7 +468,12 @@ static void hotplug_stop(void)
 #endif  /* CONFIG_POWERSUSPEND || CONFIG_HAS_EARLYSUSPEND */
 
 	cancel_delayed_work_sync(&alucard_hotplug_work);
-
+	for_each_possible_cpu(cpu) {
+		struct hotplug_cpuinfo *pcpu_info =
+				&per_cpu(od_hotplug_cpuinfo, cpu);
+		cancel_work_sync(&pcpu_info->up_work);
+		cancel_work_sync(&pcpu_info->down_work);
+	}
 	exit_rq_avg();
 
 	destroy_workqueue(alucardhp_wq);
@@ -768,17 +795,17 @@ static ssize_t store_hp_io_is_busy(struct kobject *a, struct attribute *b,
 	if (input == hotplug_tuners_ins.hp_io_is_busy)
 		return count;
 
-	hotplug_tuners_ins.hp_io_is_busy = !!input;
-#ifndef CONFIG_ALUCARD_HOTPLUG_USE_CPU_UTIL
 	/* we need to re-evaluate prev_cpu_idle */
 	if (hotplug_tuners_ins.hotplug_enable > 0) {
 		for_each_online_cpu(j) {
 			struct hotplug_cpuinfo *pcpu_info = &per_cpu(od_hotplug_cpuinfo, j);
 			pcpu_info->prev_cpu_idle = get_cpu_idle_time(j,
-					&pcpu_info->prev_cpu_wall, hotplug_tuners_ins.hp_io_is_busy);
+					&pcpu_info->prev_cpu_wall,
+					!!input);
 		}
 	}
-#endif
+	hotplug_tuners_ins.hp_io_is_busy = !!input;
+
 	return count;
 }
 
