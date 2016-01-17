@@ -3271,6 +3271,12 @@ config BRICKED_HOTPLUG
 	 This enables kernel based multi core control.
 	 (up/down hotplug based on load)
 
+config INTELLI_HOTPLUG
+	bool "Enable intelli-plug cpu hotplug driver"
+	default y
+	help
+	  Generic Intelli-plug cpu hotplug driver for ARM SOCs
+
 config ALUCARD_HOTPLUG
 	bool "Enable alucard-hotplug cpu hotplug driver"
 	default y
