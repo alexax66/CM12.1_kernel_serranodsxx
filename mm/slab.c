@@ -3814,6 +3814,7 @@ void *kmem_cache_alloc_node_trace(size_t size,
 	trace_kmalloc_node(_RET_IP_, ret,
 			   size, slab_buffer_size(cachep),
 			   flags, nodeid);
+	kasan_kmalloc(s, ret, size);
 	return ret;
 }
 EXPORT_SYMBOL(kmem_cache_alloc_node_trace);

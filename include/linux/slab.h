@@ -92,6 +92,9 @@
 #define ZERO_OR_NULL_PTR(x) ((unsigned long)(x) <= \
 				(unsigned long)ZERO_SIZE_PTR)
 
+#include <linux/kmemleak.h>
+#include <linux/kasan.h>
+
 /*
  * struct kmem_cache related prototypes
  */
