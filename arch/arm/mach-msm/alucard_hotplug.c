@@ -88,6 +88,7 @@ static struct hotplug_tuners {
 
 #define DOWN_INDEX		(0)
 #define UP_INDEX		(1)
+#define MAX_FREQ_LIMIT		1728000
 
 struct runqueue_data {
 	unsigned int nr_run_avg;
@@ -233,7 +234,10 @@ static void __ref hotplug_work_fn(struct work_struct *work)
 		if (cur_load >= 0) {
 			/* get the cpu current frequency */
 			/* cur_freq = acpuclk_get_rate(cpu); */
+		if (!force_up)
 			cur_freq = cpufreq_quick_get(cpu);
+		else
+			cur_freq = MAX_FREQ_LIMIT;
 			/* get nr online cpus */
 			online_cpus = num_online_cpus();
 
