@@ -12,6 +12,7 @@
 #include <asm/setup.h>
 #include <asm/desc.h>
 
+#include "../string.h"
 #include "eboot.h"
 
 static efi_system_table_t *sys_table;
