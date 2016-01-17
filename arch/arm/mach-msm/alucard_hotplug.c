@@ -325,13 +325,12 @@ static void __ref hotplug_work_fn(struct work_struct *work)
 
 	delay = msecs_to_jiffies(hotplug_tuners_ins.hotplug_sampling_rate);
 
-/*	if (num_online_cpus() > 1) {
-#if 0
-		pr_info("NR_CPUS[%u], jiffies[%ld], delay[%u]\n", num_online_cpus(), jiffies, delay);
-#endif
+	if (num_online_cpus() > 1) {
 		delay -= jiffies % delay;
+		/* We want hotplug governor to do sampling just one jiffy later on cpu governor sampling */
+		delay++;
 	}
-*/
+
 	queue_delayed_work_on(0, alucardhp_wq, &alucard_hotplug_work,
 							  delay);
 }
