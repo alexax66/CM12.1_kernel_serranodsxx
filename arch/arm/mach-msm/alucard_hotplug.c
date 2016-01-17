@@ -182,9 +182,8 @@ static void __ref cpu_down_work(struct work_struct *work)
 {
 	struct hotplug_cpuinfo *pcpu_info =
 			container_of(work, struct hotplug_cpuinfo, down_work);
-	int ret;
 
-	ret = cpu_down(pcpu_info->cpu);
+	cpu_down(pcpu_info->cpu);
 }
 
 static void __ref hotplug_work_fn(struct work_struct *work)
