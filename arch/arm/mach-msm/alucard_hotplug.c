@@ -22,7 +22,6 @@
 #include <linux/mutex.h>
 #include <linux/module.h>
 #include <linux/slab.h>
-#include "acpuclock.h"
 
 #if defined(CONFIG_POWERSUSPEND)
 #include <linux/powersuspend.h>
@@ -252,7 +251,6 @@ static void __ref hotplug_work_fn(struct work_struct *work)
 		/* if cur_load < 0, evaluate cpu load next time */
 		if (cur_load >= 0) {
 			/* get the cpu current frequency */
-			/* cur_freq = acpuclk_get_rate(cpu); */
 		if (!force_up)
 			cur_freq = cpufreq_quick_get(cpu);
 		else
