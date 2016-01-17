@@ -82,7 +82,7 @@ void vmalloc_sync_all(void);
 static inline size_t get_vm_area_size(const struct vm_struct *area)
 {
 	if (!(area->flags & VM_NO_GUARD))
-	/* return actual size without guard page */
+		/* return actual size without guard page */
 		return area->size - PAGE_SIZE;
 	else
 		return area->size; 
