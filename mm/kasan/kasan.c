@@ -29,7 +29,6 @@
 #include <linux/stacktrace.h>
 #include <linux/string.h>
 #include <linux/types.h>
-#include <linux/vmalloc.h>
 #include <linux/kasan.h>
 
 #include "kasan.h"
@@ -415,19 +414,12 @@ int kasan_module_alloc(void *addr, size_t size)
 			GFP_KERNEL | __GFP_HIGHMEM | __GFP_ZERO,
 			PAGE_KERNEL, VM_NO_GUARD, NUMA_NO_NODE,
 			__builtin_return_address(0));
-
-	if (ret) {
-		find_vm_area(addr)->flags |= VM_KASAN;
-		return 0;
-	}
-
-	return -ENOMEM;
+	return ret ? 0 : -ENOMEM;
 }
 
-void kasan_free_shadow(const struct vm_struct *vm)
+void kasan_module_free(void *addr)
 {
-	if (vm->flags & VM_KASAN)
-		vfree(kasan_mem_to_shadow(vm->addr));
+	vfree(kasan_mem_to_shadow(addr));
 }
 
 static void register_global(struct kasan_global *global)
