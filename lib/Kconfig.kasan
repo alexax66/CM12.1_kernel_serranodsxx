@@ -6,7 +6,6 @@ if HAVE_ARCH_KASAN
 config KASAN
 	bool "KASan: runtime memory debugger"
 	depends on SLUB_DEBUG
-	select CONSTRUCTORS
 	help
 	  Enables kernel address sanitizer - runtime memory debugger,
 	  designed to find out-of-bounds accesses and use-after-free bugs.
@@ -17,7 +16,6 @@ config KASAN
 
 config KASAN_SHADOW_OFFSET
 	hex
-	default 0xdffffc0000000000 if X86_64
 
 choice
 	prompt "Instrumentation type"
