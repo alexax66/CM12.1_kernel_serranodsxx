@@ -9,6 +9,7 @@
 #include <linux/slab.h>
 #include <linux/backing-dev.h>
 #include <linux/mm.h>
+#include <linux/vmacache.h>
 #include <linux/shm.h>
 #include <linux/mman.h>
 #include <linux/pagemap.h>
@@ -482,8 +483,9 @@ __vma_unlink(struct mm_struct *mm, struct vm_area_struct *vma,
 	if (next)
 		next->vm_prev = prev;
 	rb_erase(&vma->vm_rb, &mm->mm_rb);
-	if (mm->mmap_cache == vma)
-		mm->mmap_cache = prev;
+
+	/* Kill the cache */
+	vmacache_invalidate(mm);
 }
 
 /*
@@ -1647,40 +1649,31 @@ get_unmapped_area(struct file *file, unsigned long addr, unsigned long len,
 
 EXPORT_SYMBOL(get_unmapped_area);
 
-/* Look up the first VMA which satisfies  addr < vm_end,  NULL if none. */
+/*
+ * look up the first VMA in which addr resides, NULL if none
+ * - should be called with mm->mmap_sem at least held readlocked
+ */
 struct vm_area_struct *find_vma(struct mm_struct *mm, unsigned long addr)
 {
-	struct vm_area_struct *vma = NULL;
+	struct vm_area_struct *vma;
 
-	if (mm) {
-		/* Check the cache first. */
-		/* (Cache hit rate is typically around 35%.) */
-		vma = mm->mmap_cache;
-		if (!(vma && vma->vm_end > addr && vma->vm_start <= addr)) {
-			struct rb_node * rb_node;
+	/* check the cache first */
+	vma = vmacache_find(mm, addr);
+	if (likely(vma))
+	return vma;
 
-			rb_node = mm->mm_rb.rb_node;
-			vma = NULL;
-
-			while (rb_node) {
-				struct vm_area_struct * vma_tmp;
-
-				vma_tmp = rb_entry(rb_node,
-						struct vm_area_struct, vm_rb);
-
-				if (vma_tmp->vm_end > addr) {
-					vma = vma_tmp;
-					if (vma_tmp->vm_start <= addr)
-						break;
-					rb_node = rb_node->rb_left;
-				} else
-					rb_node = rb_node->rb_right;
-			}
-			if (vma)
-				mm->mmap_cache = vma;
+	/* trawl the list (there may be multiple mappings in which addr
+        * resides) */
+	for (vma = mm->mmap; vma; vma = vma->vm_next) {
+	if (vma->vm_start > addr)
+	    return NULL;
+	if (vma->vm_end > addr) {
+			vmacache_update(addr, vma);
+		return vma;
 		}
 	}
-	return vma;
+ 
+    return NULL;
 }
 
 EXPORT_SYMBOL(find_vma);
@@ -1992,7 +1985,9 @@ detach_vmas_to_be_unmapped(struct mm_struct *mm, struct vm_area_struct *vma,
 	else
 		addr = vma ?  vma->vm_start : mm->mmap_base;
 	mm->unmap_area(mm, addr);
-	mm->mmap_cache = NULL;		/* Kill the cache. */
+
+	/* Kill the cache */
+	vmacache_invalidate(mm);
 }
 
 /*
@@ -2369,7 +2364,8 @@ void exit_mmap(struct mm_struct *mm)
 
 	mm->mmap = NULL;
 	mm->mm_rb = RB_ROOT;
-	mm->mmap_cache = NULL;
+//	mm->mmap_cache = NULL;
+	vmacache_invalidate(mm);
 	up_write(&mm->mmap_sem);
 
 	BUG_ON(mm->nr_ptes > (FIRST_USER_ADDRESS+PMD_SIZE-1)>>PMD_SHIFT);
