@@ -65,7 +65,7 @@ mpdecision: don't compile it for now - https://github.com/YoshiShaPow/green_mach
 [don`t work - desable in config. !!!] msm: bricked_hotplug: added bricked mpd hotplug - https://github.com/YoshiShaPow/green_machine_bacon/commit/83d8c4e2b9fc988d676481fe6910ccf915c59f5e
 [don`t work - desable in config. !!!] msm: bricked_hotplug: clean get_rate and switch to msm_cpufreq_get_freq - https://github.com/YoshiShaPow/green_machine_bacon/commit/ed56a57c893f1941237bd0eea7d727bc7f1bb506
 [don`t work - desable in config. !!!] msm: bricked_hotplug: convert suspend/resume from lcd notifier to powersuspend - https://github.com/YoshiShaPow/green_machine_bacon/commit/cea4a6a40b02557656e24a20e041df6e4ade91dd
-power: quickwakeup: initial driver - https://github.com/YoshiShaPow/green_machine_bacon/commit/138d4148337ac832ae4472f15b94c955b35fcb72
+power: quickwakeup: initial driver - https://github.com/YoshiShaPow/green_machine_bacon/commit/138d4148337ac832ae4472f15b94c955b35fcb72 [power: quickwakeup: initial driver - https://github.com/Slim80/Imperium_Kernel_TW_5.0.1/commit/70df6b53daa1f5182451c5329a7b368969ec3213]
 Add /dev/frandom support - https://github.com/YoshiShaPow/green_machine_bacon/commit/92daa621bdbd85bcedee4884b5515ef9e8a3a57b
 msm: bricked_hotplug: make it bricked hotplug - https://github.com/YoshiShaPow/green_machine_bacon/commit/0101a7866700803e353b064184167529a952b37b
 The Ultra Kernel Samepage Merging v0.1.2.3 - https://github.com/AOSPA-legacy/android_kernel_oneplus_msm8974/commit/fd2ebd73750376caa9de631616eea6a25b37a509
@@ -878,3 +878,39 @@ defconfig: use common alexax'es defconfig for serrano-3g and serrano-lte variant
 build_kernel.sh: add case between serrano-3g and serrano-lte variantes - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/37267b43f028f8e61db816ac6d9dfb5563a28676
 defconfig: abandoned separate selinux config - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/b86c2452f035bdeacfa98b27c4055d9a2c2eb003
 
+CM12.1-ALX-0.1.6
+kernel: Replace timeconst.pl with a bc script - https://github.com/CyanogenMod/android_kernel_samsung_jf/commit/05329ca478cbf54ba55e2819dd5ba63bd08b791b
+defconfig: Fix IR blaster after recent source merge - https://github.com/CyanogenMod/android_kernel_samsung_msm8930-common/commit/dfac79a8fb4ae6c21dcfa6ced108f93e5dd403bc
+mm: zswap: add debugging code for zswap kernel panic - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/caf684ff22bc329fc7f7d49b6bcfaf1e3ccc2eae
+arm: mm: fix after commit "arm: mm: clean proc-v7 asm source code" - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/80b76230d130de25e0e5c591778f84220c9dfbbd
+ARM: tlb: fix and clean code - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/a7f72b7701f3513a32bc1499723df5ab23ff562a
+Revert "ARM: tlb: fix and clean code" - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/68501df4066d1e33240dd1ea79fd73544c2547ca
+ARM: tlb: fix code - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/2fc7f7fdb6f6d4c3942a22098b3eb17bf9f2a9a1
+exfat: add missing exfat_xattr.c - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/8594e1223625d95a47966cce9d3dd849cf4be154
+fs: exfat: Fix some stuff - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/f49e491e8b38afc9cad912b4815012600a14cc18
+fs: exfat: Fix after previous commit - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/e6b022122e6c9ed2810b6852535bbcace2643a82
+defconfig: remove exfat since it set by default - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/12683a8988721ea1640a8b2a09235534be192a8d
+drivers: Add dma-removed dma_ops - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/87c265abbb2ffce33681afb458107d41e3bcf928
+Revert "drivers: Add dma-removed dma_ops" -  https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/aba6c3ee0e957b317f84b1a1edd8fbe3d81fc2ac
+block: introduce the BFQ-v7r8 I/O sched for 3.4 - https://github.com/CyanogenMod/android_kernel_samsung_mondrianwifi/commit/10655f4eadbeaaaf368f767cb51c44e2299fd94b
+block, bfq: add Early Queue Merge (EQM) to BFQ-v7r8 for 3.4.0 - https://github.com/CyanogenMod/android_kernel_samsung_mondrianwifi/commit/8b31eabbeca72d868a7a12377ce7f0134f286e26
+[RFC PATCH 2/6] ARM: mm: add v7 cache LoUIS API implementation - http://lists.infradead.org/pipermail/linux-arm-kernel/2012-September/119835.html
+ARM: mm: use inner-shareable barriers for TLB and user cache operations - https://github.com/CyanogenMod/android_kernel_oneplus_msm8974/commit/7d03ae57439f667d1db79ef256db5e027c208ac5
+ARM: 7919/1: mm: refactor v7 cache cleaning ops to use way/index sequence - https://github.com/CyanogenMod/android_kernel_oneplus_msm8974/commit/e242200564a5c10dcf52245655260309ff9212c2
+ARM: DMA: ensure that old section mappings are flushed from the TLB - https://github.com/CyanogenMod/android_kernel_oneplus_msm8974/commit/6b076991dca9817e75c37e2f0db6d52611ea42fa
+Desable MSM hotplug driver by myfluxi and anarkia1976 - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/119970169b323aa83f546e40b14f9592ee382c0c
+
+CM12.1-ALX-0.1.7
+mm: ksm: apply some fixes - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/88e26a802810ccd7612a966c1a16738a83fe7380
+f2fs: improve write performance under frequent fsync calls - https://github.com/CyanogenMod/android_kernel_samsung_espresso10/commit/99ab8a66e6bc4d399415ca29bafcd5e26fcb3129
+Revert "f2fs: fix for improve write performance under frequent fsynccalls" - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/8e97f8a402e37c80b495cb28c6e52fc64ad9a650
+staging: prima: Fix non-debug build and switch to it - https://github.com/CyanogenMod/android_kernel_motorola_msm8226/commit/b1e69ee30a7b128a39c330a59635b16f916d6bab
+Added Barry_Allen CPU governor - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/eeb9bd8e964532063e01449dd5733d8f3c9370ad
+cpufreq: Fix cpufreq_barry_allen.c - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/dc5d1e214a5722cb560fdf5253a2dad974ac3eeb
+Added ArterActive CPU GOV [credits to @arter97] - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/3e9cd5e3926c95ee4a1263403edf9dd032f5512f
+cpufreq: cpufreq_arteractive.c: Fix compilation errors - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/3c39b9d9ac1e884ff8ab5884e7489dcda4f4e3d8
+cpufreq: cpu-boost: enable/disable cpu-boost via sysfs - https://github.com/alexax66/CM12.1_kernel_serranodsxx/commit/a30f78820728065e2921c7c87bfb553fab290c5b
+
+
+
+CONFIG_QUICK_WAKEUP: Implemented module call in the proper way, then …enabled it! It was my mistake :) - https://github.com/Tkkg1994/Hulk-Kernel-V2/commit/4163091975c131bc9ac67f95cdf539e401e87360
